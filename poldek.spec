@@ -24,6 +24,7 @@ Patch2:		%{name}-simplestatic.patch
 Patch3:		%{name}-po.patch
 Patch4:		%{name}-n_free.patch
 Patch5:		%{name}-transfer_rate.patch
+Patch6:		%{name}-capreq.patch
 Patch12:	%{name}-distver.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
@@ -97,6 +98,7 @@ modu³u CPAN.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p2
 %{?with_distver:%patch12 -p1}
 
 %build
