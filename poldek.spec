@@ -43,7 +43,7 @@ BuildRequires:	bzip2-static
 %{?with_curl:BuildRequires:	curl-static}
 BuildRequires:	db-static >= %{ver_db}
 BuildRequires:	glibc-static
-buildRequires:	libselinux-static
+BuildRequires:	libselinux-static
 BuildRequires:	ncurses-static
 BuildRequires:	openssl-static
 BuildRequires:	pcre-static
