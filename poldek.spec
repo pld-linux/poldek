@@ -5,10 +5,11 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.17.1
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}/%{name}-%{version}.tar.gz
+Source1:	%{name}.conf
 %{!?_with_static:Requires:	trurlib >= 0.43.5}
 Requires:	/bin/rpm
 BuildRequires:	bzip2-devel
@@ -74,7 +75,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 # no strip cause program's alpha stage and core may be useful
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 %{?_with_static:rm -f $RPM_BUILD_ROOT/%{_bindir}/rpmvercmp}
-sed "s/i686/%{_target_cpu}/g" < poldekrc.sample-pld > $RPM_BUILD_ROOT/etc/%{name}.conf
+sed "s/i686/%{_target_cpu}/g" < %{SOURCE1} > $RPM_BUILD_ROOT/etc/%{name}.conf
 
 gzip -9nf README* *sample* NEWS TODO
 
