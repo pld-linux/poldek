@@ -18,13 +18,14 @@ BuildRequires:	/usr/bin/pod2man
 BuildRequires:	trurlib-devel >= 0.43.2
 BuildRequires:	curl-devel >= 7.8
 BuildRequires:	openssl-devel
-BuildRequires:	readline-devel
 BuildRequires:	pcre-devel
-%{?BOOT:BuildRequires:	zlib-static}
+BuildRequires:	readline-devel
 %{?BOOT:BuildRequires:	bzip2-static}
-%{?BOOT:BuildRequires:	trurlib-static}
 %{?BOOT:BuildRequires:	curl-static}
 %{?BOOT:BuildRequires:	openssl-static}
+%{?BOOT:BuildRequires:	rpm-static}
+%{?BOOT:BuildRequires:	trurlib-static}
+%{?BOOT:BuildRequires:	zlib-static}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
