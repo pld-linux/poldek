@@ -21,12 +21,7 @@ Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-simplestatic.patch
-Patch6:		%{name}-progress2.patch
-Patch7:		%{name}-po.patch
-Patch8:		%{name}-deps-fix.patch
-Patch9:		%{name}-obsoletes_provides.patch
-Patch10:	%{name}-rev-promote.patch
-Patch11:	%{name}-sigsegv2.patch
+Patch3:		%{name}-po.patch
 Patch12:	%{name}-distver.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
@@ -97,12 +92,7 @@ modu³u CPAN.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p0
-%patch6 -p1
-%patch7 -p1
-%patch8 -p0
-%patch9 -p0
-%patch10 -p0
-%patch11 -p1
+%patch3 -p1
 %{?with_distver:%patch12 -p1}
 
 %build
