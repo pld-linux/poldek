@@ -20,6 +20,7 @@ Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version
 # Source0-md5:	0753546bec902c114eae1f04ccd308c6
 # Source0-size:	1108950
 Source1:	%{name}.conf
+Patch0:		%{name}-capreq.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -81,6 +82,7 @@ modu³u CPAN.
 
 %prep
 %setup -q -n %{name}-%{version}-cvs%{snap}
+%patch0 -p1
 
 %build
 %{__autopoint}
