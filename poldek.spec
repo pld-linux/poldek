@@ -7,20 +7,19 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
 %define	ver_rpm	4.3-0.20030610.29
+%define	snap	20040323
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.18.3
-Release:	4
+Version:	0.18.4
+Release:	0.%{snap}.1
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
-# Source0-md5:	339c54b86bfd733851c0f7125057f446
+Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/poldek-cvs%{snap}.tar.bz2
+# Source0-md5:	e69b8d1cdd4ddfd8590693cc10a28ae9
 Source1:	%{name}.conf
-Patch1:		%{name}-etc_dir.patch
-Patch2:		%{name}-retr_term.patch
-Patch3:		%{name}-ldb4.patch
-Patch4:		%{name}-be-nice-for-proxy.patch
+Patch0:		%{name}-etc_dir.patch
+Patch1:		%{name}-retr_term.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -84,9 +83,9 @@ modu³u CPAN.
 %{!?with_imode:Ta wersja nie posiada trybu interaktywnego.}
 
 %prep
-%setup -q
+%setup -q -n %{name}-cvs%{snap}
+%patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 %{__autopoint}
@@ -115,9 +114,9 @@ sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- poldek <= 0.18.3-3
-if ! grep -q '^promoteepoch.*yes' /etc/poldek.conf ; then
-	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed /etc/poldek.conf
+%triggerpostun -- poldek <= 0.18.3-5
+if grep -q '^promoteepoch.*yes' /etc/poldek.conf ; then
+	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed -s /etc/poldek.conf
 fi
 
 %files -f %{name}.lang
