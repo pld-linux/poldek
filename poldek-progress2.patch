@@ -69,7 +69,7 @@
          
      } else {
 -        char unit_line[45], amount_str[16], total_str[16];
-+        char unit_line[42], amount_str[16], total_str[16], transfer_str[16];;
++        char unit_line[42], amount_str[16], total_str[16], transfer_str[16];
          int nn;
              
          nbytes2str(total_str, sizeof(total_str), total);
