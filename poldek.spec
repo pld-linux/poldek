@@ -11,23 +11,19 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.1
-Release:	19
+Release:	20
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
 # Source0-md5:	8af8090d401254939911e456e2f09e60
 Source1:	%{name}.conf
-Patch0:		%{name}-static.patch
-Patch1:		%{name}-etc_dir.patch
-Patch2:		%{name}-rpm4.2.patch
-Patch3:		%{name}-rpm4.1-fix.patch
-Patch4:		%{name}-retr_term.patch
-Patch5:		%{name}-deps-fix.patch
-Patch6:		%{name}-broken-rpmdb.patch
-Patch7:		%{name}-epoch0.patch
-Patch8:		%{name}-ldb4.patch
-Patch9:		%{name}-unaligned.patch
-Patch10:	%{name}-be-nice-for-proxy.patch
+Patch0:		%{name}-cvs-20040109.patch
+Patch1:		%{name}-trurlib-cvs-20040109.patch.gz
+Patch2:		%{name}-etc_dir.patch
+Patch3:		%{name}-retr_term.patch
+Patch4:		%{name}-ldb4.patch
+Patch5:		%{name}-be-nice-for-proxy.patch
+Patch6:		%{name}-tests.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -91,17 +87,13 @@ modu³u CPAN.
 
 %prep
 %setup -q
-%patch0	-p1
+%patch0	-p2
 %patch1 -p1
 %patch2 -p1
-%patch3 -p0
+%patch3 -p1
 %patch4 -p1
-%patch5 -p0
+%patch5 -p1
 %patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
 
 %build
 %{__autopoint}
