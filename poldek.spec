@@ -11,7 +11,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.6
-Release:	13
+Release:	14
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
@@ -107,7 +107,7 @@ modu³u CPAN.
 %patch9 -p0
 %patch10 -p0
 %patch11 -p1
-#%%patch12 -p1
+%patch12 -p1
 
 %build
 %{__autopoint}
