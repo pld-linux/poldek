@@ -9,10 +9,10 @@ diff -Nru poldek-0.18.1/conf.c poldek-0.18.1.new/conf.c
      char *etcpath = "/etc/poldek.conf";
      
 -    if ((homedir = getenv("HOME")) != NULL) {
-+    if ((etc_dir = getenv("ETC_DIR")) != NULL) {
++    if ((etc_dir = getenv("HOME_ETC")) != NULL) {
 +        char path[PATH_MAX];
 +        
-+        snprintf(path, sizeof(path), "%s/poldekrc", etc_dir);
++        snprintf(path, sizeof(path), "%s/.poldekrc", etc_dir);
 +        if (access(path, R_OK) == 0)
 +            return ldconf(path);
 +    } else {
@@ -36,17 +36,17 @@ diff -Nru poldek-0.18.1/pkgscore.c poldek-0.18.1.new/pkgscore.c
 +				char *etc_dir;
  
 -        if ((homedir = getenv("HOME")) == NULL)
-+				if ((etc_dir = getenv("ETC_DIR")) != NULL) {
++				if ((etc_dir = getenv("HOME_ETC")) != NULL) {
 +        	switch (type) {
 +            	case PKG_HELD:
-+                	snprintf(path, sizeof(path), "%s/poldek-hold", etc_dir);
++                	snprintf(path, sizeof(path), "%s/.poldek-hold", etc_dir);
 +                	if (access(path, R_OK) != 0) /* backward compat */
-+                    snprintf(path, sizeof(path), "%s/poldek_hold", etc_dir);
++                    snprintf(path, sizeof(path), "%s/.poldek_hold", etc_dir);
 +        		
 +                	break;
 +
 +            	case PKG_IGNORED:
-+                	snprintf(path, sizeof(path), "%s/poldek-ignore", etc_dir);
++                	snprintf(path, sizeof(path), "%s/.poldek-ignore", etc_dir);
 +                	break;
 +
 +            	default:
@@ -108,10 +108,10 @@ diff -Nru poldek-0.18.1/shell/shell.c poldek-0.18.1.new/shell/shell.c
      histfile = NULL;
  
 -    if ((home = getenv("HOME"))) {
-+    if ((etc_dir = getenv("ETC_DIR"))) {
-+        int len = strlen(etc_dir) + strlen("/poldek_history") + 2;
++    if ((etc_dir = getenv("HOME_ETC"))) {
++        int len = strlen(etc_dir) + strlen("/.poldek_history") + 2;
 +        histfile = alloca(len);
-+        snprintf(histfile, len, "%s/poldek_history", etc_dir);
++        snprintf(histfile, len, "%s/.poldek_history", etc_dir);
 +        read_history(histfile);
 +    } else {
 +    	if ((home = getenv("HOME"))) {

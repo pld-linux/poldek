@@ -1,8 +1,8 @@
 #
-# conditional build:
-#  --with static	- don't use shared libraries
-#  --without imode	- don't build interactive mode
-#  --with curl	        - link with curl
+# Conditional build:
+# _with_static		- don't use shared libraries
+# _without_imode	- don't build interactive mode
+# _with_curl		- link with curl
 #
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
@@ -20,8 +20,6 @@ Patch2:		%{name}-rpm4.2.patch
 Patch3:		%{name}-rpm4.1-fix.patch
 Patch4:		%{name}-retr_term.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
-Requires:	rpm >= 4.0.2-62
-Requires:	sed
 BuildRequires:	bzip2-devel
 %{?_with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	automake
@@ -43,6 +41,8 @@ BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	readline-static}
 %{?_with_static:BuildRequires:	rpm-static}
 %{?_with_static:BuildRequires:	zlib-static}
+Requires:	rpm >= 4.0.2-62
+Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -96,9 +96,9 @@ autopoint --force
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
-# no strip cause program's beta stage and core may be useful
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
-%{?_with_static:rm -f $RPM_BUILD_ROOT/%{_bindir}/rpmvercmp}
+
+%{?_with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
 
 %find_lang %{name}
