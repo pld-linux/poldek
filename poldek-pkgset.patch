@@ -1,0 +1,51 @@
+diff -u -r1.55.4.2 -r1.55.4.3
+--- pkgset.c	2004/02/26 18:22:28	1.55.4.2
++++ pkgset.c	2004/06/06 20:47:51	1.55.4.3
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <limits.h>
+@@ -665,10 +665,11 @@
+     rpm_define("_tmppath", "/tmp");
+     rpm_define("tmppath", "/tmp");
+     rpm_define("tmpdir", "/tmp");
+-    
+-    if (!mark_dependencies(ps, inst->flags))
+-        return 0;
+ 
++    if ((inst->flags & INSTS_FOLLOW)) {
++        if (!mark_dependencies(ps, inst->flags))
++            return 0;
++    }
+     
+     nerr = 0;
+     ninstalled = 0;
+@@ -704,20 +705,18 @@
+                 logn(LOGERR|LOGFILE, "INST-ERR %s", pkg->name);
+                 nerr++;
+             }
+-            printf("exit\n");
+-            exit(1);
+             ninstalled++;
+             ninstalled_bytes += pkg->size;
+             inf.nfbytes -= pkg->fsize;
+             printf_c(PRCOLOR_YELLOW,
+                      _(" %d of %d (%.2f of %.2f MB) packages done"),
+                      ninstalled, inf.npackages,
+-                     ninstalled_bytes/(1024*1000), 
+-                     inf.nbytes/(1024*1000));
++                     ninstalled_bytes/(1024*1000.0), 
++                     inf.nbytes/(1024*1000.0));
+ 
+             if (is_remote)
+                 printf_c(PRCOLOR_YELLOW, _("; %.2f MB to download"),
+-                         inf.nfbytes/(1024*1000));
++                         inf.nfbytes/(1024*1000.0));
+             printf_c(PRCOLOR_YELLOW, "\n");
+         }
+     }
