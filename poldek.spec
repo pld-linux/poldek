@@ -8,11 +8,12 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.1
-Release:	3
+Release:	4
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
 Source1:	%{name}.conf
+Patch0:		%{name}-static.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 Requires:	rpm >= 4.0.2-62
 Requires:	sed
@@ -67,16 +68,10 @@ modu³u CPAN.
 
 %prep
 %setup -q
+%patch0	-p1
 
 %build
-if ! grep -q AM_GNU_GETTEXT_VERSION configure.in ; then
-	cp configure.in configure.in.orig
-	sed -e 's/AM_GNU_GETTEXT\(.*\)/AM_GNU_GETTEXT\1\
-AM_GNU_GETTEXT_VERSION(0.10.40)/' \
-		-e 's=po/Makefile.in=po/Makefile.in intl/Makefile=' \
-		configure.in.orig >configure.in
-	autopoint --force
-fi
+autopoint --force
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
