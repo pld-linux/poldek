@@ -65,6 +65,7 @@ modu³u CPAN.
 
 %prep
 %setup -q
+%patch0 -p1 
 
 %build
 %configure \
