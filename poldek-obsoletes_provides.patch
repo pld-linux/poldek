@@ -1,0 +1,69 @@
+Index: rpm.c
+===================================================================
+RCS file: /cvsroot/installer/poldek/Attic/rpm.c,v
+retrieving revision 1.41.4.6
+diff -u -r1.41.4.6 rpm.c
+--- rpm.c	14 Aug 2004 20:40:46 -0000	1.41.4.6
++++ rpm.c	25 Aug 2004 12:12:36 -0000
+@@ -446,20 +446,34 @@
+     return n;
+ }
+ 
+-
+-int rpm_get_obsoletedby_cap(rpmdb db, tn_array *dbpkgs, struct capreq *cap,
+-                            unsigned ldflags)
++static
++int get_obsoletedby_cap(rpmdb db, int tag, tn_array *dbpkgs, struct capreq *cap,
++                        unsigned ldflags)
+ {
+     struct rpmdb_it it;
+     const struct dbrec *dbrec;
+     int n = 0;
+-    
+-    rpmdb_it_init(db, &it, RPMITER_NAME, capreq_name(cap));
++
++    rpmdb_it_init(db, &it, tag, capreq_name(cap));
+     while ((dbrec = rpmdb_it_get(&it)) != NULL) {
++        int add = 0;
+         if (dbpkg_array_has(dbpkgs, dbrec->recno))
+-           continue;
+-        
+-        if (header_evr_match_req(dbrec->h, cap)) {
++            continue;
++
++        switch (tag) {
++            case RPMITER_NAME:
++                add = header_evr_match_req(dbrec->h, cap);
++                break;
++
++            case RPMITER_CAP:
++                add = header_cap_match_req(dbrec->h, cap, 1);
++                break;
++                
++            default:
++                n_assert(0);
++                break;
++        }
++        if (add) {
+             struct dbpkg *dbpkg = dbpkg_new(dbrec->recno, dbrec->h, ldflags);
+             n_array_push(dbpkgs, dbpkg);
+             n_array_sort(dbpkgs);
+@@ -467,6 +481,18 @@
+         }
+     }
+     rpmdb_it_destroy(&it);
++    return n;
++}
++
++int rpm_get_obsoletedby_cap(rpmdb db, tn_array *dbpkgs, struct capreq *cap,
++                            unsigned ldflags)
++{
++    int n;
++
++    n = get_obsoletedby_cap(db, RPMITER_NAME, dbpkgs, cap, ldflags);
++#ifdef HAVE_RPM_4_1
++    n += get_obsoletedby_cap(db, RPMITER_CAP, dbpkgs, cap, ldflags);
++#endif    
+     return n;
+ }
+ 
