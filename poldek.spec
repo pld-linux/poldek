@@ -12,7 +12,7 @@ Release:	1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
-# Source0-md5:	355dde0da06cd894e11ea352f7ae72b9
+# Source0-md5:	339c54b86bfd733851c0f7125057f446
 Source1:	%{name}.conf
 Patch0:		%{name}-retr_term.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
