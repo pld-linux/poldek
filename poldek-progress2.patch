@@ -74,12 +74,12 @@ diff -r -u poldek-0.18.3/vfile/vfprogress.c poldek-0.18.3-patrys/vfile/vfprogres
          if (total == amount)
 -            nn = n_snprintf(unit_line, sizeof(unit_line), "[%s] [%.1fK/s]",
 -			  total_str, transfer_rate);
-+            nn = n_snprintf(unit_line, sizeof(unit_line), "[%6s] [%6s/s]",
++            nn = n_snprintf(unit_line, sizeof(unit_line), "[%7s] [%7s/s]",
 +			  total_str, transfer_str);
          else 
 -            nn = n_snprintf(unit_line, sizeof(unit_line), "[%s of %s] [%.1fK/s] [%dm%s%ds]",
 -                          amount_str, total_str, transfer_rate, (int)eta / 60, 
-+            nn = n_snprintf(unit_line, sizeof(unit_line), "[%6s of %6s] [%6s/s] [%3dm%s%ds]",
++            nn = n_snprintf(unit_line, sizeof(unit_line), "[%7s/%7s] [%7s/s] [%3dm%s%ds]",
 +                          amount_str, total_str, transfer_str, (int)eta / 60, 
  			  ((int)eta % 60 < 10 ? "0" : ""), (int)eta % 60);
  
