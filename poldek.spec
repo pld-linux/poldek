@@ -147,8 +147,8 @@ sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{n
 rm -rf $RPM_BUILD_ROOT
 
 %triggerpostun -- poldek <= 0.18.3-5
-if grep -q '^promoteepoch.*yes' /etc/poldek.conf ; then
-	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed -s /etc/poldek.conf
+if grep -q '^promoteepoch.*yes' %{_sysconfdir}/poldek.conf ; then
+	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed -s %{_sysconfdir}/poldek.conf
 fi
 
 # otherwise don't touch
