@@ -8,8 +8,9 @@ Version:	0.17.1
 Release:	2
 License:	GPL
 Group:		Applications/System
-Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}/%{name}-%{version}.tar.gz
+Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
 Source1:	%{name}.conf
+URL:		http://team.pld.org.pl/~mis/poldek/
 %{!?_with_static:Requires:	trurlib >= 0.43.5}
 Requires:	/bin/rpm
 BuildRequires:	bzip2-devel
