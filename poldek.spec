@@ -14,7 +14,7 @@ Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
 Source1:	%{name}.conf
 Patch0:		%{name}-vfprogress.patch
-Patch1:		%{name}-hold_and_mark_fixes.patch
+Patch1:		%{name}-poldek-hold-fix.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 Requires:	rpm >= 4.0.2-62
 Requires:	sed
