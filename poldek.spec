@@ -19,6 +19,7 @@ Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 # Source0-md5:	2063ce4816a26cdb3381df5032d32b64
 Source1:	%{name}.conf
+Patch0:		%{name}-gcc34.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -81,6 +82,7 @@ modu³u CPAN.
 
 %prep
 %setup -q -n %{name}-%{version}-cvs%{snap}
+%patch0 -p1
 
 %build
 %{__autopoint}
