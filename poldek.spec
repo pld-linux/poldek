@@ -21,7 +21,7 @@ Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-cap_match_req-fix.patch
-%{?with_ignarch:Patch3:	%{name}-ignorearch.patch}
+Patch3:		%{name}-ignorearch.patch
 Patch4:		%{name}-progress.patch
 Patch5:		%{name}-simplestatic.patch
 Patch6:		%{name}-progress2.patch
