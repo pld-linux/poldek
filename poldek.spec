@@ -8,17 +8,18 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.1
-Release:	9
+Release:	10
 License:	GPL v2
 Group:		Applications/System
-# Source0-md5:	8af8090d401254939911e456e2f09e60
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
+# Source0-md5:	8af8090d401254939911e456e2f09e60
 Source1:	%{name}.conf
 Patch0:		%{name}-static.patch
 Patch1:		%{name}-etc_dir.patch
 Patch2:		%{name}-rpm4.2.patch
 Patch3:		%{name}-rpm4.1-fix.patch
 Patch4:		%{name}-retr_term.patch
+Patch5:		%{name}-deps-fix.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	bzip2-devel
 %{?_with_curl:BuildRequires:	curl-devel >= 7.8}
@@ -97,7 +98,8 @@ autopoint --force
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 %{?_with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
