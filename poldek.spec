@@ -8,7 +8,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.1
-Release:	12
+Release:	13
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
@@ -21,6 +21,7 @@ Patch3:		%{name}-rpm4.1-fix.patch
 Patch4:		%{name}-retr_term.patch
 Patch5:		%{name}-deps-fix.patch
 Patch6:		%{name}-broken-rpmdb.patch
+Patch7:		%{name}-epoch0.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	bzip2-devel
 %{?with_curl:BuildRequires:	curl-devel >= 7.8}
@@ -31,7 +32,7 @@ BuildRequires:	openssl-devel >= 0.9.7c
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
-BuildRequires:	rpm-devel >= 4.0.2-62
+BuildRequires:	rpm-devel >= 4.2.1
 BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
 %{?with_static:BuildRequires:	bzip2-static}
@@ -44,7 +45,7 @@ BuildRequires:	/usr/bin/pod2man
 %{?with_static:BuildRequires:	rpm-static}
 %{?with_static:BuildRequires:	zlib-static}
 %{?with_static:BuildRequires:	glibc-static}
-Requires:	rpm >= 4.0.2-62
+Requires:	rpm >= 4.2.1
 Requires:	sed
 Requires:	openssl >= 0.9.7c
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -86,6 +87,7 @@ modu³u CPAN.
 %patch4 -p1
 %patch5 -p0
 %patch6 -p1
+%patch7 -p1
 
 %build
 %{__autopoint}
