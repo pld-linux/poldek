@@ -8,13 +8,14 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.3
-Release:	3
+Release:	4
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
 # Source0-md5:	339c54b86bfd733851c0f7125057f446
 Source1:	%{name}.conf
 Patch0:		%{name}-retr_term.patch
+Patch1:		%{name}-sigsegv.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	/usr/bin/pod2man
 BuildRequires:	bzip2-devel
@@ -69,6 +70,7 @@ modu³u CPAN.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p0
 
 %build
 if ! grep -q AM_GNU_GETTEXT_VERSION configure.in ; then
