@@ -1,4 +1,5 @@
 Summary:	RPM packages management helper tool
+Summary(pl):	Pomocnicze narzêdzie do pakietów RPM
 Name:		poldek
 Version:	0.12
 Release:	1
@@ -22,6 +23,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 poldek is a cmdline tool which can be used to verify, install and
 upgrade given package sets.
+
+%description -l pl
+poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji, instalacji i upgrade'u zestawów pakietów.
 
 %if %{?BOOT:1}%{!?BOOT:0}
 %package BOOT
