@@ -1,0 +1,127 @@
+diff -Nru poldek-0.18.1/conf.c poldek-0.18.1.new/conf.c
+--- poldek-0.18.1/conf.c	Fri Oct 18 16:19:42 2002
++++ poldek-0.18.1.new/conf.c	Mon Mar 10 07:39:16 2003
+@@ -374,14 +374,23 @@
+ tn_hash *ldconf_deafult(void)
+ {
+     char *homedir;
++		char *etc_dir;
+     char *etcpath = "/etc/poldek.conf";
+     
+-    if ((homedir = getenv("HOME")) != NULL) {
++    if ((etc_dir = getenv("ETC_DIR")) != NULL) {
++        char path[PATH_MAX];
++        
++        snprintf(path, sizeof(path), "%s/poldekrc", etc_dir);
++        if (access(path, R_OK) == 0)
++            return ldconf(path);
++    } else {
++      if ((homedir = getenv("HOME")) != NULL) {
+         char path[PATH_MAX];
+         
+         snprintf(path, sizeof(path), "%s/.poldekrc", homedir);
+         if (access(path, R_OK) == 0)
+             return ldconf(path);
++      }
+     }
+     
+     if (access(etcpath, R_OK) == 0)
+diff -Nru poldek-0.18.1/pkgscore.c poldek-0.18.1.new/pkgscore.c
+--- poldek-0.18.1/pkgscore.c	Fri Nov 22 17:08:53 2002
++++ poldek-0.18.1.new/pkgscore.c	Mon Mar 10 07:44:02 2003
+@@ -40,26 +40,46 @@
+ 
+     if (fpath == NULL) {
+         char *homedir;
++				char *etc_dir;
+ 
+-        if ((homedir = getenv("HOME")) == NULL)
++				if ((etc_dir = getenv("ETC_DIR")) != NULL) {
++        	switch (type) {
++            	case PKG_HELD:
++                	snprintf(path, sizeof(path), "%s/poldek-hold", etc_dir);
++                	if (access(path, R_OK) != 0) /* backward compat */
++                    snprintf(path, sizeof(path), "%s/poldek_hold", etc_dir);
++        		
++                	break;
++
++            	case PKG_IGNORED:
++                	snprintf(path, sizeof(path), "%s/poldek-ignore", etc_dir);
++                	break;
++
++            	default:
++                	n_assert(0);
++                	break;
++        	}
++				} else {
++					if ((homedir = getenv("HOME")) == NULL)
+             return NULL;
+ 
+-        switch (type) {
+-            case PKG_HELD:
+-                snprintf(path, sizeof(path), "%s/.poldek-hold", homedir);
+-                if (access(path, R_OK) != 0) /* backward compat */
++        	switch (type) {
++            	case PKG_HELD:
++                	snprintf(path, sizeof(path), "%s/.poldek-hold", homedir);
++                	if (access(path, R_OK) != 0) /* backward compat */
+                     snprintf(path, sizeof(path), "%s/.poldek_hold", homedir);
+-        	
+-                break;
++        		
++                	break;
++
++            	case PKG_IGNORED:
++                	snprintf(path, sizeof(path), "%s/.poldek-ignore", homedir);
++                	break;
+ 
+-            case PKG_IGNORED:
+-                snprintf(path, sizeof(path), "%s/.poldek-ignore", homedir);
+-                break;
+-
+-            default:
+-                n_assert(0);
+-                break;
+-        }
++            	default:
++                	n_assert(0);
++                	break;
++        	}
++				}
+         
+         if (access(path, R_OK) != 0)
+             return patterns;
+diff -Nru poldek-0.18.1/shell/shell.c poldek-0.18.1.new/shell/shell.c
+--- poldek-0.18.1/shell/shell.c	Tue Oct 29 16:55:58 2002
++++ poldek-0.18.1.new/shell/shell.c	Mon Mar 10 07:50:21 2003
+@@ -1226,7 +1226,7 @@
+ 
+ int shell_main(struct pkgset *ps, struct inst_s *inst, int skip_installed)
+ {
+-    char *line, *s, *home;
++    char *line, *s, *home, *etc_dir;
+     
+     
+     if (!isatty(fileno(stdout))) {
+@@ -1240,12 +1240,19 @@
+     initialize_readline();
+     histfile = NULL;
+ 
+-    if ((home = getenv("HOME"))) {
++    if ((etc_dir = getenv("ETC_DIR"))) {
++        int len = strlen(etc_dir) + strlen("/poldek_history") + 2;
++        histfile = alloca(len);
++        snprintf(histfile, len, "%s/poldek_history", etc_dir);
++        read_history(histfile);
++    } else {
++    	if ((home = getenv("HOME"))) {
+         int len = strlen(home) + strlen("/.poldek_history") + 2;
+         histfile = alloca(len);
+         snprintf(histfile, len, "%s/.poldek_history", home);
+         read_history(histfile);
+-    }
++    	}
++		}
+ 
+     sigint_init();
+     sigint_reached_cb = sigint_reached_fn;
