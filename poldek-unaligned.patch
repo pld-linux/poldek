@@ -1,0 +1,51 @@
+Kills unaligned traps on alpha (sizeof(time_t) is 8, pkg->btime is 4-aligned)
+--- poldek-0.18.1/shell/ls.c.orig	2002-11-07 16:43:28.000000000 +0000
++++ poldek-0.18.1/shell/ls.c	2003-12-05 18:40:28.000000000 +0000
+@@ -393,6 +393,7 @@
+             char sizbuf[30];
+             char unit = 'K';
+             double pkgsize = pkg->size/1024;
++	    time_t tmpt;
+ 
+             if (pkgsize >= 1024) {
+                 pkgsize /= 1024;
+@@ -401,10 +402,11 @@
+ 
+             snprintf(sizbuf, sizeof(sizbuf), "%.1f %cB", pkgsize, unit);
+             
+-            if (pkg->btime)
++            if (pkg->btime) {
++		tmpt = pkg->btime;
+                 strftime(timbuf, sizeof(timbuf), "%Y/%m/%d %H:%M",
+-                         localtime((time_t*)&pkg->btime));
+-            else
++                         localtime(&tmpt));
++	    } else
+                 *timbuf = '\0';
+             
+             if ((flags & OPT_LS_UPGRADEABLE) == 0) {
+--- poldek-0.18.1/shell/desc.c.orig	2002-11-07 16:43:28.000000000 +0000
++++ poldek-0.18.1/shell/desc.c	2003-12-05 18:41:18.000000000 +0000
+@@ -665,6 +665,7 @@
+     char            unit = 'K';
+     const char      *group;
+     double          pkgsize;
++    time_t          tmpt;
+ 
+     
+     if ((pkgu = pkg_info(pkg)) == NULL) {
+@@ -674,10 +675,11 @@
+     }
+         
+ 
+-    if (pkg->btime) 
++    if (pkg->btime) {
++	tmpt = pkg->btime;
+         strftime(timbuf, sizeof(timbuf), "%Y/%m/%d %H:%M",
+-                 localtime((time_t*)&pkg->btime));
+-    else
++                 localtime(&tmpt));
++    } else
+         *timbuf = '\0';
+ 
+     if (pkgu->summary) {
