@@ -1,7 +1,7 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.15.9
+Version:	0.16
 Release:	1
 License:	GPL
 Group:		Applications/System
@@ -30,8 +30,14 @@ BuildRequires:	pcre-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-poldek is a cmdline tool which can be used to verify, install and
-upgrade given package sets.
+poldek is an RPM package management tool which allows you to easily
+perform package verification, installation (including system
+installation from scratch), upgrading, and removal. 
+
+Program can be used in batch (like apt-get from Debian's
+APT) or interactive mode. The interactive mode puts you into a
+readline interface with command line autocompletion and history,
+similar to the shell mode of Perl's CPAN.
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
