@@ -1,0 +1,433 @@
+--- poldek-0.18.6.orig/./shell/shell.c	2004-09-07 11:47:47.000000000 +0000
++++ poldek-0.18.6/./shell/shell.c	2004-09-07 11:15:33.000000000 +0000
+@@ -997,7 +1013,7 @@
+         return 0;
+     
+     if (compare_ver == 0)
+-        *cmprc = pkg_cmp_evr(lshpkg->pkg, shpkg->pkg);
++        *cmprc = pkg_cmp_dist_evr(lshpkg->pkg, shpkg->pkg);
+     else 
+         *cmprc = pkg_cmp_ver(lshpkg->pkg, shpkg->pkg);
+     
+--- poldek-0.18.6.orig/./pkg.c	2004-05-05 16:56:43.000000000 +0000
++++ poldek-0.18.6/./pkg.c	2004-09-07 00:08:12.000000000 +0000
+@@ -49,13 +49,13 @@
+ struct pkg *pkg_new(const char *name, int32_t epoch,
+                     const char *version, const char *release,
+                     const char *arch, const char *os,
+-                    const char *fn,
++                    const char *fn, const char *dist,
+                     uint32_t size, uint32_t fsize,
+                     uint32_t btime)
+ {
+     struct pkg *pkg;
+     int name_len = 0, version_len = 0, release_len = 0,
+-        arch_len = 0, os_len = 0, fn_len = 0;
++        arch_len = 0, os_len = 0, fn_len = 0, dist_len = 0;
+     char *buf;
+     int len;
+ 
+@@ -85,6 +85,11 @@
+         len += os_len + 1;
+     }
+ 
++	if(dist) {	
++	    dist_len = strlen(dist);
++	    len += dist_len + 1;
++	}
++	
+     if (fn && arch) {
+         char pkg_fn[1024];
+         
+@@ -141,7 +146,15 @@
+         buf += os_len;
+         *buf++ = '\0';
+     }
+ 
++	pkg->dist=NULL;
++	if(dist) {	
++	    pkg->dist = buf;
++    	memcpy(buf, dist, dist_len);
++	    buf += dist_len;
++	    *buf++ = '\0';
++	}
++	
+     pkg->fn = NULL;
+     if (fn) {
+         pkg->fn = buf;
+@@ -248,6 +261,7 @@
+     struct pkg *pkg;
+     uint32_t   *epoch, *size, *btime;
+     char       *name, *version, *release, *arch = NULL, *os = NULL;
++	char		*dist = NULL;
+     int        type;
+     
+     headerNVR(h, (void*)&name, (void*)&version, (void*)&release);
+@@ -267,6 +281,14 @@
+     if (type != RPM_STRING_TYPE)
+         arch = NULL;
+     
++    if (!headerGetEntry(h, RPMTAG_DISTRIBUTION, &type, (void *)&dist, NULL)) {
++        logn(LOGERR, _("%s: read distribution tag failed"), fname);
++        return NULL;
++    }
++
++    if (type != RPM_STRING_TYPE)
++        dist = NULL;
++
+     if (!headerGetEntry(h, RPMTAG_OS, &type, (void *)&os, NULL)) {
+         if (verbose > 1)
+             logn(LOGWARN, _("%s: missing OS tag"), fname);
+@@ -282,7 +304,7 @@
+         btime = NULL;
+     
+     pkg = pkg_new(name, epoch ? *epoch : 0, version, release, arch, os,
+-                  fname ? n_basenam(fname) : NULL, 
++                  fname ? n_basenam(fname) : NULL, dist, 
+                   size ? *size : 0, fsize, btime ? *btime : 0);
+     
+     if (pkg == NULL)
+@@ -444,6 +475,19 @@
+     return pkg_cmp_ver(p1, p2);
+ }
+ 
++int pkg_cmp_dist_evr(const struct pkg *p1, const struct pkg *p2)
++{
++	int rc;
++
++	if(p1->dist && p2->dist)
++	{
++		rc = rpmdistcmp(p1->dist, p2->dist);
++		if(rc != 0)
++			return rc;	
++	}
++
++	return pkg_cmp_evr(p1, p2);
++}
+ 
+ int pkg_cmp_evr(const struct pkg *p1, const struct pkg *p2) 
+ {
+@@ -487,6 +531,15 @@
+     //return rc;
+ }
+ 
++int pkg_cmp_name_dist_evr_rev(const struct pkg *p1, const struct pkg *p2) 
++{
++    register int rc;
++
++    if ((rc = pkg_cmp_name(p1, p2)))
++        return rc;
++    
++    return -pkg_cmp_dist_evr(p1, p2);
++}
+ 
+ int pkg_cmp_name_evr_rev_srcpri(const struct pkg *p1, const struct pkg *p2) 
+ {
+@@ -612,6 +665,15 @@
+     return pkg_cmp_name_evr_rev(p1, p2);
+ }
+ 
++int pkg_cmp_dist_pri(struct pkg *p1, struct pkg *p2)
++{
++    register int cmprc = 0;
++
++    if ((cmprc = p1->pri - p2->pri))
++        return cmprc;
++    
++    return pkg_cmp_name_dist_evr_rev(p1, p2);
++}
+ 
+ int pkg_cmp_btime(struct pkg *p1, struct pkg *p2)
+ {
+--- poldek-0.18.6.orig/./pkgset.c	2004-09-07 11:47:47.000000000 +0000
++++ poldek-0.18.6/./pkgset.c	2004-09-06 23:02:39.000000000 +0000
+@@ -890,7 +890,7 @@
+     }
+     
+ 
+-    findedpkg = pkg = n_array_nth(ps->pkgs, i);
++    findedpkg = pkg = n_array_nth(ps->ordered_pkgs, i);
+     
+     if (pkg_match_pkgdef(pkg, pdef)) {
+         marked = mark_package(pkg, nodeps);
+@@ -898,7 +898,7 @@
+         
+     } else {
+         i++;
+-        while (i < n_array_size(ps->pkgs)) {
++        while (i < n_array_size(ps->ordered_pkgs)) {
+             pkg = n_array_nth(ps->pkgs, i++);
+             
+             if (strcmp(pkg->name, pdef->pkg->name) != 0) 
+--- poldek-0.18.6.orig/./usrset.c	2004-09-07 11:47:47.000000000 +0000
++++ poldek-0.18.6/./usrset.c	2004-09-02 23:30:43.000000000 +0000
+@@ -185,7 +185,7 @@
+             release = "";
+                 
+         pdef->pkg = pkg_new(name, epoch, version, release, NULL, NULL, NULL,
+-                            0, 0, 0);
++                            NULL, 0, 0, 0);
+     }
+ 
+     if (virtname) 
+--- poldek-0.18.6.orig/./test_match.c	2004-05-05 16:57:09.000000000 +0000
++++ poldek-0.18.6/./test_match.c	2004-09-02 23:32:58.000000000 +0000
+@@ -49,7 +49,7 @@
+                 struct capreq *cap;
+                 
+                 pkg = pkg_new("poldek", epoch, versions[i], relases[j],
+-                              NULL, NULL, NULL, 0, 0, 0);
++                              NULL, NULL, NULL, NULL, 0, 0, 0);
+                 cap = capreq_new("poldek", epoch, versions[i++], relases[j++],
+                                  REL_EQ, 0);
+                 k = 0;
+@@ -83,7 +83,7 @@
+     struct capreq *req, *cap;
+     int rc;
+     
+-    pkg = pkg_new("poldek", epoch, ver, rel,  NULL, NULL, NULL, 0, 0, 0);
++    pkg = pkg_new("poldek", epoch, ver, rel,  NULL, NULL, NULL, NULL, 0, 0, 0);
+     cap = capreq_new("poldek", epoch, ver, rel, REL_EQ, 0);
+ 
+     req = capreq_new_evr("poldek", n_strdup(evr), relation, 0);
+--- poldek-0.18.6.orig/./pkgdir.c	2004-05-06 07:57:31.000000000 +0000
++++ poldek-0.18.6/./pkgdir.c	2004-09-07 10:45:51.000000000 +0000
+@@ -69,6 +69,7 @@
+ #define PKGT_HAS_BTIME    (1 << 11)
+ #define PKGT_HAS_GROUPID  (1 << 12)
+ #define PKGT_HAS_FN       (1 << 13)
++#define PKGT_HAS_DIST     (1 << 14)
+ 
+ struct pkgtags_s {
+     unsigned   flags;
+@@ -77,6 +78,7 @@
+     char       arch[64];
+     char       os[64];
+     char       fn[1024];
++    char       dist[64];
+     uint32_t   size;
+     uint32_t   fsize;
+     uint32_t   btime;
+@@ -1093,6 +1095,7 @@
+             case 'A':
+             case 'O':
+             case 'n':
++            case 'D':
+                 if (!add2pkgtags(&pkgt, *line, val, pkgdir->path, offs)) {
+                     nerr++;
+                     goto l_end;
+@@ -1320,6 +1323,16 @@
+             }
+             break;
+ 
++        case 'D':
++            if (pkgt->flags & PKGT_HAS_DIST) {
++                logn(LOGERR, errmg_double_tag, pathname, offs, tag);
++                err++;
++            } else {
++                memcpy(pkgt->dist, value, sizeof(pkgt->dist) - 1);
++                pkgt->dist[ sizeof(pkgt->dist) - 1 ] = '\0';
++                pkgt->flags |= PKGT_HAS_DIST;
++            }
++            break;
+             
+         case 'S':
+             if (pkgt->flags & PKGT_HAS_SIZE) {
+@@ -1393,7 +1406,7 @@
+ struct pkg *pkg_new_from_tags(struct pkgtags_s *pkgt) 
+ {
+     struct pkg *pkg;
+-    char *version, *release, *arch = NULL, *os = NULL, *fn = NULL;
++    char *version, *release, *arch = NULL, *os = NULL, *fn = NULL, *dist = NULL;
+     int32_t epoch;
+     
+     if (!(pkgt->flags & (PKGT_HAS_NAME | PKGT_HAS_EVR)))
+@@ -1407,6 +1420,9 @@
+ 
+     if (pkgt->flags & PKGT_HAS_FN) 
+         fn = pkgt->fn;
++
++	if (pkgt->flags & PKGT_HAS_DIST)
++		dist = pkgt->dist;
+     
+     if (*pkgt->name == '\0' || *pkgt->evr == '\0' || *pkgt->arch == '\0') 
+         return NULL;
+@@ -1419,7 +1435,7 @@
+         return NULL;
+     }
+ 
+-    pkg = pkg_new(pkgt->name, epoch, version, release, arch, os, fn, 
++    pkg = pkg_new(pkgt->name, epoch, version, release, arch, os, fn, dist,
+                   pkgt->size, pkgt->fsize, pkgt->btime);
+     pkg->groupid = pkgt->groupid;
+     
+@@ -1488,7 +1504,7 @@
+ 
+         if (*p && parse_nevr(p, &name, &epoch, &ver, &rel)) {
+             struct pkg *pkg = pkg_new(name, epoch, ver, rel, NULL, NULL, NULL,
+-                                      0, 0, 0);
++                                      NULL, 0, 0, 0);
+             n_array_push(pkgs, pkg);
+         }
+     }
+--- poldek-0.18.6.orig/./pkgset-install.c	2004-09-07 11:47:47.000000000 +0000
++++ poldek-0.18.6/./pkgset-install.c	2004-09-07 12:05:41.000000000 +0000
+@@ -1998,7 +1998,7 @@
+         if (is_installed == 0)
+             n_array_push(iinf->uninstalled_pkgs,
+                          pkg_new(pkg->name, pkg->epoch, pkg->ver, pkg->rel,
+-                                 pkg->arch, pkg->os, NULL,
++                                 pkg->arch, pkg->os, NULL, NULL,
+                                  pkg->size, pkg->fsize,
+                                  pkg->btime));
+     }
+@@ -2136,7 +2136,7 @@
+ static void init_upgrade_s(struct upgrade_s *upg, struct pkgset *ps,
+                            struct inst_s *inst)
+ {
+-    upg->avpkgs = ps->pkgs;
++    upg->avpkgs = ps->ordered_pkgs;
+     upg->install_pkgs = n_array_new(128, NULL, NULL);
+     upg->db_deps = db_deps_new();
+     upg->uninst_set = dbpkg_set_new();
+@@ -2189,10 +2189,14 @@
+     struct upgrade_s  *upg = upgptr;
+     struct pkg        *pkg, tmpkg;
+     uint32_t          *epoch;
+-    int               i, cmprc;
++    int               i, cmprc, type, count;
+ 
+     
+     recno = recno;
++
++    if (!(headerGetEntry(h, RPMTAG_DISTRIBUTION, &type, (void *)&tmpkg.dist,
++			&count) && type == RPM_STRING_TYPE && count == 1))
++		tmpkg.dist=NULL;
+     
+     if (!rpmhdr_nevr(h, &tmpkg.name, &epoch, &tmpkg.ver, &tmpkg.rel)) {
+         logn(LOGERR, _("db package header corrupted (!?)"));
+@@ -2208,7 +2212,7 @@
+     }
+     
+     pkg = n_array_nth(upg->avpkgs, i);
+-    cmprc = pkg_cmp_evr(pkg, &tmpkg);
++    cmprc = pkg_cmp_dist_evr(pkg, &tmpkg);
+     if (verbose) {
+         if (cmprc == 0) 
+             msg(3, "%-32s up to date\n", pkg_snprintf_s(&tmpkg));
+@@ -2341,7 +2345,7 @@
+     if (n_array_size(pkgs) < 2)
+         return 0;
+     
+-    n_array_sort(pkgs);
++//    n_array_sort(pkgs);
+ 
+     i = n = 0;
+     while (i < n_array_size(pkgs) - 1) {
+@@ -2474,6 +2478,6 @@
+     mem_info(2, "ENTER pkgset_install:");
+     init_upgrade_s(&upg, ps, inst);
+     prepare_icaps(&upg);
+-    if (unmark_name_dups(ps->pkgs) == 0) {
++    if (unmark_name_dups(ps->ordered_pkgs) == 0) {
+         msgn(1, _("Nothing to do"));
+         return 1;
+     }
+--- poldek-0.18.6.orig/./rpm.c	2004-09-07 11:47:47.000000000 +0000
++++ poldek-0.18.6/./rpm.c	2004-09-02 23:53:05.000000000 +0000
+@@ -497,6 +497,36 @@
+     return n;
+ }
+ 
++static 
++int hdr_pkg_cmp_dist_evr(Header h, const struct pkg *pkg)
++{
++    int rc;
++    struct pkg  tmpkg;
++    uint32_t    *epoch;
++	int count;
++	int type;
++
++    if (!(headerGetEntry(h, RPMTAG_DISTRIBUTION, &type, (void *)&tmpkg.dist,
++			&count) && type == RPM_STRING_TYPE && count == 1))
++		tmpkg.dist=NULL;
++        
++    headerNVR(h, (void*)&tmpkg.name, (void*)&tmpkg.ver,
++              (void*)&tmpkg.rel);
++    
++    if (tmpkg.name == NULL || tmpkg.ver == NULL || tmpkg.rel == NULL) {
++        logn(LOGERR, "headerNVR() failed");
++        return 0;
++    }
++        
++    if (headerGetEntry(h, RPMTAG_EPOCH, &rc, (void *)&epoch, NULL))
++        tmpkg.epoch = *epoch;
++    else
++        tmpkg.epoch = 0;
++    
++    rc = pkg_cmp_dist_evr(&tmpkg, pkg);
++    
++    return rc;
++}
+ 
+ static 
+ int hdr_pkg_cmp_evr(Header h, const struct pkg *pkg)
+@@ -544,7 +574,7 @@
+ 
+         } else {
+             if (cmprc)
+-                *cmprc = -hdr_pkg_cmp_evr(dbrec->h, pkg);
++                *cmprc = -hdr_pkg_cmp_dist_evr(dbrec->h, pkg);
+         
+             if (dbrecp) {
+                 dbrecp->recno = dbrec->recno;
+--- poldek-0.18.6.orig/./pkg.h	2004-03-22 17:31:51.000000000 +0000
++++ poldek-0.18.6/./pkg.h	2004-09-06 22:43:19.000000000 +0000
+@@ -107,6 +107,7 @@
+     char         *arch;
+     char         *os;
+     char         *fn;
++    char         *dist;
+     
+     tn_array     *caps;       /* capabilities     */
+     tn_array     *reqs;       /* requirements     */
+@@ -144,7 +145,7 @@
+ struct pkg *pkg_new(const char *name, int32_t epoch,
+                     const char *version, const char *release,
+                     const char *arch, const char *os,
+-                    const char *fn, 
++                    const char *fn, const char *dist,
+                     uint32_t size, uint32_t fsize,
+                     uint32_t btime);
+ 
+@@ -181,6 +182,7 @@
+ int pkg_cmp_name_evr_rev_srcpri(const struct pkg *p1, const struct pkg *p2);
+ 
+ int pkg_cmp_pri(struct pkg *p1, struct pkg *p2);
++int pkg_cmp_dist_pri(struct pkg *p1, struct pkg *p2);
+ 
+ int pkg_cmp_btime(struct pkg *p1, struct pkg *p2);
+ int pkg_cmp_btime_rev(struct pkg *p1, struct pkg *p2);
+--- poldek-0.18.6.orig/./pkgset-order.c	2004-09-07 11:47:47.000000000 +0000
++++ poldek-0.18.6/./pkgset-order.c	2004-09-06 22:46:32.000000000 +0000
+@@ -235,7 +235,7 @@
+     tn_array *ordered = NULL;
+     int nloops, verbose_;
+     
+-    n_array_isort_ex(pkgs, (tn_fn_cmp)pkg_cmp_pri);
++    n_array_isort_ex(pkgs, (tn_fn_cmp)pkg_cmp_dist_pri);
+     
+     verbose_ = verbose;
+     verbose = -10;
+--- poldek-0.18.6.orig/./pkgdir_save.c	2004-05-05 16:56:43.000000000 +0000
++++ poldek-0.18.6/./pkgdir_save.c	2004-09-07 10:30:15.000000000 +0000
+@@ -170,6 +170,9 @@
+ 
+     if (pkg->fn)
+         fprintf(stream, "n: %s\n", pkg->fn);
++
++	if (pkg->dist)
++		fprintf(stream, "D: %s\n", pkg->dist);
+     
+     fprintf(stream, "F:\n");
+     store_pkg_fields(stream, pkg->size, pkg->fsize, pkg->btime, pkg->groupid);
