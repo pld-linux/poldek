@@ -50,13 +50,14 @@ shell mode of Perl's CPAN.
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
 instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji 
-pakietów i usuwania pakietów.
+i usuwania pakietów.
 
 Program mo¿e byæ u¿ywany w trybie wsadowym (jak debianowy apt-get)
-lub interaktywnym. Tryb interaktywny posiada interfajs readline z
-dope³nianiem komend i histori±, podobny do trybu shell CPANa.
+lub interaktywnym. Tryb interaktywny posiada interfejs readline 
+z dope³nianiem komend i histori±, podobny do trybu shell perlowego 
+modu³u CPAN. 
 
-%{?_with_static:Ta wersja jest zlinkowana statycznie.}
+%{?_with_static:Ta wersja jest konsolidowana statycznie.}
 
 %{?_without_imode:Ta wersja nie posiada trybu interaktywnego.}
 
