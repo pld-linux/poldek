@@ -17,7 +17,7 @@ diff -Nur poldek-0.18.1.orig/pkg.c poldek-0.18.1/pkg.c
          return 1;
      
 -    if (capreq_has_epoch(req) && pkg->epoch) {    
-+    if (capreq_has_epoch(req)) {
++    if (capreq_has_epoch(req) && (pkg->epoch || pkg->ver)) {
          cmprc = pkg->epoch - capreq_epoch(req);
          if (cmprc != 0)
              return rel_match(cmprc, req);
@@ -41,7 +41,7 @@ diff -Nur poldek-0.18.1.orig/pkgset.c poldek-0.18.1/pkgset.c
      int rc = 1;
      
 -    if (pdef->pkg->epoch && pkg->epoch != pdef->pkg->epoch)
-+    if (pkg->epoch != pdef->pkg->epoch)
++    if ((pdef->pkg->epoch /* || pdef->pkg->ver */) && pkg->epoch != pdef->pkg->epoch)
          rc = 0;
      
      if (rc && *pdef->pkg->ver) 
