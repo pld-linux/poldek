@@ -123,7 +123,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %define		_ftp_arch	%{_target_cpu}
 %else
 %ifarch i486
-%define		_ftp_arch	i486
+%define		_ftp_arch	i386
 %else
 %ifarch pentium2 pentium3 pentium4
 %define		_ftp_arch	i686
