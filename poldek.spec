@@ -115,7 +115,27 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
-sed "s|%%ARCH%%|%{_target_cpu}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+
+#
+# CHANGE IT WHEN SWITCHING poldek.conf FROM AC TO TH !!!
+#
+%ifarch i386 i586 i686 ppc sparc alpha amd64 athlon
+%define		_ftp_arch	%{_target_cpu}
+%else
+%ifarch i486
+%define		_ftp_arch	i486
+%else
+%ifarch pentium2 pentium3 pentium4
+%define		_ftp_arch	i686
+%else
+%ifarch sparcv9 sparc64
+%define		_ftp_arch	sparc
+%endif
+%endif
+%endif
+%endif
+
+sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
 
 %find_lang %{name}
 
@@ -127,9 +147,12 @@ if grep -q '^promoteepoch.*yes' /etc/poldek.conf ; then
 	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed -s /etc/poldek.conf
 fi
 
+# otherwise don't touch
+%ifarch i386 i586 i686 ppc sparc alpha amd64 athlon
 %triggerpostun -- poldek <= 0.18.7-1
 echo -e ',s://ftp.pld-linux.org://ftp.%{_target_cpu}.ac.pld-linux.org:g\n,w' |\
 	ed -s /etc/poldek.conf ||:
+%endif
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
