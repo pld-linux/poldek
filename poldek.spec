@@ -1,8 +1,8 @@
 #
 # Conditional build:
-# _with_static		- don't use shared libraries
-# _without_imode	- don't build interactive mode
-# _with_curl		- link with curl
+%bcond_with	static	# don't use shared libraries
+%bcond_without	imode	# don't build interactive mode
+%bcond_with	curl	# link with curl
 #
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
@@ -23,7 +23,7 @@ Patch5:		%{name}-deps-fix.patch
 Patch6:		%{name}-broken-rpmdb.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	bzip2-devel
-%{?_with_curl:BuildRequires:	curl-devel >= 7.8}
+%{?with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	gettext-autopoint
@@ -34,16 +34,16 @@ BuildRequires:	readline-devel
 BuildRequires:	rpm-devel >= 4.0.2-62
 BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
-%{?_with_static:BuildRequires:	bzip2-static}
-%{?_with_curl:%{?_with_static:BuildRequires:	curl-static}}
-%{?_with_static:BuildRequires:	ncurses-static}
-%{?_with_static:BuildRequires:	openssl-static}
-%{?_with_static:BuildRequires:	pcre-static}
-%{?_with_static:BuildRequires:	popt-static}
-%{?_with_static:BuildRequires:	readline-static}
-%{?_with_static:BuildRequires:	rpm-static}
-%{?_with_static:BuildRequires:	zlib-static}
-%{?_with_static:BuildRequires:	glibc-static}
+%{?with_static:BuildRequires:	bzip2-static}
+%{?with_curl:%{?with_static:BuildRequires:	curl-static}}
+%{?with_static:BuildRequires:	ncurses-static}
+%{?with_static:BuildRequires:	openssl-static}
+%{?with_static:BuildRequires:	pcre-static}
+%{?with_static:BuildRequires:	popt-static}
+%{?with_static:BuildRequires:	readline-static}
+%{?with_static:BuildRequires:	rpm-static}
+%{?with_static:BuildRequires:	zlib-static}
+%{?with_static:BuildRequires:	glibc-static}
 Requires:	rpm >= 4.0.2-62
 Requires:	sed
 Requires:	openssl >= 0.9.7c
@@ -59,9 +59,9 @@ interactive mode. The interactive mode puts you into a readline
 interface with command line autocompletion and history, similar to the
 shell mode of Perl's CPAN.
 
-%{?_with_static:This version is statically linked.}
+%{?with_static:This version is statically linked.}
 
-%{?_without_imode:This version hasn't got interactive mode.}
+%{!?with_imode:This version hasn't got interactive mode.}
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
@@ -73,9 +73,9 @@ interaktywnym. Tryb interaktywny posiada interfejs readline z
 dope³nianiem komend i histori±, podobny do trybu shell perlowego
 modu³u CPAN.
 
-%{?_with_static:Ta wersja jest konsolidowana statycznie.}
+%{?with_static:Ta wersja jest konsolidowana statycznie.}
 
-%{?_without_imode:Ta wersja nie posiada trybu interaktywnego.}
+%{!?with_imode:Ta wersja nie posiada trybu interaktywnego.}
 
 %prep
 %setup -q
@@ -93,9 +93,9 @@ modu³u CPAN.
 %{__autoconf}
 %{__automake}
 %configure \
-	%{?_with_static:--enable-static} \
-	%{?_without_imode:--disable-imode} \
-	%{?_with_curl:--with-curl}
+	%{?with_static:--enable-static} \
+	%{!?with_imode:--disable-imode} \
+	%{?with_curl:--with-curl}
 %{__make}
 
 %install
@@ -105,7 +105,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{?_with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
+%{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
 
 %find_lang %{name}
