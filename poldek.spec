@@ -128,7 +128,8 @@ if grep -q '^promoteepoch.*yes' /etc/poldek.conf ; then
 fi
 
 %triggerpostun -- poldek <= 0.18.7-1
-echo -e ',s://ftp.pld-linux.org://ftp.%{_target_cpu}.ac.pld-linux.org:g\n,w' | ed -s /etc/poldek.conf
+echo -e ',s://ftp.pld-linux.org://ftp.%{_target_cpu}.ac.pld-linux.org:g\n,w' |\
+	ed -s /etc/poldek.conf ||:
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
