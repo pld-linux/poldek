@@ -47,7 +47,7 @@ interactive mode. The interactive mode puts you into a readline
 interface with command line autocompletion and history, similar to the
 shell mode of Perl's CPAN.
 
-%{?_with_static:This version is statically linked}
+%{?_with_static:This version is statically linked.}
 
 %{?_without_imode:This version hasn't got interactive mode.}
 
