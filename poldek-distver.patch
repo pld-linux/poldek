@@ -139,26 +139,15 @@
  
  int pkg_cmp_btime(struct pkg *p1, struct pkg *p2)
  {
---- poldek-0.18.6.orig/./pkgset.c	2004-09-07 11:47:47.000000000 +0000
-+++ poldek-0.18.6/./pkgset.c	2004-09-06 23:02:39.000000000 +0000
-@@ -890,7 +890,7 @@
-     }
+@@ -1406,7 +1406,7 @@
+     tn_array *arr;
      
- 
--    findedpkg = pkg = n_array_nth(ps->pkgs, i);
-+    findedpkg = pkg = n_array_nth(ps->ordered_pkgs, i);
-     
-     if (pkg_match_pkgdef(pkg, pdef)) {
-         marked = mark_package(pkg, nodeps);
-@@ -898,7 +898,7 @@
-         
-     } else {
-         i++;
--        while (i < n_array_size(ps->pkgs)) {
-+        while (i < n_array_size(ps->ordered_pkgs)) {
-             pkg = n_array_nth(ps->pkgs, i++);
-             
-             if (strcmp(pkg->name, pdef->pkg->name) != 0) 
+     arr = n_array_new(size, (tn_fn_free)pkg_free,
+-                      (tn_fn_cmp)pkg_cmp_name_evr_rev);
++                      (tn_fn_cmp)pkg_cmp_name_dist_evr_rev);
+     n_array_ctl(arr, TN_ARRAY_AUTOSORTED);
+     return arr;
+ }
 --- poldek-0.18.6.orig/./usrset.c	2004-09-07 11:47:47.000000000 +0000
 +++ poldek-0.18.6/./usrset.c	2004-09-02 23:30:43.000000000 +0000
 @@ -185,7 +185,7 @@
@@ -281,15 +270,6 @@
                                   pkg->size, pkg->fsize,
                                   pkg->btime));
      }
-@@ -2136,7 +2136,7 @@
- static void init_upgrade_s(struct upgrade_s *upg, struct pkgset *ps,
-                            struct inst_s *inst)
- {
--    upg->avpkgs = ps->pkgs;
-+    upg->avpkgs = ps->ordered_pkgs;
-     upg->install_pkgs = n_array_new(128, NULL, NULL);
-     upg->db_deps = db_deps_new();
-     upg->uninst_set = dbpkg_set_new();
 @@ -2189,10 +2189,14 @@
      struct upgrade_s  *upg = upgptr;
      struct pkg        *pkg, tmpkg;
@@ -315,24 +295,6 @@
      if (verbose) {
          if (cmprc == 0) 
              msg(3, "%-32s up to date\n", pkg_snprintf_s(&tmpkg));
-@@ -2341,7 +2345,7 @@
-     if (n_array_size(pkgs) < 2)
-         return 0;
-     
--    n_array_sort(pkgs);
-+//    n_array_sort(pkgs);
- 
-     i = n = 0;
-     while (i < n_array_size(pkgs) - 1) {
-@@ -2474,6 +2478,6 @@
-     mem_info(2, "ENTER pkgset_install:");
-     init_upgrade_s(&upg, ps, inst);
-     prepare_icaps(&upg);
--    if (unmark_name_dups(ps->pkgs) == 0) {
-+    if (unmark_name_dups(ps->ordered_pkgs) == 0) {
-         msgn(1, _("Nothing to do"));
-         return 1;
-     }
 --- poldek-0.18.6.orig/./rpm.c	2004-09-07 11:47:47.000000000 +0000
 +++ poldek-0.18.6/./rpm.c	2004-09-02 23:53:05.000000000 +0000
 @@ -497,6 +497,36 @@
@@ -415,7 +377,7 @@
      int nloops, verbose_;
      
 -    n_array_isort_ex(pkgs, (tn_fn_cmp)pkg_cmp_pri);
-+    n_array_isort_ex(pkgs, (tn_fn_cmp)pkg_cmp_dist_pri);
++    n_array_isort_ex(pkgs, (tn_fn_cmp)pkg_cmp_pri);
      
      verbose_ = verbose;
      verbose = -10;
@@ -431,3 +393,4 @@
      
      fprintf(stream, "F:\n");
      store_pkg_fields(stream, pkg->size, pkg->fsize, pkg->btime, pkg->groupid);
+
