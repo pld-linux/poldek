@@ -64,7 +64,7 @@ upgrade given package sets. This version is for boot disk.
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
 instalacji i aktualizacji pakietów. To jest wersja dla bootkietki.
 
-%prep 
+%prep
 %setup -q
 
 %build
@@ -76,7 +76,7 @@ mv -f %{name} %{name}-BOOT
 %endif
 
 %configure %{?_with_static:--enable-static}
-%{__make} 
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
