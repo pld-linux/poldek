@@ -98,7 +98,7 @@
 -
 -            if (fnmatch(mask, dbpkg->pkg->name, 0) == 0) {
 +            
-+            if (pkgscore_match(&psc, mask) == 0) {
++            if (pkgscore_match(&psc, mask)) {
                  logn(LOGERR, _("%s: refusing to uninstall held package"),
 -                    pkg_snprintf_s(dbpkg->pkg));
 +                     pkg_snprintf_s(dbpkg->pkg));
