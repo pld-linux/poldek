@@ -12,8 +12,9 @@ Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
 Source1:	%{name}.conf
 URL:		http://team.pld.org.pl/~mis/poldek/
-#%{!?_with_static:Requires:	trurlib >= 0.43.6}
 Requires:	rpm >= 4.0.2-62
+Requires:	sed
+#%{!?_with_static:Requires:	trurlib >= 0.43.6}
 BuildRequires:	bzip2-devel
 %{?_with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	db3-devel >= 3.1.14-2
@@ -26,14 +27,14 @@ BuildRequires:	rpm-devel >= 4.0.2
 BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	bzip2-static}
-%{?_with_curl:%{?_with_static:BuildRequires:   curl-static}}
+%{?_with_curl:%{?_with_static:BuildRequires:	curl-static}}
+%{?_with_static:BuildRequires:	db1-static}
 %{?_with_static:BuildRequires:	openssl-static}
+%{?_with_static:BuildRequires:	pcre-static}
 %{?_with_static:BuildRequires:	popt-static}
 %{?_with_static:BuildRequires:	rpm-static}
 #%{?_with_static:BuildRequires:	trurlib-static}
 %{?_with_static:BuildRequires:	zlib-static}
-%{?_with_static:BuildRequires:	pcre-static}
-%{?_with_static:BuildRequires:	db1-static}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -52,13 +53,13 @@ shell mode of Perl's CPAN.
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
-instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji 
+instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji
 i usuwania pakietów.
 
 Program mo¿e byæ u¿ywany w trybie wsadowym (jak debianowy apt-get)
-lub interaktywnym. Tryb interaktywny posiada interfejs readline 
-z dope³nianiem komend i histori±, podobny do trybu shell perlowego 
-modu³u CPAN. 
+lub interaktywnym. Tryb interaktywny posiada interfejs readline
+z dope³nianiem komend i histori±, podobny do trybu shell perlowego
+modu³u CPAN.
 
 %{?_with_static:Ta wersja jest konsolidowana statycznie.}
 
