@@ -118,7 +118,7 @@ diff -u -r1.82.4.10 -r1.82.4.11
  
              i++;
              n++;
-+            nmarked--;
++            //nmarked--;
              if (i == n_array_size(pkgs))
                  break;
              pkg2 = n_array_nth(pkgs, i);
