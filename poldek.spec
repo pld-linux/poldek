@@ -5,14 +5,14 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.17.3
+Version:	0.17.4
 Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
 Source1:	%{name}.conf
 URL:		http://team.pld.org.pl/~mis/poldek/
-%{!?_with_static:Requires:	trurlib >= 0.43.6}
+#%{!?_with_static:Requires:	trurlib >= 0.43.6}
 Requires:	rpm >= 4.0.2-62
 BuildRequires:	bzip2-devel
 BuildRequires:	db3-devel >= 3.1.14-2
@@ -22,7 +22,7 @@ BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
 BuildRequires:	rpm-devel >= 4.0.2
-BuildRequires:	trurlib-devel >= 0.43.6
+#BuildRequires:	trurlib-devel >= 0.43.6
 BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	bzip2-static}
@@ -30,7 +30,7 @@ BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	openssl-static}
 %{?_with_static:BuildRequires:	popt-static}
 %{?_with_static:BuildRequires:	rpm-static}
-%{?_with_static:BuildRequires:	trurlib-static}
+#%{?_with_static:BuildRequires:	trurlib-static}
 %{?_with_static:BuildRequires:	zlib-static}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
