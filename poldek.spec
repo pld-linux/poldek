@@ -55,7 +55,7 @@ This version is for boot disk.
 %build
 %if %{?BOOT:1}%{!?BOOT:0}
 %configure --enable-static --disable-imode
-%{__make} CFLAGS="-m386 -Os"
+%{__make} CFLAGS="-Os"
 mv -f %{name} %{name}-BOOT
 mv -f rpmvercmp rpmvercmp-BOOT
 %{__make} clean
