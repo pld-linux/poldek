@@ -8,7 +8,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.3
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
@@ -103,6 +103,11 @@ sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT/etc/%{name}.con
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%triggerpostun -- poldek <= 0.18.3-1
+if ! grep -q promoteepoch /etc/poldek.conf ; then
+	echo promoteepoch = yes >>/etc/poldek.conf
+fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
