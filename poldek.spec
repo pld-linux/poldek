@@ -21,8 +21,8 @@ Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-cap_match_req-fix.patch
-Patch3:		%{name}-progress.patch
 %{?with_ignarch:Patch3:	%{name}-ignorearch.patch}
+Patch4:		%{name}-progress.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -90,8 +90,8 @@ modu³u CPAN.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p0
-%patch3 -p1
 %{?with_ignarch:%patch3 -p1}
+%patch4 -p1
 
 %build
 %{?with_ignarch:rm -f po/pl.gmo}
