@@ -1,0 +1,113 @@
+===================================================================
+RCS file: /cvsroot/installer/poldek/pkgset-install.c,v
+retrieving revision 1.82.4.9
+retrieving revision 1.82.4.10
+diff -u -r1.82.4.9 -r1.82.4.10
+--- pkgset-install.c	8 Jun 2004 18:37:19 -0000	1.82.4.9
++++ pkgset-install.c	22 Jun 2004 17:13:35 -0000	1.82.4.10
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -716,7 +716,7 @@
+         return 1;
+     }
+     
+-    
++    DBGF("spkg %s\n", db_dep->spkg ? pkg_snprintf_s(db_dep->spkg) : "NO");
+     req = db_dep->req;
+ 
+     // still satisfied by db? 
+@@ -725,7 +725,14 @@
+         DBGF("  [1] -> satisfied by db\n");
+         return 1;
+     }
+-    	
++
++    if (db_dep->spkg && installset_provides(db_dep->spkg, req, ps, upg)) {
++        if (verbose > 1)
++            logn(LOGWARN, "cap %s satisfied by install set, shouldn't happen",
++                 capreq_snprintf_s(req));
++        DBGF("cap %s satisfied by install set\n", capreq_snprintf_s(req));
++        return 1;
++    }
+     
+     
+     if (db_dep->spkg && !marked_for_removal_by_req(db_dep->spkg, req, upg) &&
+Index: dbdep.c
+===================================================================
+RCS file: /cvsroot/installer/poldek/dbdep.c,v
+retrieving revision 1.8.4.2
+retrieving revision 1.8.4.3
+diff -u -r1.8.4.2 -r1.8.4.3
+--- dbdep.c	5 May 2004 16:52:11 -0000	1.8.4.2
++++ dbdep.c	22 Jun 2004 17:13:35 -0000	1.8.4.3
+@@ -9,7 +9,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+   Module used in pkgset-install.c only
+ */
+ 
+@@ -127,7 +127,8 @@
+ }
+ 
+ static
+-void db_deps_remove_cap(tn_hash *db_deph, struct pkg *pkg, struct capreq *cap)
++void db_deps_remove_cap(tn_hash *db_deph, struct pkg *pkg,
++                        struct capreq *cap, int requiredonly)
+ {
+     tn_list           *l;
+     tn_list_iterator  it;
+@@ -139,14 +140,25 @@
+     
+     n_list_iterator_start(l, &it);
+     while ((dep = n_list_iterator_get(&it))) {
++        DBGF("rmcap? %s (%s) %s\n", capreq_snprintf_s(cap),
++                 capreq_snprintf_s0(dep->req), pkg_snprintf_s(pkg));
+         if (dep->req && cap_match_req(cap, dep->req, 1)) {
+             int i, i_del = -1;
++
++            if (!requiredonly) {
++                DBGF("rmcap %s (%s) %s!\n", capreq_snprintf_s(cap),
++                     capreq_snprintf_s0(dep->req), pkg_snprintf_s(pkg));
++                dep->req = NULL;
++                db_dep_free_pkgs(dep);
++                continue;
++            }
+             
+             DBGF("rmcap %s (%s) %s?\n", capreq_snprintf_s(cap),
+                  capreq_snprintf_s0(dep->req), pkg_snprintf_s(pkg));
+             
+             for (i=0; i < n_array_size(dep->pkgs); i++) {
+-                DBGF("  %s\n", pkg_snprintf_s(n_array_nth(dep->pkgs, i)));
++                DBGF("  %s cmp %s\n", pkg_snprintf_s(n_array_nth(dep->pkgs, i)),
++                     pkg_snprintf_s0(pkg));
+                 if (pkg_cmp_name_evr(n_array_nth(dep->pkgs, i), pkg) == 0) {
+                     i_del = i;
+                 }
+@@ -249,7 +261,7 @@
+         return;
+         
+     for (i=0; i < n_array_size(pkg->reqs); i++)
+-        db_deps_remove_cap(db_deph, pkg, n_array_nth(pkg->reqs, i));
++        db_deps_remove_cap(db_deph, pkg, n_array_nth(pkg->reqs, i), 1);
+ 
+ }
+ 
+@@ -272,7 +284,7 @@
+ 
+         
+         cap = n_array_nth(pkg->caps, i);
+-        db_deps_remove_cap(db_deph, pkg, cap);
++        db_deps_remove_cap(db_deph, pkg, cap, 0);
+         continue;
+         
+         if ((l = n_hash_get(db_deph, capreq_name(cap))) == NULL)
