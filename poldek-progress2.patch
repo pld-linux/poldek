@@ -1,15 +1,42 @@
-diff -r -u poldek-0.18.3/vfile/vfprogress.c poldek-0.18.3-patrys/vfile/vfprogress.c
---- poldek-0.18.3/vfile/vfprogress.c	2004-04-02 13:15:40.450672496 +0200
-+++ poldek-0.18.3-patrys/vfile/vfprogress.c	2004-04-02 13:27:30.161780008 +0200
-@@ -68,6 +68,7 @@
-     time_t		    current_time;
-     float		    transfer_rate = 0.0;
-     float		    eta = 0.0;
+--- poldek-0.18.6/vfile/vfprogress.c	2004-06-08 15:57:03.000000000 +0200
++++ poldek-0.18.6-patrys/vfile/vfprogress.c	2004-07-07 18:36:25.262259864 +0200
+@@ -60,14 +60,15 @@
+ 
+ static int eta2str(char *buf, int bufsize, struct vf_progress_bar *bar) 
+ {
+-    int mm, ss, n = 0;
++    int hh, mm, ss, n = 0;
+     float eta = bar->eta + 0.5;
+ 
+     
+-    mm = (int)(eta / 60.0);
++    hh = (int)(eta / 60.0 / 60.00);
++    mm = (int)(eta / 60.0) % 60;
+     ss = (int)eta % 60;
+     if (mm || ss)
+-        n = n_snprintf(&buf[n], bufsize - n, "%.2d:%.2d ETA", mm, ss);
++        n = n_snprintf(&buf[n], bufsize - n, "%.2d:%.2d:%.2d", hh, mm, ss);
+     return n;
+ }
+ 
+@@ -84,8 +85,6 @@
+     bar->transfer_rate = (float)amount / (current_time - bar->time_base);
+     if (bar->transfer_rate > 0)
+         bar->eta = (total - amount) / bar->transfer_rate;
+-
+-    bar->transfer_rate /= 1024.0;
+ }
+ 
+ 
+@@ -95,6 +94,7 @@
+     char                    line[256], outline[256], fmt[40];
+     float                   frac, percent;
+     long                    n;
 +    int			    screen_width = term_get_width();
+  
      
      if (bar->state == VF_PROGRESS_DISABLED)
-         return;
-@@ -79,8 +80,19 @@
+@@ -107,8 +107,18 @@
          bar->state = VF_PROGRESS_DISABLED;
          return;
      }
@@ -24,63 +51,53 @@ diff -r -u poldek-0.18.3/vfile/vfprogress.c poldek-0.18.3-patrys/vfile/vfprogres
 +    }
      
      if (bar->state == VF_PROGRESS_VIRGIN) {
-+    /* calling progress bar for the first time */
-+	bar->width = screen_width - 48; /* calculate bar width = screen width - 8 - unit_line*/
++	bar->width = screen_width - 49; /* calculate bar width = screen width - 8 - unit_line*/
          if (total > 0) {
              if (total == amount ||   /* downloaded before progress() call */
                  total < 1024) {       /* too small to show to */
-@@ -113,9 +125,11 @@
+@@ -142,7 +152,7 @@
          return;
      }
-     
+     calculate_tt(total, amount, bar);
 -    n_assert(bar->prev_n < 100);
-+//    n_assert(bar->prev_n <= bar_width); /* not needed */
- 
++//    n_assert(bar->prev_n < 100);
      if (!bar->is_tty) {
-+
-+
          int k;
          
-         k = n - bar->prev_n;
-@@ -131,29 +145,32 @@
+@@ -159,18 +169,19 @@
          }
          
      } else {
--        char unit_line[43], amount_str[16], total_str[16];
--        int nn, unit_n;
--            
-+
-+//	........................................  99.2% [999.9K of 999.9K] [999.9K/s] [999m00s]
-+
-+        char unit_line[40], amount_str[16], total_str[16], transfer_str[16];
-+        int nn, unit_n;            
- 
-         current_time = time(NULL);
- 	if (current_time != bar->time_base)
- 	{
--	    transfer_rate = amount / (current_time - bar->time_base) / 1024.0;
-+	    transfer_rate = amount / (current_time - bar->time_base);
- 	}
- 	if (transfer_rate > 0)
- 	{
--	    eta = 0.5 + (total - amount) / (transfer_rate * 1024);
-+	    eta = 0.5 + (total - amount) / (transfer_rate);
- 	}
-         
+-        char unit_line[45], amount_str[16], total_str[16];
++        char unit_line[42], amount_str[16], total_str[16], transfer_str[16];;
+         int nn;
+             
          nbytes2str(total_str, sizeof(total_str), total);
          nbytes2str(amount_str, sizeof(amount_str), amount);
-+        nbytes2str(transfer_str, sizeof(transfer_str), transfer_rate);
++        nbytes2str(transfer_str, sizeof(transfer_str), bar->transfer_rate);
  
-         if (total == amount)
--            nn = n_snprintf(unit_line, sizeof(unit_line), "[%s] [%.1fK/s]",
--			  total_str, transfer_rate);
-+            nn = n_snprintf(unit_line, sizeof(unit_line), "[%7s] [%7s/s]",
-+			  total_str, transfer_str);
-         else 
--            nn = n_snprintf(unit_line, sizeof(unit_line), "[%s of %s] [%.1fK/s] [%dm%s%ds]",
--                          amount_str, total_str, transfer_rate, (int)eta / 60, 
-+            nn = n_snprintf(unit_line, sizeof(unit_line), "[%7s/%7s] [%7s/s] [%3dm%s%ds]",
-+                          amount_str, total_str, transfer_str, (int)eta / 60, 
- 			  ((int)eta % 60 < 10 ? "0" : ""), (int)eta % 60);
- 
-         unit_n = sizeof(unit_line) - nn - 1;
+         if (total == amount) {
+             if (bar->time_base == bar->time_last) /* fetched in less than 1s */
+                 bar->transfer_rate = total / 1024.0;
+                     
+-            nn = n_snprintf(unit_line, sizeof(unit_line), "[%s (%.1fK/s)]",
+-                            total_str, bar->transfer_rate);
++            nn = n_snprintf(unit_line, sizeof(unit_line), "[        %7s] [%7s/s]",
++                            total_str, transfer_str);
+         } else {
+             int n = 0;
+             char eta_str[64];
+@@ -178,10 +189,9 @@
+             n = eta2str(eta_str, sizeof(eta_str), bar);
+             
+             nn = n_snprintf(unit_line, sizeof(unit_line),
+-                            "[%s of %s (%.1fK/s)%s%s]",
+-                            amount_str, total_str, bar->transfer_rate,
+-                            n ? ", ": "",
+-                            n ? eta_str : "");
++                            "[%7s/%7s] [%7s/s] [%8s]",
++                            amount_str, total_str, transfer_str,
++                            n ? eta_str : "--:--:--");
+         }
+         if (nn > bar->maxlen)
+             bar->maxlen = nn;
