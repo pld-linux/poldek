@@ -29,6 +29,7 @@ Patch8:		%{name}-deps-fix.patch
 Patch9:		%{name}-obsoletes_provides.patch
 Patch10:	%{name}-rev-promote.patch
 Patch11:	%{name}-sigsegv2.patch
+Patch12:	%{name}-distver.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -106,6 +107,7 @@ modu³u CPAN.
 %patch9 -p0
 %patch10 -p0
 %patch11 -p1
+#%%patch12 -p1
 
 %build
 %{__autopoint}
