@@ -67,7 +67,7 @@ diff -r -u poldek-0.18.3/vfile/vfprogress.c poldek-0.18.3-patrys/vfile/vfprogres
 +	}
 +	if (transfer_rate > 0)
 +	{
-+	    eta = (total - amount) / (transfer_rate * 1024);
++	    eta = 0.5 + (total - amount) / (transfer_rate * 1024);
 +	}
          
          nbytes2str(total_str, sizeof(total_str), total);
