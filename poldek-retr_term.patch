@@ -1,0 +1,50 @@
+diff -urN poldek-0.18.1.orig/vfile/Makefile.am poldek-0.18.1/vfile/Makefile.am
+--- poldek-0.18.1.orig/vfile/Makefile.am	Thu Oct 24 18:23:12 2002
++++ poldek-0.18.1/vfile/Makefile.am	Fri May  2 10:55:06 2003
+@@ -21,10 +21,10 @@
+ vlibs = vftp/libvftp.a vhttp/libvhttp.a
+ 
+ noinst_PROGRAMS = sample ttest
+-sample_SOURCES  = sample.c
++sample_SOURCES  = sample.c ../poldek_term.c ../log.c
+ sample_LDADD    = libvfile.a $(vlibs) @TRURL_LDFLAG@ $(LDADD_) $(top_srcdir)/sigint/libsigint.a
+ 
+-ttest_SOURCES  = ttest.c 
++ttest_SOURCES  = ttest.c ../poldek_term.c ../log.c
+ ttest_LDADD    = libvfile.a $(vlibs) @TRURL_LDFLAG@ $(LDADD_) $(top_srcdir)/sigint/libsigint.a
+ EXTRA_DIST     = $(VFCURL_SRCS) \
+ 		 testcookie.c test_progress.c
+diff -urN poldek-0.18.1.orig/vfile/vfile.c poldek-0.18.1/vfile/vfile.c
+--- poldek-0.18.1.orig/vfile/vfile.c	Tue Oct 29 17:55:56 2002
++++ poldek-0.18.1/vfile/vfile.c	Fri May  2 10:59:25 2003
+@@ -42,6 +42,7 @@
+ #include <trurl/nmalloc.h>
+ 
+ #include "i18n.h"
++#include "../poldek_term.h"
+ 
+ #define VFILE_INTERNAL
+ #include "vfile.h"
+@@ -224,6 +225,10 @@
+     return mod;
+ }
+ 
++const char *PR_URL(const char *url) {
++	return vf_url_slim_s(url, term_get_width()-strlen(_("Retrieving %s...\n"))-4);
++}
++
+ int vfile_fetcha(const char *destdir, tn_array *urls, int urltype) 
+ {
+     const struct vf_module *mod = NULL;
+diff -urN poldek-0.18.1.orig/vfile/vfile.h poldek-0.18.1/vfile/vfile.h
+--- poldek-0.18.1.orig/vfile/vfile.h	Thu Nov  7 17:43:29 2002
++++ poldek-0.18.1/vfile/vfile.h	Fri May  2 10:20:18 2003
+@@ -189,7 +189,7 @@
+ 
+ /* short alias for */
+ #define CL_URL(url) vf_url_hidepasswd_s(url)
+-#define PR_URL(url) vf_url_slim_s(url, 60)
++//#define PR_URL(url) vf_url_slim_s(url, 60)
+ 
+ 
+ 
