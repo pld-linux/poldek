@@ -1,0 +1,49 @@
+--- poldek-0.18.1/configure.in	Wed Apr  2 07:55:45 2003
++++ poldek-0.18.1-/configure.in	Wed Apr  2 07:55:14 2003
+@@ -10,6 +10,7 @@
+ AH_TEMPLATE([ENABLE_TRACE],[])
+ AH_TEMPLATE([HAVE_RPM_4_0_4],[])
+ AH_TEMPLATE([HAVE_RPM_4_1],[])
++AH_TEMPLATE([HAVE_RPM_4_2],[])
+ AH_TEMPLATE([HAVE_RPM_EXTDEPS],[])
+ AH_TEMPLATE([HAVE_TM_GMTOFF],[])
+ AH_TEMPLATE([HAVE_TM___GMTOFF],[])
+@@ -240,9 +241,10 @@
+ 		DBLIB="$DBLIB -ldb1"
+ 	fi
+ else
+-	AC_CHECK_LIB(db-4.0, db_create, [DBLIB="-ldb-4.0"], 
++        AC_CHECK_LIB(db-4.1, db_create, [DBLIB="-ldb-4.1"], 
++	     [AC_CHECK_LIB(db-4.0, db_create, [DBLIB="-ldb-4.0"], 
+ 		     [AC_CHECK_LIB(db, db_create, [DBLIB="-ldb"],,[$LIBS])], 
+-		     [$LIBS])
++		     [$LIBS])],, [$LIBS])
+ 
+ 	if test "${ENABLE_STATIC}." = "yes."; then 
+ 		DBLIB="$DBLIB"
+@@ -278,6 +280,9 @@
+ AC_CHECK_FUNCS(rpmMachineScore,,[ AC_MSG_ERROR(["rpmlib not found"])])
+ AC_CHECK_FUNCS(rpmlog rpmCheckSig rpmVerifySignature)
+ 
++dnl rpm 4.2?
++AC_CHECK_FUNCS(rpmtsColor, AC_DEFINE([HAVE_RPM_4_2],1,[]))
++
+ AC_CHECK_HEADERS(db_185.h,,[ 
+ 	AC_MSG_WARN(["disabled synchronization with db file-dependencies"]) ])
+ AC_CHECK_FUNCS(__db185_open)
+Only in poldek-0.18.1-: configure.in.orig
+diff -ur poldek-0.18.1/rpm_signature.c poldek-0.18.1-/rpm_signature.c
+--- poldek-0.18.1/rpm_signature.c	Fri Oct 18 12:34:03 2002
++++ poldek-0.18.1-/rpm_signature.c	Wed Apr  2 07:55:14 2003
+@@ -56,7 +56,9 @@
+ 
+ static int rpm_read_signature(FD_t fd, Header *sighp, int sig_type)
+ {
+-#ifdef HAVE_RPM_4_1
++#ifdef HAVE_RPM_4_2
++    return rpmReadSignature(fd, sighp, sig_type, NULL) == 0;
++#elif HAVE_RPM_4_1
+     return rpmReadSignature(fd, sighp, sig_type) == 0;
+ #elif HAVE_RPM_4_0
+     return rpmReadSignature(fd, sighp, sig_type, NULL) == 0;
+Only in poldek-0.18.1-: rpm_signature.c.orig
