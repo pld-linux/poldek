@@ -1,78 +1,12 @@
 diff -r -u poldek-0.18.3/vfile/vfprogress.c poldek-0.18.3-patrys/vfile/vfprogress.c
---- poldek-0.18.3/vfile/vfprogress.c	2004-04-02 12:22:46.990111832 +0200
-+++ poldek-0.18.3-patrys/vfile/vfprogress.c	2004-04-02 12:21:09.000000000 +0200
-@@ -68,6 +68,7 @@
-     time_t		    current_time;
-     float		    transfer_rate = 0.0;
-     float		    eta = 0.0;
-+    int			    screen_width = term_get_width();
-     
-     if (bar->state == VF_PROGRESS_DISABLED)
-         return;
-@@ -79,8 +80,15 @@
-         bar->state = VF_PROGRESS_DISABLED;
+--- poldek-0.18.3/vfile/vfprogress.c	2004-04-02 12:32:32.240140304 +0200
++++ poldek-0.18.3-patrys/vfile/vfprogress.c	2004-04-02 13:11:02.475931080 +0200
+@@ -121,7 +121,7 @@
          return;
      }
-+
-+    if (screen_width < 50) /* what kind of terminal is this?! */
-+    {
-+	screen_width = 50;
-+    }
      
-     if (bar->state == VF_PROGRESS_VIRGIN) {
-+    /* calling progress bar for the first time */
-+	bar->width = screen_width - 48; /* calculate bar width = screen width - 8 - unit_line*/
-         if (total > 0) {
-             if (total == amount ||   /* downloaded before progress() call */
-                 total < 1024) {       /* too small to show to */
-@@ -116,6 +124,8 @@
-     n_assert(bar->prev_n < 100);
+-    n_assert(bar->prev_n < 100);
++//    n_assert(bar->prev_n <= bar_width); /* not needed */
  
      if (!bar->is_tty) {
-+
-+
-         int k;
-         
-         k = n - bar->prev_n;
-@@ -131,29 +141,32 @@
-         }
-         
-     } else {
--        char unit_line[43], amount_str[16], total_str[16];
--        int nn, unit_n;
--            
-+
-+//	........................................  99.2% [999.9K of 999.9K] [999.9K/s] [999m00s]
-+
-+        char unit_line[40], amount_str[16], total_str[16], transfer_str[16];
-+        int nn, unit_n;            
  
-         current_time = time(NULL);
- 	if (current_time != bar->time_base)
- 	{
--	    transfer_rate = amount / (current_time - bar->time_base) / 1024.0;
-+	    transfer_rate = amount / (current_time - bar->time_base);
- 	}
- 	if (transfer_rate > 0)
- 	{
--	    eta = 0.5 + (total - amount) / (transfer_rate * 1024);
-+	    eta = 0.5 + (total - amount) / (transfer_rate);
- 	}
-         
-         nbytes2str(total_str, sizeof(total_str), total);
-         nbytes2str(amount_str, sizeof(amount_str), amount);
-+        nbytes2str(transfer_str, sizeof(transfer_str), transfer_rate);
- 
-         if (total == amount)
--            nn = n_snprintf(unit_line, sizeof(unit_line), "[%s] [%.1fK/s]",
--			  total_str, transfer_rate);
-+            nn = n_snprintf(unit_line, sizeof(unit_line), "[%6s] [%6s/s]",
-+			  total_str, transfer_str);
-         else 
--            nn = n_snprintf(unit_line, sizeof(unit_line), "[%s of %s] [%.1fK/s] [%dm%s%ds]",
--                          amount_str, total_str, transfer_rate, (int)eta / 60, 
-+            nn = n_snprintf(unit_line, sizeof(unit_line), "[%6s of %6s] [%6s/s] [%3dm%s%ds]",
-+                          amount_str, total_str, transfer_str, (int)eta / 60, 
- 			  ((int)eta % 60 < 10 ? "0" : ""), (int)eta % 60);
- 
-         unit_n = sizeof(unit_line) - nn - 1;
