@@ -1,7 +1,9 @@
-# conditional build
-#  --with static   -- don't use shared libraries
-#  --without imode -- don't build interactive mode
-#  --without curl  -- don't link curl
+#
+# conditional build:
+#  --with static	- don't use shared libraries
+#  --without imode	- don't build interactive mode
+#  --without curl	- don't link curl
+#
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
@@ -16,7 +18,7 @@ Requires:	rpm >= 4.0.2-62
 Requires:	sed
 BuildRequires:	bzip2-devel
 %{?_with_curl:BuildRequires:	curl-devel >= 7.8}
-BuildRequires:	db-devel
+BuildRequires:	db3-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
