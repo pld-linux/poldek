@@ -12,7 +12,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.4
-Release:	0.%{snap}.1
+Release:	0.%{snap}.2
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/poldek-cvs%{snap}.tar.bz2
@@ -20,6 +20,7 @@ Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/poldek-cvs%{snap}
 Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
+Patch2:		%{name}-types.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -86,6 +87,7 @@ modu³u CPAN.
 %setup -q -n %{name}-cvs%{snap}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__autopoint}
