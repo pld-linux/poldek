@@ -99,7 +99,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 # no strip cause program's beta stage and core may be useful
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-	
+
 %{?with_static:rm -f $RPM_BUILD_ROOT/%{_bindir}/rpmvercmp}
 sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT/etc/%{name}.conf
 
