@@ -23,6 +23,7 @@ Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-cap_match_req-fix.patch
 %{?with_ignarch:Patch3:	%{name}-ignorearch.patch}
 Patch4:		%{name}-progress.patch
+Patch5:		%{name}-simplestatic.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -41,6 +42,8 @@ BuildRequires:	perl-tools-pod
 BuildRequires:	bzip2-static
 %{?with_curl:BuildRequires:	curl-static}
 BuildRequires:	db-static >= %{ver_db}
+BuildRequires:	glibc-static
+buildRequires:	libselinux-static
 BuildRequires:	ncurses-static
 BuildRequires:	openssl-static
 BuildRequires:	pcre-static
@@ -48,7 +51,6 @@ BuildRequires:	popt-static
 BuildRequires:	readline-static
 BuildRequires:	rpm-static
 BuildRequires:	zlib-static
-BuildRequires:	glibc-static
 %endif
 Requires:	db >= %{ver_db}
 Requires:	ed
@@ -92,6 +94,7 @@ modu³u CPAN.
 %patch2 -p0
 %{?with_ignarch:%patch3 -p1}
 %patch4 -p1
+%patch5 -p0
 
 %build
 %{?with_ignarch:rm -f po/pl.gmo}

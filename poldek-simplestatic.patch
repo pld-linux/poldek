@@ -1,0 +1,10 @@
+--- configure.in-orig	2004-03-21 20:38:00.000000000 +0000
++++ configure.in	2004-03-21 20:38:09.000000000 +0000
+@@ -97,6 +97,7 @@
+ if test "${ENABLE_STATIC}." = "yes."; then
+ 	AC_DEFINE([ENABLE_STATIC],1, [defined if static linking is requested])
+ 	poldek_LDFLAGS="-static"
++	LIBS="$LIBS -lselinux"
+ 
+ 	if test "${INTERACTIVE_MODE}." = "yes."; then
+ 		LIBS="$LIBS -lncurses"
