@@ -6,7 +6,7 @@
 %bcond_with	distver	# enable distversion patch
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.2.50-1
+%define	ver_db	4.3.27-1
 %define	ver_rpm	4.3-0.20040107.34
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
@@ -27,7 +27,7 @@ BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	bzip2-devel
 %{?with_curl:BuildRequires:	curl-devel >= 7.8}
-BuildRequires:	db-devel >= %{ver_db}
+BuildRequires:	db4.3-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
@@ -39,7 +39,7 @@ BuildRequires:	perl-tools-pod
 %if %{with static}
 BuildRequires:	bzip2-static
 %{?with_curl:BuildRequires:	curl-static}
-BuildRequires:	db-static >= %{ver_db}
+BuildRequires:	db4.3-static >= %{ver_db}
 BuildRequires:	glibc-static
 BuildRequires:	libselinux-static
 BuildRequires:	ncurses-static
@@ -50,7 +50,7 @@ BuildRequires:	readline-static
 BuildRequires:	rpm-static
 BuildRequires:	zlib-static
 %endif
-Requires:	db >= %{ver_db}
+Requires:	db4.3 >= %{ver_db}
 Requires:	ed
 Requires:	rpm >= %{ver_rpm}
 %{?with_distver:Requires:	rpm-lib(distver)}
