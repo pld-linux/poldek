@@ -5,14 +5,14 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.17.9rpm4
-Release:	3
+Version:	0.18
+Release:	1
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
+Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
 Source1:	%{name}.conf
 URL:		http://team.pld.org.pl/~mis/poldek/
-Requires:	rpm >= 4.1
+Requires:	rpm >= 4.0.2-62
 Requires:	sed
 BuildRequires:	bzip2-devel
 %{?_with_curl:BuildRequires:	curl-devel >= 7.8}
@@ -21,7 +21,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
-BuildRequires:	rpm-devel >= 4.1
+BuildRequires:	rpm-devel >= 4.0.2-62
 BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	bzip2-static}
@@ -102,3 +102,4 @@ rm -rf $RPM_BUILD_ROOT
 %attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}.conf
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/%{name}*
+%lang(pl) %{_mandir}/pl/man1/%{name}*
