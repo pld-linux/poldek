@@ -24,7 +24,7 @@ BuildRequires:	bzip2-devel
 %{?_with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	automake
 BuildRequires:	autoconf
-BuildRequires:	gettext-autopoint
+#BuildRequires:	gettext-autopoint
 BuildRequires:	openssl-devel >= 0.9.7
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
@@ -41,6 +41,7 @@ BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	readline-static}
 %{?_with_static:BuildRequires:	rpm-static}
 %{?_with_static:BuildRequires:	zlib-static}
+%{?_with_static:BuildRequires:	glibc-static}
 Requires:	rpm >= 4.0.2-62
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
