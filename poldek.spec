@@ -71,5 +71,5 @@ rm -rf $RPM_BUILD_ROOT
 %if %{?BOOT:1}%{!?BOOT:0}
 %files BOOT
 %defattr(644,root,root,755)
-%attr(755,root,root) /usr/lib/bootdisk/sbin/*
+%attr(755,root,root) /usr/lib/bootdisk/sbin/poldek
 %endif
