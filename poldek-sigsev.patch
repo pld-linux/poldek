@@ -1,0 +1,87 @@
+--- pkgset-install.c	14 Nov 2002 18:21:42 -0000	1.80
++++ pkgset-install.c	14 Nov 2002 19:17:28 -0000
+@@ -744,18 +744,16 @@
+                 
+     } else if (db_dep->flags & PROCESS_AS_ORPHAN) {
+         int i;
+-        tn_array *pkgs = db_dep->pkgs;
+-        
+-        if (n_array_size(db_dep->pkgs) > 1) {
+-            pkgs = n_array_clone(db_dep->pkgs);
++        tn_array *pkgs;
++
++        n_assert(db_dep->pkgs);
++        pkgs = n_array_clone(db_dep->pkgs);
++        for (i=0; i < n_array_size(db_dep->pkgs); i++) {
++            struct pkg *pp = n_array_nth(db_dep->pkgs, i);
++            if (n_array_has_free_fn(db_dep->pkgs))
++                pp = pkg_link(pp);
+             
+-            for (i=0; i < n_array_size(db_dep->pkgs); i++) {
+-                struct pkg *pp = n_array_nth(db_dep->pkgs, i);
+-                if (n_array_has_free_fn(db_dep->pkgs))
+-                    pp = pkg_link(pp);
+-                
+-                n_array_push(pkgs, pp);
+-            }
++            n_array_push(pkgs, pp);
+         }
+         
+ 
+--- dbdep.c	7 Nov 2002 16:43:26 -0000	1.7
++++ dbdep.c	14 Nov 2002 19:17:28 -0000
+@@ -34,14 +34,21 @@
+ #include "misc.h"
+ #include "dbdep.h"
+ 
++static db_dep_free_pkgs(struct db_dep *db_dep) 
++{
++    if (db_dep->pkgs) {
++        n_array_free(db_dep->pkgs);
++        db_dep->pkgs = NULL;
++    }
++}
++
+ 
+ static
+ void db_dep_free(struct db_dep *db_dep) 
+ {
+-    if (db_dep->pkgs)
+-        n_array_free(db_dep->pkgs);
++    
++    db_dep_free_pkgs(db_dep);
+     db_dep->req = NULL;
+-    db_dep->pkgs = NULL;
+     db_dep->spkg = NULL;
+     free(db_dep);
+ }
+@@ -129,8 +136,7 @@
+             DBGF("rmcap %s (%s)\n", capreq_snprintf_s(cap),
+                  capreq_snprintf_s0(dep->req));
+             dep->req = NULL;
+-            n_array_free(dep->pkgs);
+-            dep->pkgs = NULL;
++            db_dep_free_pkgs(dep);
+         }
+     }
+ }
+@@ -197,8 +203,7 @@
+                 if (dep->req && strcmp(capreq_name(dep->req), buf) == 0) {
+                     DBGF("rmcap %s (%s)\n", buf, capreq_snprintf_s0(dep->req));
+                     dep->req = NULL;
+-                    n_array_free(dep->pkgs);
+-                    dep->pkgs = NULL;
++                    db_dep_free_pkgs(dep);
+                 }
+             }
+         }
+@@ -253,8 +258,7 @@
+                 DBGF("rmcap %s (%s)\n", capreq_snprintf_s(cap),
+                      capreq_snprintf_s0(dep->req));
+                 dep->req = NULL;
+-                n_array_free(dep->pkgs);
+-                dep->pkgs = NULL;
++                db_dep_free_pkgs(dep);
+             }
+         }
+     }
