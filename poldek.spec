@@ -14,7 +14,7 @@ Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
 Source1:	%{name}.conf
 Patch0:		%{name}-static.patch
-Patch1:		%{name}-home_etc.patch
+Patch1:		%{name}-etc_dir.patch
 Patch2:		%{name}-rpm4.2.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 Requires:	rpm >= 4.0.2-62
@@ -73,7 +73,7 @@ modu³u CPAN.
 %prep
 %setup -q
 %patch0	-p1
-#%patch1 -p1
+%patch1 -p1
 %patch2 -p1
 
 %build
