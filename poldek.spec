@@ -101,9 +101,6 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-ln -sf poldek $RPM_BUILD_ROOT%{_bindir}/apoldek-get
-ln -sf poldek $RPM_BUILD_ROOT%{_bindir}/ipoldek
-
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 sed "s|i686|%{_target_cpu}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 
