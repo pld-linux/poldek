@@ -85,7 +85,7 @@ diff -u -r1.82.4.10 -r1.82.4.11
 +            } else if (is_hand_marked) { 
 +                int vl = 0;
 +                if (freshen)
-+                    vl = 1;
++                    vl = 3;
 +                msgn(vl, msg, pkg_snprintf_s(pkg), eqs, skiped);
              }
          }
