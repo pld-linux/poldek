@@ -22,6 +22,7 @@ Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-simplestatic.patch
 Patch3:		%{name}-pkgorder.patch
 Patch4:		%{name}-sigsegv.patch
+Patch5:		%{name}-caplookup.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -92,6 +93,7 @@ modu³u CPAN.
 %patch2 -p0
 %patch3 -p0
 %patch4 -p0
+%patch5 -p0
 
 %build
 %{__autopoint}
