@@ -27,7 +27,7 @@ BuildRequires:	bzip2-devel
 BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	gettext-autopoint
-BuildRequires:	openssl-devel >= 0.9.7
+BuildRequires:	openssl-devel >= 0.9.7c
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
