@@ -19,26 +19,26 @@ Patch1:		%{name}-hold-fix.patch
 Patch2:		%{name}-sigsev.patch
 Patch3:		%{name}-deps-fix.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
-Requires:	rpm >= 4.0.2-62
-Requires:	sed
-BuildRequires:	bzip2-devel
-%{?_with_curl:BuildRequires:	curl-devel >= 7.8}
-BuildRequires:	openssl-devel
-BuildRequires:	pcre-devel
-BuildRequires:	popt-devel
-BuildRequires:	readline-devel
-BuildRequires:	rpm-devel >= 4.0.2-62
-BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
+BuildRequires:	bzip2-devel
 %{?_with_static:BuildRequires:	bzip2-static}
+%{?_with_curl:BuildRequires:	curl-devel >= 7.8}
 %{?_with_curl:%{?_with_static:BuildRequires:	curl-static}}
-%{?_with_static:BuildRequires:	openssl-static}
-%{?_with_static:BuildRequires:	pcre-static}
-%{?_with_static:BuildRequires:	popt-static}
-%{?_with_static:BuildRequires:	rpm-static}
 %{?_with_static:BuildRequires:  db1-static}
 %{?_with_static:BuildRequires:  db3-static}
+BuildRequires:	openssl-devel
+%{?_with_static:BuildRequires:	openssl-static}
+BuildRequires:	pcre-devel
+%{?_with_static:BuildRequires:	pcre-static}
+BuildRequires:	popt-devel
+%{?_with_static:BuildRequires:	popt-static}
+BuildRequires:	readline-devel
+BuildRequires:	rpm-devel >= 4.0.2-62
+%{?_with_static:BuildRequires:	rpm-static}
+BuildRequires:	zlib-devel
 %{?_with_static:BuildRequires:	zlib-static}
+Requires:	rpm >= 4.0.2-62
+Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -99,7 +99,9 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 # no strip cause program's beta stage and core may be useful
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
+	
 %{?_with_static:rm -f $RPM_BUILD_ROOT/%{_bindir}/rpmvercmp}
 sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT/etc/%{name}.conf
 
