@@ -46,10 +46,9 @@ BuildRequires:	rpm-static
 BuildRequires:	zlib-static
 %endif
 Requires:	db >= %{ver_db}
-Requires:	ed
+Requires:	openssl >= 0.9.7c
 Requires:	rpm >= %{ver_rpm}
 Requires:	sed
-Requires:	openssl >= 0.9.7c
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
