@@ -61,7 +61,7 @@ BuildRequires:	zlib-static
 Requires:	db >= %{ver_db}
 Requires:	ed
 Requires:	rpm >= %{ver_rpm}
-Requires:	rpmlib(distver)
+Requires:	rpm-lib(distver)
 Requires:	sed
 Requires:	openssl >= 0.9.7c
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
