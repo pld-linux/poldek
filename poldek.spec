@@ -13,7 +13,7 @@ BuildRequires:	rpm-devel >= 3.0.5
 BuildRequires:	zlib-static
 BuildRequires:	bzip2-static
 BuildRequires:	/usr/bin/pod2man
-BuildRequires:	trurlib-devel >= 0.431
+BuildRequires:	trurlib-devel >= 0.43.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
