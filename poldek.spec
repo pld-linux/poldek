@@ -3,6 +3,7 @@
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_with	curl	# link with curl
+%bcond_with	ignarch # add option ignorearch
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
@@ -20,6 +21,7 @@ Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-cap_match_req-fix.patch
+%{?with_ignarch:Patch3:	%{name}-ignorearch.patch}
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -87,8 +89,10 @@ modu³u CPAN.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p0
+%{?with_ignarch:%patch3 -p1}
 
 %build
+%{?with_ignarch:rm -f po/pl.gmo}
 %{__autopoint}
 %{__aclocal} -I m4
 %{__autoconf}
