@@ -12,7 +12,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.3
-Release:	9
+Release:	10
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
@@ -25,6 +25,7 @@ Patch3:		%{name}-ignorearch.patch
 Patch4:		%{name}-progress.patch
 Patch5:		%{name}-simplestatic.patch
 Patch6:		%{name}-progress2.patch
+Patch7:		%{name}-types.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -97,6 +98,7 @@ modu³u CPAN.
 %patch4 -p1
 %patch5 -p0
 %patch6 -p1
+%patch7 -p1
 
 %build
 %{?with_ignarch:rm -f po/pl.gmo}
