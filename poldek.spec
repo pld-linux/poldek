@@ -32,6 +32,7 @@ BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	openssl-static}
 %{?_with_static:BuildRequires:	pcre-static}
 %{?_with_static:BuildRequires:	popt-static}
+%{?_with_static:BuildRequires:	readline-static}
 %{?_with_static:BuildRequires:	rpm-static}
 %{?_with_static:BuildRequires:	zlib-static}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
