@@ -24,7 +24,7 @@ BuildRequires:	bzip2-devel
 %{?_with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	automake
 BuildRequires:	autoconf
-#BuildRequires:	gettext-autopoint
+BuildRequires:	gettext-autopoint
 BuildRequires:	openssl-devel >= 0.9.7
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
