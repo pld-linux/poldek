@@ -5,29 +5,28 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.17.2
-Release:	3
+Version:	0.17.3
+Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
 Source1:	%{name}.conf
-Patch0:		%{name}-bugfix.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
-%{!?_with_static:Requires:	trurlib >= 0.43.5}
-Requires:	/bin/rpm
+%{!?_with_static:Requires:	trurlib >= 0.43.6}
+Requires:	rpm >= 4.0.2-62
 BuildRequires:	bzip2-devel
 BuildRequires:	db3-devel >= 3.1.14-2
-BuildRequires:	curl-devel >= 7.8
+%{?_with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	openssl-devel
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
-BuildRequires:	rpm-devel >= 4.0
-BuildRequires:	trurlib-devel >= 0.43.5
+BuildRequires:	rpm-devel >= 4.0.2
+BuildRequires:	trurlib-devel >= 0.43.6
 BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	bzip2-static}
-%{?_with_static:BuildRequires:	curl-static}
+%{?_with_curl:%{?_with_static:BuildRequires:	curl-static}}
 %{?_with_static:BuildRequires:	openssl-static}
 %{?_with_static:BuildRequires:	popt-static}
 %{?_with_static:BuildRequires:	rpm-static}
@@ -65,25 +64,24 @@ modu³u CPAN.
 
 %prep
 %setup -q
-%patch0 -p1 
 
 %build
 %configure \
 	%{?_with_static:--enable-static} \
 	%{?_without_imode:--disable-imode} \
-	%{?_without_curl:--without-curl}
+	%{?_with_curl:--with-curl}
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
-# no strip cause program's alpha stage and core may be useful
+# no strip cause program's beta stage and core may be useful
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 %{?_with_static:rm -f $RPM_BUILD_ROOT/%{_bindir}/rpmvercmp}
 sed "s/i686/%{_target_cpu}/g" < %{SOURCE1} > $RPM_BUILD_ROOT/etc/%{name}.conf
 
-gzip -9nf README* *sample* NEWS TODO
+gzip -9nf README* *sample* conf/poldekrc* NEWS TODO
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -93,4 +91,4 @@ rm -rf $RPM_BUILD_ROOT
 %attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}.conf
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/%{name}*
-%doc *.gz
+%doc *.gz conf/*.gz
