@@ -23,7 +23,7 @@ BuildRequires:	bzip2-devel
 %{?with_curl:%{?with_static:BuildRequires:	curl-static}}
 %{?with_static:BuildRequires:  db1-static}
 %{?with_static:BuildRequires:  db3-static}
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 0.9.6m
 %{?with_static:BuildRequires:	openssl-static}
 BuildRequires:	pcre-devel
 %{?with_static:BuildRequires:	pcre-static}
