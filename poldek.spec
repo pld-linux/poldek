@@ -102,7 +102,7 @@ modu³u CPAN.
 %patch5 -p1
 %patch6 -p2
 %patch7 -p1
-%patch8 -p1
+%patch8 -p0
 %{?with_distver:%patch12 -p1}
 
 %build
