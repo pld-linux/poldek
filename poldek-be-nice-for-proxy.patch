@@ -1,0 +1,25 @@
+diff -urN poldek-0.18.1.org/vfile/vfcurl.c poldek-0.18.1/vfile/vfcurl.c
+--- poldek-0.18.1.org/vfile/vfcurl.c	2003-12-24 11:53:54.097439384 +0100
++++ poldek-0.18.1/vfile/vfcurl.c	2003-12-24 11:56:51.010544504 +0100
+@@ -85,6 +85,7 @@
+ {
+     char *errmsg = "curl_easy_setopt failed\n";
+     char user_passwd[256];
++    struct curl_slist *cheaders = NULL;
+     
+     if ((curlh = curl_easy_init()) == NULL)
+         return 0;
+@@ -147,6 +148,13 @@
+         return 0;
+     }
+ #endif
++
++    cheaders = curl_slist_append(cheaders, "Pragma:"); 
++    if (curl_easy_setopt(curlh, CURLOPT_HTTPHEADER, cheaders)) {
++	vfile_err_fn(errmsg);
++	return 0;
++    }
++    
+     return 1;
+ }
+ 
