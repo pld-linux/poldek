@@ -5,7 +5,7 @@
  #, c-format
  msgid "Need to download about %s of archives. "
 -msgstr ""
-+msgstr "Do ¶ci±gniêcia potrzeba oko³o %s pakietów."
++msgstr "Do ¶ci±gniêcia potrzeba oko³o %s pakietów. "
  
  #: pkgset-install.c:1904
  #, c-format
