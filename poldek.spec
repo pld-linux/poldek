@@ -8,7 +8,7 @@ Group:		Applications/System
 Group(de):	Applikationen/System
 Group(pl):	Aplikacje/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}/%{name}-%{version}.tar.gz
-Requires:	trurlib >= 0.43.3
+%{!?_with_static:Requires:	trurlib >= 0.43.3}
 Requires:	/bin/rpm
 BuildRequires:	bzip2-devel
 BuildRequires:	db3-devel >= 3.1.14-2
@@ -27,6 +27,12 @@ BuildRequires:	pcre-devel
 %{?BOOT:BuildRequires:	rpm-static}
 %{?BOOT:BuildRequires:	trurlib-static}
 %{?BOOT:BuildRequires:	zlib-static}
+%{?_with_static:BuildRequires:	bzip2-static}
+%{?_with_static:BuildRequires:	curl-static}
+%{?_with_static:BuildRequires:	openssl-static}
+%{?_with_static:BuildRequires:	rpm-static}
+%{?_with_static:BuildRequires:	trurlib-static}
+%{?_with_static:BuildRequires:	zlib-static}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -38,6 +44,8 @@ Program can be used in batch (like apt-get from Debian's
 APT) or interactive mode. The interactive mode puts you into a
 readline interface with command line autocompletion and history,
 similar to the shell mode of Perl's CPAN.
+
+%{?_with_static:This version is statically linked}
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
@@ -67,7 +75,7 @@ mv -f %{name} %{name}-BOOT
 %{__make} clean
 %endif
 
-%configure 
+%configure %{?_with_static:--enable-static}
 %{__make} 
 
 %install
@@ -81,7 +89,7 @@ install %{name}-BOOT $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin/%{name}
 
 # no strip cause program's alpha stage and core may be useful
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
-
+%{?_with_static:rm -f $RPM_BUILD_ROOT/%{_bindir}/rpmvercmp}
 sed "s/i686/%{_target_cpu}/g" < poldekrc.sample-pld > $RPM_BUILD_ROOT/etc/%{name}.conf
 
 gzip -9nf README* *sample* NEWS TODO
