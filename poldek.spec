@@ -22,6 +22,7 @@ Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-simplestatic.patch
 Patch3:		%{name}-po.patch
+Patch4:		%{name}-n_free.patch
 Patch12:	%{name}-distver.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
@@ -93,6 +94,7 @@ modu³u CPAN.
 %patch1 -p1
 %patch2 -p0
 %patch3 -p1
+%patch4 -p1
 %{?with_distver:%patch12 -p1}
 
 %build
