@@ -1,7 +1,7 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.15.5
+Version:	0.15.6
 Release:	1
 License:	GPL
 Group:		Applications/System
@@ -18,7 +18,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	readline-devel
 BuildRequires:	trurlib-devel >= 0.43.2
 BuildRequires:	zlib-devel
-BuildRequires:	perl-devel
+BuildRequires:	/usr/bin/pod2man
 BuildRequires:	pcre-devel
 %{?BOOT:BuildRequires:	bzip2-static}
 %{?BOOT:BuildRequires:	curl-static}
@@ -51,7 +51,7 @@ This version is for boot disk.
 %endif
 
 %prep 
-%setup -q 
+%setup -q
 
 %build
 %if %{?BOOT:1}%{!?BOOT:0}
@@ -66,6 +66,7 @@ mv -f %{name} %{name}-BOOT
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/etc
 
 %if %{?BOOT:1}%{!?BOOT:0}
 install -d $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin
@@ -75,6 +76,8 @@ install %{name}-BOOT $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin/%{name}
 # no strip cause program's alpha stage and core may be useful
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
+sed "s/i686/%{_target_cpu}/g" < poldekrc.sample-pld > $RPM_BUILD_ROOT/etc/%{name}.conf
+
 gzip -9nf README* *sample* NEWS TODO
 
 %clean
@@ -82,6 +85,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/%{name}.conf
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/%{name}*
 %doc *.gz
