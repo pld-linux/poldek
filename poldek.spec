@@ -14,13 +14,13 @@ Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
 # Source0-md5:	99d118c986e8102e11b81768499ec0bd
 Source1:	%{name}.conf
-Patch0:         %{name}-retr_term.patch
-Patch1:         %{name}-simplestatic.patch
-Patch2:         %{name}-pkgorder.patch
-Patch3:         %{name}-sigsegv.patch
-Patch4:         %{name}-caplookup.patch
-Patch5:         %{name}-progress2.patch
-Patch6:         %{name}-po.patch
+Patch0:		%{name}-retr_term.patch
+Patch1:		%{name}-simplestatic.patch
+Patch2:		%{name}-pkgorder.patch
+Patch3:		%{name}-sigsegv.patch
+Patch4:		%{name}-caplookup.patch
+Patch5:		%{name}-progress2.patch
+Patch6:		%{name}-po.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	/usr/bin/pod2man
 BuildRequires:	autoconf
@@ -29,8 +29,8 @@ BuildRequires:	bzip2-devel
 %{?with_static:BuildRequires:	bzip2-static}
 %{?with_curl:BuildRequires:	curl-devel >= 7.8}
 %{?with_curl:%{?with_static:BuildRequires:	curl-static}}
-%{?with_static:BuildRequires:  db1-static}
-%{?with_static:BuildRequires:  db3-static}
+%{?with_static:BuildRequires:	db1-static}
+%{?with_static:BuildRequires:	db3-static}
 BuildRequires:	openssl-devel >= 0.9.6m
 %{?with_static:BuildRequires:	openssl-static}
 BuildRequires:	pcre-devel
