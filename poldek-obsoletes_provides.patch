@@ -26,7 +26,7 @@ diff -u -r1.41.4.6 rpm.c
      while ((dbrec = rpmdb_it_get(&it)) != NULL) {
 +        int add = 0;
          if (dbpkg_array_has(dbpkgs, dbrec->recno))
--           continue;
+-	    continue;
 -        
 -        if (header_evr_match_req(dbrec->h, cap)) {
 +            continue;
