@@ -1,0 +1,261 @@
+diff -Nur old/doc/pl/poldek.1 new/doc/pl/poldek.1
+--- old/doc/pl/poldek.1	2003-04-02 13:04:26.000000000 +0000
++++ new/doc/pl/poldek.1	2004-03-08 23:19:52.000000000 +0000
+@@ -384,8 +384,8 @@
+ B±d¼ tolerancyjny w stosunku do zale¿no¶ci od wersji, które toleruje \s-1RPM\s0, np.:
+ pakiet A wymaga foo >= 1.0, podczas gdy pakiet B dostarcza \*(L"foo\*(R" be¿ ¿adnej
+ wersji.
+-.Ip "\fB\*(--nodeps\fR; \fB\*(--justdb\fR; \fB\*(--force\fR; \fB\*(--root\fR;" 4
+-.IX Item "nodeps; justdb; force; root;"
++.Ip "\fB\*(--nodeps\fR; \fB\*(--ignorearch\fR; \fB\*(--justdb\fR; \fB\*(--force\fR; \fB\*(--root\fR;" 4
++.IX Item "nodeps; ignorearch; justdb; force; root;"
+ Ma takie znaczenie jak w przypadku \s-1RPM\s0. Patrz nastêpna sekcja.
+ .Ip "\fB\-N, \-\-nofollow\fR" 4
+ .IX Item "-N, --nofollow"
+@@ -423,6 +423,8 @@
+ .PD 0
+ .Ip "\(bu \-\-force" 4
+ .IX Item "--force"
++.Ip "\(bu \-\-ignorearch" 4
++.IX Item "--ignorearch"
+ .Ip "\(bu \-\-install" 4
+ .IX Item "--install"
+ .Ip "\(bu \-\-justdb" 4
+diff -Nur old/doc/pl/poldek.pod new/doc/pl/poldek.pod
+--- old/doc/pl/poldek.pod	2002-11-07 18:41:49.000000000 +0000
++++ new/doc/pl/poldek.pod	2004-03-08 23:20:25.000000000 +0000
+@@ -289,7 +289,7 @@
+ pakiet A wymaga foo >= 1.0, podczas gdy pakiet B dostarcza "foo" be¿ ¿adnej
+ wersji.
+ 
+-=item B<--nodeps>; B<--justdb>; B<--force>; B<--root>;
++=item B<--nodeps>; B<--ignorearch>; B<--justdb>; B<--force>; B<--root>;
+ 
+ Ma takie znaczenie jak w przypadku RPM. Patrz nastêpna sekcja.
+ 
+@@ -342,6 +342,8 @@
+ 
+ =item * --force
+ 
++=item * --ignorearch
++
+ =item * --install
+ 
+ =item * --justdb
+diff -Nur old/main.c new/main.c
+--- old/main.c	2004-01-10 17:27:45.000000000 +0000
++++ new/main.c	2004-03-08 23:38:22.000000000 +0000
+@@ -201,6 +201,7 @@
+ # define OPT_SHELL_CMD             1032
+ #endif
+ 
++#define OPT_INST_IGNOREARCH       1040
+ #define OPT_INST_INSTDIST         1041
+ #define OPT_INST_UPGRDIST         1042
+ #define OPT_INST_NODEPS           1043
+@@ -382,6 +383,10 @@
+ {"nodeps", OPT_INST_NODEPS, 0, 0,
+      N_("Install packages with broken dependencies"), 71 },
+     
++{"ignorearch", OPT_INST_IGNOREARCH, 0, 0,
++     N_("Allow installation or upgrading even if the architectures of the "
++                   "binary package and host don't match."), 71 },
++
+ {"force", OPT_INST_FORCE, 0, 0,
+      N_("Be unconcerned"), 71 },
+     
+@@ -854,6 +859,10 @@
+             argsp->inst.flags  |= INSTS_NODEPS;
+             break;
+ 
++        case OPT_INST_IGNOREARCH:
++            argsp->inst.flags  |= INSTS_IGNOREARCH;
++            break;
++
+         case OPT_INST_FORCE:
+             argsp->inst.flags |= INSTS_FORCE;
+             break;
+@@ -933,6 +942,7 @@
+                     strncmp(optname, "install", 7) == 0 ||
+                     strncmp(optname, "upgrade", 7) == 0 ||
+                     strncmp(optname, "nodeps", 6) == 0  ||
++		    strncmp(optname, "ignorearch", 6) == 0  ||
+                     strncmp(optname, "justdb", 6) == 0  ||
+                     strncmp(optname, "test", 4) == 0    ||
+                     strncmp(optname, "root", 4) == 0)
+diff -Nur old/pkgdb.h new/pkgdb.h
+--- old/pkgdb.h	2002-04-05 15:58:52.000000000 +0000
++++ new/pkgdb.h	2004-03-08 22:16:55.000000000 +0000
+@@ -12,6 +12,7 @@
+ #define PKGINST_NODEPS        (1 << 1) /* rpm --nodeps */
+ #define PKGINST_JUSTDB        (1 << 2) /* rpm --justdb */
+ #define PKGINST_TEST          (1 << 3) /* rpm --test */
++#define PKGINST_IGNOREARCH    (1 << 4) /* rpm --ignorearch */
+ #define PKGINST_FORCE         (1 << 6) /* rpm --force */
+ #define PKGINST_UPGRADE       (1 << 7) /* rpm -U  */
+ 
+diff -Nur old/pkgset.c new/pkgset.c
+--- old/pkgset.c	2002-11-14 18:21:42.000000000 +0000
++++ new/pkgset.c	2004-03-08 21:09:57.000000000 +0000
+@@ -637,6 +637,9 @@
+     if (instflags & INSTS_UPGRADE)
+         flags |= PKGINST_UPGRADE;
+ 
++    if (instflags & INSTS_IGNOREARCH)
++        flags |= PKGINST_IGNOREARCH;
++
+     return flags;
+ }
+ 	
+diff -Nur old/pkgset.h new/pkgset.h
+--- old/pkgset.h	2003-04-02 14:54:08.000000000 +0000
++++ new/pkgset.h	2004-03-08 21:07:08.000000000 +0000
+@@ -71,6 +71,7 @@
+ #define INSTS_CONFIRM_INST    (1 << 28) /* confirm_installation = yes  */
+ #define INSTS_CONFIRM_UNINST  (1 << 29) /* confirm_removal = yes  */
+ #define INSTS_EQPKG_ASKUSER   (1 << 30) /* choose_equivalents_manually = yes */
++#define INSTS_IGNOREARCH      (1 << 31) /* --ignorearch */
+ 
+ #define INSTS_INTERACTIVE_ON  (INSTS_CONFIRM_INST | INSTS_EQPKG_ASKUSER)
+ 
+diff -Nur old/pkgset-install.c new/pkgset-install.c
+--- old/pkgset-install.c	2003-12-30 18:19:52.000000000 +0000
++++ new/pkgset-install.c	2004-03-08 22:30:57.000000000 +0000
+@@ -1662,19 +1662,22 @@
+ #endif
+ 
+ 
+-static int valid_arch_os(tn_array *pkgs) 
++static int valid_arch_os(tn_array *pkgs, struct inst_s *inst)
+ {
+     int i, nerr = 0;
+     
+     for (i=0; i<n_array_size(pkgs); i++) {
+         struct pkg *pkg = n_array_nth(pkgs, i);
+ 
++
++    if (inst->flags & (INSTS_IGNOREARCH)) { } else
++      {
+         if (pkg->arch && !rpmMachineScore(RPM_MACHTABLE_INSTARCH, pkg->arch)) {
+             logn(LOGERR, _("%s: package is for a different architecture (%s)"),
+                 pkg_snprintf_s(pkg), pkg->arch);
+             nerr++;
+         }
+-        
++      }
+         if (pkg->os && !rpmMachineScore(RPM_MACHTABLE_INSTOS, pkg->os)) {
+             logn(LOGERR, _("%s: package is for a different operating system (%s)"),
+                 pkg_snprintf_s(pkg), pkg->os);
+@@ -1952,7 +1955,7 @@
+         return 0;
+     
+     if ((inst->flags & (INSTS_JUSTPRINTS | INSTS_JUSTFETCH)) == 0)
+-        if (!valid_arch_os(upg->install_pkgs)) 
++        if (!valid_arch_os(upg->install_pkgs,inst)) 
+             return 0;
+ 
+ 
+diff -Nur old/po/pl.po new/po/pl.po
+--- old/po/pl.po	2004-01-10 14:23:51.000000000 +0000
++++ new/po/pl.po	2004-03-09 00:04:13.000000000 +0000
+@@ -550,6 +550,9 @@
+ msgid "no packages specified"
+ msgstr "nie podano pakietów"
+ 
++msgid "Allow installation or upgrading even if the architectures of the binary package and host don't match."
++msgstr "Umo¿liwia instalacjê lub  uaktualnienie  nawet  w  wypadku,  gdy architektury binarnego pakietu i hosta nie odpowiadaj± sobie."
++
+ #: main.c:1871
+ msgid "I'm set*id'ed, give up"
+ msgstr "Mam ustawiony bit suid/sgid, wymiêkam"
+diff -Nur old/poldek.1 new/poldek.1
+--- old/poldek.1	2003-04-02 13:04:44.000000000 +0000
++++ new/poldek.1	2004-03-08 22:59:12.000000000 +0000
+@@ -380,8 +380,8 @@
+ Be tolerant for unmatched versioned dependencies which \s-1RPM\s0 tolerates, e.g.
+ package A requires capability foo >= 1.0 while package B provides \*(L"foo\*(R"
+ without any version.
+-.Ip "\fB\*(--nodeps\fR; \fB\*(--justdb\fR; \fB\*(--force\fR; \fB\*(--root\fR;" 4
+-.IX Item "nodeps; justdb; force; root;"
++.Ip "\fB\*(--nodeps\fR; \fB\*(--ignorearch\fR; \fB\*(--justdb\fR; \fB\*(--force\fR; \fB\*(--root\fR;" 4
++.IX Item "nodeps; ignorearch; justdb; force; root;"
+ Have the same meanings like \s-1RPM\s0 ones. See next section.
+ .Ip "\fB\-N, \-\-nofollow\fR" 4
+ .IX Item "-N, --nofollow"
+@@ -417,6 +417,8 @@
+ .PD 0
+ .Ip "\(bu \-\-force" 4
+ .IX Item "--force"
++.Ip "\(bu \-\-ignorearch" 4
++.IX Item "--ignorearch"
+ .Ip "\(bu \-\-install" 4
+ .IX Item "--install"
+ .Ip "\(bu \-\-justdb" 4
+diff -Nur old/poldek.pod new/poldek.pod
+--- old/poldek.pod	2002-10-18 10:35:18.000000000 +0000
++++ new/poldek.pod	2004-03-08 22:58:56.000000000 +0000
+@@ -286,7 +286,7 @@
+ package A requires capability foo >= 1.0 while package B provides "foo"
+ without any version.
+ 
+-=item B<--nodeps>; B<--justdb>; B<--force>; B<--root>;
++=item B<--nodeps>; B<--ignorearch>; B<--justdb>; B<--force>; B<--root>;
+ 
+ Have the same meanings like RPM ones. See next section.
+ 
+@@ -337,6 +337,8 @@
+ 
+ =item * --force
+ 
++=item * --ignorearch
++
+ =item * --install
+ 
+ =item * --justdb
+diff -Nur old/rpminstall.c new/rpminstall.c
+--- old/rpminstall.c	2002-10-24 16:23:10.000000000 +0000
++++ new/rpminstall.c	2004-03-08 21:04:19.000000000 +0000
+@@ -308,6 +308,10 @@
+             argv[n++] = "--define";
+             argv[n++] = n_array_nth(inst->rpmacros, i);
+         }
++
++    if (inst->flags & INSTS_IGNOREARCH)
++	    argv[n++] = "--ignorearch"; /* ignore architecture */
++
+     
+     if (inst->rpmopts) 
+         for (i=0; i<n_array_size(inst->rpmopts); i++)
+diff -Nur old/shell/install.c new/shell/install.c
+--- old/shell/install.c	2002-11-14 18:21:43.000000000 +0000
++++ new/shell/install.c	2004-03-08 23:37:47.000000000 +0000
+@@ -36,7 +36,7 @@
+ #define OPT_INST_FORCE      3
+ #define OPT_INST_REINSTALL  4
+ #define OPT_INST_DOWNGRADE  5
+-
++#define OPT_INST_IGNOREARCH 6
+ 
+ static struct argp_option options[] = {
+ {"mercy", 'm', 0, 0, N_("Be tolerant for bugs which RPM tolerates"), 1},
+@@ -61,6 +61,10 @@
+ {"nodeps", OPT_INST_NODEPS, 0, 0,
+  N_("Install packages with broken dependencies"), 1 },
+ 
++{"ignorearch", OPT_INST_IGNOREARCH, 0, 0,
++ N_("Allow installation or upgrading even if the architectures of the "
++      "binary package and host don't match."), 1 },
++
+ {0,  'v', 0, 0, N_("Be verbose."), 1 },
+ {NULL, 'h', 0, OPTION_HIDDEN, "", 1 }, /* alias for -? */
+ { 0, 0, 0, 0, 0, 0 },
+@@ -131,6 +135,9 @@
+             cmdarg->sh_s->inst->flags |= INSTS_FORCE;
+             break;
+             
++        case OPT_INST_IGNOREARCH:
++            cmdarg->sh_s->inst->flags |= INSTS_IGNOREARCH;
++            break;
+             
+         case 't':
+             if (cmdarg->sh_s->inst->flags & INSTS_TEST)
