@@ -1,7 +1,7 @@
 Summary:	RPM packages management helper tool
-Summary(pl):	Pomocnicze narzêdzie do pakietów RPM
+Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.12
+Version:	0.13
 Release:	1
 License:	GPL
 Group:		Applications/System
@@ -15,9 +15,11 @@ BuildRequires:	zlib-devel
 BuildRequires:	bzip2-devel
 BuildRequires:	/usr/bin/pod2man
 BuildRequires:	trurlib-devel >= 0.43.1
+BuildRequires:	curl-devel >= 7.7.4pre1
 %{?BOOT:BuildRequires:	zlib-static}
 %{?BOOT:BuildRequires:	bzip2-static}
 %{?BOOT:BuildRequires:	trurlib-static}
+%{?BOOT:BuildRequires:	curl-static}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -25,7 +27,8 @@ poldek is a cmdline tool which can be used to verify, install and
 upgrade given package sets.
 
 %description -l pl
-poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji, instalacji i upgrade'u zestawów pakietów.
+poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji, instalacji 
+i aktualizacji pakietów.
 
 %if %{?BOOT:1}%{!?BOOT:0}
 %package BOOT
@@ -68,7 +71,7 @@ install rpmvercmp-BOOT $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin/rpmvercmp
 # no strip cause program's alpha stage and core may be useful
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
-gzip -9nf README* *sample* poldek.1
+gzip -9nf README* *sample* poldek.1 NEWS TODO
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -77,7 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/%{name}*
-%doc README* *sample*
+%doc *.gz
 
 %if %{?BOOT:1}%{!?BOOT:0}
 %files BOOT
