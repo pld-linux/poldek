@@ -1,0 +1,37 @@
+===================================================================
+RCS file: /cvsroot/installer/poldek/pkgset-install.c,v
+retrieving revision 1.82.4.8
+retrieving revision 1.82.4.9
+diff -u -r1.82.4.8 -r1.82.4.9
+--- installer/poldek/pkgset-install.c	2004/05/05 16:51:29	1.82.4.8
++++ installer/poldek/pkgset-install.c	2004/06/08 18:37:19	1.82.4.9
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -978,7 +978,8 @@
+             ntoinstall++;
+         }
+     }
+-    
++
++    DBGF("%s -> %d\n", pkg_snprintf_s(pkg), ntoinstall);
+     return ntoinstall;
+ }
+ 
+@@ -993,7 +994,9 @@
+ 
+     *by_obsoletes = 0;
+     p = select_pkg(pkg->name, ps->pkgs, upg);
+-    if (p == NULL && (upg->inst->flags & INSTS_OBSOLETES)) {
++    if ((p == NULL || pkg_cmp_evr(p, pkg) == 0) && 
++        (upg->inst->flags & INSTS_OBSOLETES)) {
++	    
+         p = select_supersede_pkg(pkg, ps, upg);
+         *by_obsoletes = 1;
+     }
