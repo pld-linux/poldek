@@ -24,8 +24,14 @@ upgrade given package sets.
 %package BOOT
 Summary:	poldek for bootdisk
 Group:		Applications/System
+Group(de):	Applikationen/System
+Group(pl):	Aplikacje/System
 
 %description BOOT
+poldek is a cmdline tool which can be used to verify, install and
+upgrade given package sets.
+This version is for boot disk.
+
 %endif
 
 %prep 
@@ -43,15 +49,13 @@ mv -f rpmvercmp rpmvercmp-BOOT
 %configure 
 %{__make} 
 
-#CFLAGS="%{!?debug:$RPM_OPT_FLAGS}%{?debug:-O0 -g}" all
-
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %if %{?BOOT:1}%{!?BOOT:0}
-install -d $RPM_BUILD_ROOT/usr/lib/bootdisk/sbin
-install -s %{name}-BOOT $RPM_BUILD_ROOT/usr/lib/bootdisk/sbin/%{name}
-install -s rpmvercmp-BOOT $RPM_BUILD_ROOT/usr/lib/bootdisk/sbin/rpmvercmp
+install -d $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin
+install %{name}-BOOT $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin/%{name}
+install rpmvercmp-BOOT $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin/rpmvercmp
 %endif
 
 # no strip cause program's alpha stage and core may be useful
@@ -71,5 +75,5 @@ rm -rf $RPM_BUILD_ROOT
 %if %{?BOOT:1}%{!?BOOT:0}
 %files BOOT
 %defattr(644,root,root,755)
-%attr(755,root,root) /usr/lib/bootdisk/sbin/poldek
+%attr(755,root,root) %{_libdir}/bootdisk/sbin/poldek
 %endif
