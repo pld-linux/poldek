@@ -15,7 +15,7 @@ Release:	1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
-# Source0-md5:	d257b86899719e4bd747e1afe4e6888f
+# Source0-md5:	339c54b86bfd733851c0f7125057f446
 Source1:	%{name}.conf
 Patch1:		%{name}-etc_dir.patch
 Patch2:		%{name}-retr_term.patch
@@ -86,8 +86,6 @@ modu³u CPAN.
 %setup -q
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 %build
 %{__autopoint}
