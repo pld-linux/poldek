@@ -8,7 +8,7 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
 %define	ver_rpm	4.3-0.20030610.29
-%define	snap	20041005.23
+%define	snap	20041006.14
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
@@ -17,7 +17,7 @@ Release:	0.%{snap}.2
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	33b8f14d8b7bf4c1538ac441ac3c7eca
+# Source0-md5:	4906de6f133c0a7c04a0fbb0d09e31dc
 Source1:	%{name}.conf
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
