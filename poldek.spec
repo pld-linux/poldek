@@ -28,7 +28,7 @@ BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	bzip2-devel
 %{?with_curl:BuildRequires:	curl-devel >= 7.8}
-BuildRequires:	db4.3-devel >= %{ver_db}
+BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
@@ -40,7 +40,7 @@ BuildRequires:	perl-tools-pod
 %if %{with static}
 BuildRequires:	bzip2-static
 %{?with_curl:BuildRequires:	curl-static}
-BuildRequires:	db4.3-static >= %{ver_db}
+BuildRequires:	db-static >= %{ver_db}
 BuildRequires:	glibc-static
 BuildRequires:	libselinux-static
 BuildRequires:	ncurses-static
@@ -51,7 +51,7 @@ BuildRequires:	readline-static
 BuildRequires:	rpm-static
 BuildRequires:	zlib-static
 %endif
-Requires:	db4.3 >= %{ver_db}
+Requires:	db >= %{ver_db}
 Requires:	ed
 Requires:	rpm >= %{ver_rpm}
 %{?with_distver:Requires:	rpm-lib(distver)}
