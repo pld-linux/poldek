@@ -9,17 +9,17 @@ Group(de):	Applikationen/System
 Group(pl):	Aplikacje/System
 Source0:	ftp://ftp.pld.org.pl/software/%{name}/%{name}-%{version}.tar.gz
 Requires:	/bin/rpm
+BuildRequires:	bzip2-devel
 BuildRequires:	db3-devel >= 3.1.14-2
+BuildRequires:	curl-devel >= 7.8
 BuildRequires:	rpm-devel >= 3.0.5
 BuildRequires:	popt-static
-BuildRequires:	zlib-devel
-BuildRequires:	bzip2-devel
-BuildRequires:	/usr/bin/pod2man
-BuildRequires:	trurlib-devel >= 0.43.2
-BuildRequires:	curl-devel >= 7.8
 BuildRequires:	openssl-devel
-BuildRequires:	pcre-devel
 BuildRequires:	readline-devel
+BuildRequires:	trurlib-devel >= 0.43.2
+BuildRequires:	zlib-devel
+BuildRequires:	/usr/bin/pod2man
+BuildRequires:	pcre-devel
 %{?BOOT:BuildRequires:	bzip2-static}
 %{?BOOT:BuildRequires:	curl-static}
 %{?BOOT:BuildRequires:	openssl-static}
