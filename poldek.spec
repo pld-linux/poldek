@@ -1,6 +1,7 @@
 # conditional build
 #  --with static   -- don't use shared libraries
 #  --without imode -- don't build interactive mode
+#  --without curl  -- don't link curl
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
@@ -67,7 +68,8 @@ modu³u CPAN.
 %build
 %configure \
 	%{?_with_static:--enable-static} \
-	%{?_without_imode:--disable-imode}
+	%{?_without_imode:--disable-imode} \
+	%{?_without_curl:--without-curl}
 %{__make}
 
 %install
