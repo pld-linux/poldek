@@ -55,9 +55,8 @@ This version is for boot disk.
 %build
 %if %{?BOOT:1}%{!?BOOT:0}
 %configure --enable-static --disable-imode
-%{__make} CFLAGS="-Os"
+%{__make} CFLAGS="-O0 -g"
 mv -f %{name} %{name}-BOOT
-mv -f rpmvercmp rpmvercmp-BOOT
 %{__make} clean
 %endif
 
@@ -70,7 +69,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{?BOOT:1}%{!?BOOT:0}
 install -d $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin
 install %{name}-BOOT $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin/%{name}
-install rpmvercmp-BOOT $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin/rpmvercmp
 %endif
 
 # no strip cause program's alpha stage and core may be useful
