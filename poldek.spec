@@ -1,31 +1,28 @@
+# TODO:
+#	- libs/devel subpackages
 #
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
-%bcond_with	curl	# link with curl
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
 %define	ver_rpm	4.3-0.20030610.29
-%define	snap	20040323
+%define	snap	20040928
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.18.4
-Release:	0.%{snap}.2
+Version:	0.19.0
+Release:	0.%{snap}.1
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/poldek-cvs%{snap}.tar.bz2
-# Source0-md5:	e69b8d1cdd4ddfd8590693cc10a28ae9
+Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
+# Source0-md5:	a3b565cc49a7e4bd1244f649aa7c264a
 Source1:	%{name}.conf
-Patch0:		%{name}-etc_dir.patch
-Patch1:		%{name}-retr_term.patch
-Patch2:		%{name}-types.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	bzip2-devel
-%{?with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	openssl-devel >= 0.9.7c
@@ -37,7 +34,6 @@ BuildRequires:	zlib-devel
 BuildRequires:	perl-tools-pod
 %if %{with static}
 BuildRequires:	bzip2-static
-%{?with_curl:BuildRequires:	curl-static}
 BuildRequires:	db-static >= %{ver_db}
 BuildRequires:	ncurses-static
 BuildRequires:	openssl-static
@@ -84,10 +80,7 @@ modu³u CPAN.
 %{!?with_imode:Ta wersja nie posiada trybu interaktywnego.}
 
 %prep
-%setup -q -n %{name}-cvs%{snap}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%setup -q -n %{name}-%{version}-cvs%{snap}
 
 %build
 %{__autopoint}
@@ -98,7 +91,7 @@ cp -f config.sub trurlib
 %configure \
 	%{?with_static:--enable-static} \
 	%{!?with_imode:--disable-imode} \
-	%{?with_curl:--with-curl}
+	--enable-nls
 %{__make}
 
 %install
@@ -109,22 +102,24 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
-sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/%{name}.conf
 
 %find_lang %{name}
+
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- poldek <= 0.18.3-5
-if grep -q '^promoteepoch.*yes' /etc/poldek.conf ; then
-	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed -s /etc/poldek.conf
-fi
-
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc README* NEWS TODO *sample* conf/poldekrc*
-%attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}.conf
+%doc README* NEWS TODO conf/*.conf
+%dir %{_sysconfdir}/%{name}
+%attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}/%{name}.conf
 %attr(755,root,root) %{_bindir}/*
+%dir %{_libdir}/%{name}
+%attr(755,root,root) %{_libdir}/%{name}/*
+%attr(755,root,root) %{_libdir}/lib*.so.*
 %{_mandir}/man1/%{name}*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
