@@ -32,6 +32,7 @@ BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	bzip2-static}
 %{?_with_curl:%{?_with_static:BuildRequires:	curl-static}}
+%{?_with_static:BuildRequires:	ncurses-static}
 %{?_with_static:BuildRequires:	openssl-static}
 %{?_with_static:BuildRequires:	pcre-static}
 %{?_with_static:BuildRequires:	popt-static}
