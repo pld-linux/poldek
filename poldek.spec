@@ -49,6 +49,7 @@ BuildRequires:	zlib-static
 BuildRequires:	glibc-static
 %endif
 Requires:	db >= %{ver_db}
+Requires:	ed
 Requires:	rpm >= %{ver_rpm}
 Requires:	sed
 Requires:	openssl >= 0.9.7c
@@ -113,6 +114,11 @@ sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%triggerpostun -- poldek <= 0.18.3-3
+if ! grep -q '^promoteepoch.*yes' /etc/poldek.conf ; then
+	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed /etc/poldek.conf
+fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
