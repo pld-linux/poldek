@@ -21,6 +21,7 @@ BuildRequires:	popt-static
 %{?BOOT:BuildRequires:	bzip2-static}
 %{?BOOT:BuildRequires:	trurlib-static}
 %{?BOOT:BuildRequires:	curl-static}
+%{?BOOT:BuildRequires:	openssl-static}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
