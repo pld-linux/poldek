@@ -18,6 +18,8 @@ Patch0:		%{name}-retr_term.patch
 Patch1:		%{name}-sigsegv.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	/usr/bin/pod2man
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	bzip2-devel
 %{?with_static:BuildRequires:	bzip2-static}
 %{?with_curl:BuildRequires:	curl-devel >= 7.8}
