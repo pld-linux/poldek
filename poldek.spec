@@ -6,11 +6,12 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.17.2
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
 Source1:	%{name}.conf
+Patch0:		%{name}-bugfix.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 %{!?_with_static:Requires:	trurlib >= 0.43.5}
 Requires:	/bin/rpm
