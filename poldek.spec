@@ -16,7 +16,7 @@ BuildRequires:	rpm-devel >= 3.0.5
 BuildRequires:	popt-static
 BuildRequires:	openssl-devel
 BuildRequires:	readline-devel
-BuildRequires:	trurlib-devel >= 0.43.2
+BuildRequires:	trurlib-devel >= 0.43.3
 BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
 BuildRequires:	pcre-devel
