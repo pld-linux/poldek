@@ -20,7 +20,7 @@ BuildRequires:	bzip2-devel
 %{?_with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	automake
 BuildRequires:	autoconf
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 0.9.7
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
