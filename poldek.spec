@@ -1,7 +1,7 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.13
+Version:	0.14
 Release:	1
 License:	GPL
 Group:		Applications/System
@@ -11,12 +11,15 @@ Source0:	%{name}-%{version}.tar.gz
 Requires:	/bin/rpm
 BuildRequires:	db3-devel >= 3.1.14-2
 BuildRequires:	rpm-devel >= 3.0.5
+BuildRequires:	popt-static
 BuildRequires:	zlib-devel
 BuildRequires:	bzip2-devel
 BuildRequires:	/usr/bin/pod2man
-BuildRequires:	trurlib-devel >= 0.43.1
-BuildRequires:	curl-devel >= 7.7.4pre1
-BuildRequires:	popt-static
+BuildRequires:	trurlib-devel >= 0.43.2
+BuildRequires:	curl-devel >= 7.8
+BuildRequires:	openssl-devel
+BuildRequires:	readline-devel
+BuildRequires:	pcre-devel
 %{?BOOT:BuildRequires:	zlib-static}
 %{?BOOT:BuildRequires:	bzip2-static}
 %{?BOOT:BuildRequires:	trurlib-static}
@@ -73,7 +76,7 @@ install rpmvercmp-BOOT $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin/rpmvercmp
 # no strip cause program's alpha stage and core may be useful
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
-gzip -9nf README* *sample* poldek.1 NEWS TODO
+gzip -9nf README* *sample* NEWS TODO
 
 %clean
 rm -rf $RPM_BUILD_ROOT
