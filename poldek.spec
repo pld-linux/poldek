@@ -27,14 +27,15 @@ BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	openssl-devel >= 0.9.7c
 BuildRequires:	pcre-devel
+BuildRequires:	perl-tools-pod
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
 BuildRequires:	rpm-devel >= %{ver_rpm}
 BuildRequires:	zlib-devel
-BuildRequires:	perl-tools-pod
 %if %{with static}
 BuildRequires:	bzip2-static
 BuildRequires:	db-static >= %{ver_db}
+BuildRequires:	glibc-static
 BuildRequires:	ncurses-static
 BuildRequires:	openssl-static
 BuildRequires:	pcre-static
@@ -42,7 +43,6 @@ BuildRequires:	popt-static
 BuildRequires:	readline-static
 BuildRequires:	rpm-static
 BuildRequires:	zlib-static
-BuildRequires:	glibc-static
 %endif
 Requires:	db >= %{ver_db}
 Requires:	ed
@@ -102,7 +102,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
-sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
+sed "s|i686|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 
 %find_lang %{name}
 
