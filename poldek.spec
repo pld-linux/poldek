@@ -27,6 +27,7 @@ Patch6:		%{name}-progress2.patch
 Patch7:		%{name}-po.patch
 Patch8:		%{name}-deps-fix.patch
 Patch9:		%{name}-obsoletes_provides.patch
+Patch10:	%{name}-rev-promote.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -102,6 +103,7 @@ modu³u CPAN.
 %patch7 -p1
 %patch8 -p0
 %patch9 -p0
+%patch10 -p0
 
 %build
 %{__autopoint}
