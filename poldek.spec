@@ -1,62 +1,48 @@
 #
 # Conditional build:
-%bcond_with	static	# don't use shared libraries
-%bcond_without	imode	# don't build interactive mode
-%bcond_with	curl	# link with curl
+%bcond_without	imode		# don't build interactive mode
+%bcond_without	curl		# don't link curl
+%bcond_with	static		# don't use shared libraries
 #
-# required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.2.50-1
-%define	ver_rpm	4.3-0.20030610.29
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.6
-Release:	7
+Release:	1
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
-# Source0-md5:	21e4b2fa1695d95479e01fe82a4d84da
+Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
+# Source0-md5:	99d118c986e8102e11b81768499ec0bd
 Source1:	%{name}.conf
-Patch0:		%{name}-etc_dir.patch
-Patch1:		%{name}-retr_term.patch
-Patch2:		%{name}-simplestatic.patch
-Patch3:		%{name}-pkgorder.patch
-Patch4:		%{name}-sigsegv.patch
-Patch5:		%{name}-caplookup.patch
-Patch6:		%{name}-progress2.patch
+Patch0:         %{name}-retr_term.patch
+Patch1:         %{name}-simplestatic.patch
+Patch2:         %{name}-pkgorder.patch
+Patch3:         %{name}-sigsegv.patch
+Patch4:         %{name}-caplookup.patch
+Patch5:         %{name}-progress2.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
-BuildRequires:	automake
+BuildRequires:	/usr/bin/pod2man
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	bzip2-devel
+%{?with_static:BuildRequires:	bzip2-static}
 %{?with_curl:BuildRequires:	curl-devel >= 7.8}
-BuildRequires:	db-devel >= %{ver_db}
-BuildRequires:	gettext-autopoint
-BuildRequires:	openssl-devel >= 0.9.7d
+%{?with_curl:%{?with_static:BuildRequires:	curl-static}}
+%{?with_static:BuildRequires:  db1-static}
+%{?with_static:BuildRequires:  db3-static}
+BuildRequires:	openssl-devel >= 0.9.6m
+%{?with_static:BuildRequires:	openssl-static}
 BuildRequires:	pcre-devel
+%{?with_static:BuildRequires:	pcre-static}
 BuildRequires:	popt-devel
+%{?with_static:BuildRequires:	popt-static}
 BuildRequires:	readline-devel
-BuildRequires:	rpm-devel >= %{ver_rpm}
+BuildRequires:	rpm-devel >= 4.0.2-62
+%{?with_static:BuildRequires:	rpm-static}
 BuildRequires:	zlib-devel
-BuildRequires:	perl-tools-pod
-%if %{with static}
-BuildRequires:	bzip2-static
-%{?with_curl:BuildRequires:	curl-static}
-BuildRequires:	db-static >= %{ver_db}
-BuildRequires:	glibc-static
-BuildRequires:	libselinux-static
-BuildRequires:	ncurses-static
-BuildRequires:	openssl-static
-BuildRequires:	pcre-static
-BuildRequires:	popt-static
-BuildRequires:	readline-static
-BuildRequires:	rpm-static
-BuildRequires:	zlib-static
-%endif
-Requires:	db >= %{ver_db}
-Requires:	ed
-Requires:	rpm >= %{ver_rpm}
+%{?with_static:BuildRequires:	zlib-static}
+Requires:	rpm >= 4.0.2-62
 Requires:	sed
-Requires:	openssl >= 0.9.7c
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -75,12 +61,12 @@ shell mode of Perl's CPAN.
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
-instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji i
-usuwania pakietów.
+instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji
+i usuwania pakietów.
 
-Program mo¿e byæ u¿ywany w trybie wsadowym (jak debianowy apt-get) lub
-interaktywnym. Tryb interaktywny posiada interfejs readline z
-dope³nianiem komend i histori±, podobny do trybu shell perlowego
+Program mo¿e byæ u¿ywany w trybie wsadowym (jak debianowy apt-get)
+lub interaktywnym. Tryb interaktywny posiada interfejs readline
+z dope³nianiem komend i histori±, podobny do trybu shell perlowego
 modu³u CPAN.
 
 %{?with_static:Ta wersja jest konsolidowana statycznie.}
@@ -90,19 +76,24 @@ modu³u CPAN.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
+%patch1 -p0
 %patch2 -p0
 %patch3 -p0
 %patch4 -p0
-%patch5 -p0
-%patch6 -p1
+%patch5 -p1
 
 %build
-%{__autopoint}
+if ! grep -q AM_GNU_GETTEXT_VERSION configure.in ; then
+	cp configure.in configure.in.orig
+	sed -e 's/AM_GNU_GETTEXT\(.*\)/AM_GNU_GETTEXT\1\
+AM_GNU_GETTEXT_VERSION(0.10.40)/' \
+		-e 's=po/Makefile.in=po/Makefile.in intl/Makefile=' \
+		configure.in.orig >configure.in
+	autopoint --force
+fi
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
-cp -f config.sub trurlib
 %configure \
 	%{?with_static:--enable-static} \
 	%{!?with_imode:--disable-imode} \
@@ -113,20 +104,21 @@ cp -f config.sub trurlib
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
+# no strip cause program's beta stage and core may be useful
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
-sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+%{?with_static:rm -f $RPM_BUILD_ROOT/%{_bindir}/rpmvercmp}
+sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT/etc/%{name}.conf
 
 %find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- poldek <= 0.18.3-5
-if grep -q '^promoteepoch.*yes' /etc/poldek.conf ; then
-	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed -s /etc/poldek.conf
+%triggerpostun -- poldek <= 0.18.3-1
+if ! grep -q promoteepoch /etc/poldek.conf ; then
+	echo promoteepoch = yes >>/etc/poldek.conf
 fi
 
 %files -f %{name}.lang
