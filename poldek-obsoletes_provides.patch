@@ -4,7 +4,7 @@ RCS file: /cvsroot/installer/poldek/Attic/rpm.c,v
 retrieving revision 1.41.4.6
 diff -u -r1.41.4.6 rpm.c
 --- rpm.c	14 Aug 2004 20:40:46 -0000	1.41.4.6
-+++ rpm.c	25 Aug 2004 12:12:36 -0000
++++ rpm.c	27 Aug 2004 19:15:44 -0000
 @@ -446,20 +446,34 @@
      return n;
  }
@@ -48,22 +48,34 @@ diff -u -r1.41.4.6 rpm.c
              struct dbpkg *dbpkg = dbpkg_new(dbrec->recno, dbrec->h, ldflags);
              n_array_push(dbpkgs, dbpkg);
              n_array_sort(dbpkgs);
-@@ -467,6 +481,18 @@
-         }
-     }
-     rpmdb_it_destroy(&it);
-+    return n;
-+}
-+
-+int rpm_get_obsoletedby_cap(rpmdb db, tn_array *dbpkgs, struct capreq *cap,
-+                            unsigned ldflags)
-+{
-+    int n;
-+
-+    n = get_obsoletedby_cap(db, RPMITER_NAME, dbpkgs, cap, ldflags);
-+#ifdef HAVE_RPM_4_1
-+    n += get_obsoletedby_cap(db, RPMITER_CAP, dbpkgs, cap, ldflags);
-+#endif    
+@@ -470,6 +484,11 @@
      return n;
  }
  
++int rpm_get_obsoletedby_cap(rpmdb db, tn_array *dbpkgs, struct capreq *cap,
++                            unsigned ldflags)
++{
++    return get_obsoletedby_cap(db, RPMITER_NAME, dbpkgs, cap, ldflags);
++}
+ 
+ int rpm_get_obsoletedby_pkg(rpmdb db, tn_array *dbpkgs, const struct pkg *pkg,
+                             unsigned ldflags)
+@@ -482,7 +501,7 @@
+                           REL_EQ | REL_LT, 0);
+     n = rpm_get_obsoletedby_cap(db, dbpkgs, self_cap, ldflags);
+     capreq_free(self_cap);
+-    
++
+     if (pkg->cnfls == NULL)
+         return n;
+     
+@@ -493,6 +512,9 @@
+             continue;
+ 
+         n += rpm_get_obsoletedby_cap(db, dbpkgs, cnfl, ldflags);
++#ifdef HAVE_RPM_4_1
++        n += get_obsoletedby_cap(db, RPMITER_CAP, dbpkgs, cnfl, ldflags);
++#endif    
+     }
+     
+     return n;
