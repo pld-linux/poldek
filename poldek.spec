@@ -1,3 +1,6 @@
+# conditional build
+#  --with static   -- don't use shared libraries
+#  --without imode -- don't build interactive mode
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
@@ -19,13 +22,6 @@ BuildRequires:	rpm-devel >= 3.0.5
 BuildRequires:	trurlib-devel >= 0.43.3
 BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
-%{?BOOT:BuildRequires:	bzip2-static}
-%{?BOOT:BuildRequires:	curl-static}
-%{?BOOT:BuildRequires:	openssl-static}
-%{?BOOT:BuildRequires:	popt-static}
-%{?BOOT:BuildRequires:	rpm-static}
-%{?BOOT:BuildRequires:	trurlib-static}
-%{?BOOT:BuildRequires:	zlib-static}
 %{?_with_static:BuildRequires:	bzip2-static}
 %{?_with_static:BuildRequires:	curl-static}
 %{?_with_static:BuildRequires:	openssl-static}
@@ -47,45 +43,33 @@ shell mode of Perl's CPAN.
 
 %{?_with_static:This version is statically linked}
 
+%{?_without_imode:This version hasn't got interactive mode.}
+
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
-instalacji i aktualizacji pakietów.
+instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji 
+pakietów i usuwania pakietów.
 
-%package BOOT
-Summary:	poldek for bootdisk
-Summary(pl):	poldek dla bootkietki
-Group:		Applications/System
+Program mo¿e byæ u¿ywany w trybie wsadowym (jak debianowy apt-get)
+lub interaktywnym. Tryb interaktywny posiada interfajs readline z
+dope³nianiem komend i histori±, podobny do trybu shell CPANa.
 
-%description BOOT
-poldek is a cmdline tool which can be used to verify, install and
-upgrade given package sets. This version is for boot disk.
+%{?_with_static:Ta wersja jest zlinkowana statycznie.}
 
-%description BOOT -l pl
-poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
-instalacji i aktualizacji pakietów. To jest wersja dla bootkietki.
+%{?_without_imode:Ta wersja nie posiada trybu interaktywnego.}
 
 %prep
 %setup -q
 
 %build
-%if %{?BOOT:1}%{!?BOOT:0}
-%configure --enable-static --disable-imode
-%{__make} CFLAGS="-O0 -g"
-mv -f %{name} %{name}-BOOT
-%{__make} clean
-%endif
-
-%configure %{?_with_static:--enable-static}
+%configure \
+	%{?_with_static:--enable-static} \
+	%{?_without_imode:--disable-imode}
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
-
-%if %{?BOOT:1}%{!?BOOT:0}
-install -d $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin
-install %{name}-BOOT $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin/%{name}
-%endif
 
 # no strip cause program's alpha stage and core may be useful
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
@@ -103,9 +87,3 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/%{name}*
 %doc *.gz
-
-%if %{?BOOT:1}%{!?BOOT:0}
-%files BOOT
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/bootdisk/sbin/poldek
-%endif
