@@ -1,5 +1,6 @@
+diff -r -u poldek-0.18.3/vfile/vfprogress.c poldek-0.18.3-patrys/vfile/vfprogress.c
 --- poldek-0.18.3/vfile/vfprogress.c	2004-04-02 13:15:40.450672496 +0200
-+++ poldek-0.18.3-patrys/vfile/vfprogress.c	2004-04-02 13:11:02.475931080 +0200
++++ poldek-0.18.3-patrys/vfile/vfprogress.c	2004-04-02 13:27:30.161780008 +0200
 @@ -68,6 +68,7 @@
      time_t		    current_time;
      float		    transfer_rate = 0.0;
@@ -8,7 +9,7 @@
      
      if (bar->state == VF_PROGRESS_DISABLED)
          return;
-@@ -79,8 +80,15 @@
+@@ -79,8 +80,19 @@
          bar->state = VF_PROGRESS_DISABLED;
          return;
      }
@@ -17,6 +18,10 @@
 +    {
 +	screen_width = 50;
 +    }
++    if (screen_width > 255) /* this might cause problems */
++    {
++	screen_width = 255;
++    }
      
      if (bar->state == VF_PROGRESS_VIRGIN) {
 +    /* calling progress bar for the first time */
@@ -24,7 +29,7 @@
          if (total > 0) {
              if (total == amount ||   /* downloaded before progress() call */
                  total < 1024) {       /* too small to show to */
-@@ -113,9 +121,11 @@
+@@ -113,9 +125,11 @@
          return;
      }
      
@@ -37,7 +42,7 @@
          int k;
          
          k = n - bar->prev_n;
-@@ -131,29 +141,32 @@
+@@ -131,29 +145,32 @@
          }
          
      } else {
