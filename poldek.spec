@@ -33,8 +33,8 @@ poldek is a cmdline tool which can be used to verify, install and
 upgrade given package sets.
 
 %description -l pl
-poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji, instalacji 
-i aktualizacji pakietów.
+poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
+instalacji i aktualizacji pakietów.
 
 %if %{?BOOT:1}%{!?BOOT:0}
 %package BOOT
@@ -45,8 +45,7 @@ Group(pl):	Aplikacje/System
 
 %description BOOT
 poldek is a cmdline tool which can be used to verify, install and
-upgrade given package sets.
-This version is for boot disk.
+upgrade given package sets. This version is for boot disk.
 
 %endif
 
@@ -66,7 +65,7 @@ mv -f %{name} %{name}-BOOT
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc
+install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %if %{?BOOT:1}%{!?BOOT:0}
 install -d $RPM_BUILD_ROOT%{_libdir}/bootdisk/sbin
@@ -85,7 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/%{name}.conf
+%attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}.conf
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/%{name}*
 %doc *.gz
