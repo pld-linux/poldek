@@ -63,13 +63,12 @@
      int        type;
      
      headerNVR(h, (void*)&name, (void*)&version, (void*)&release);
-@@ -267,6 +281,14 @@
+@@ -267,6 +281,13 @@
      if (type != RPM_STRING_TYPE)
          arch = NULL;
      
 +    if (!headerGetEntry(h, RPMTAG_DISTRIBUTION, &type, (void *)&dist, NULL)) {
-+        logn(LOGERR, _("%s: read distribution tag failed"), fname);
-+        return NULL;
++        dist = NULL;
 +    }
 +
 +    if (type != RPM_STRING_TYPE)
