@@ -1,0 +1,11 @@
+--- poldek-0.17.7/rpm.c.orig	Thu Apr 25 18:34:12 2002
++++ poldek-0.17.7/rpm.c	Thu Aug  8 14:42:40 2002
+@@ -752,7 +752,7 @@
+     int i, n = 0;
+     
+ 
+-    self_cap = capreq_new(pkg->name, 0, NULL, NULL, 0, 0);
++    self_cap = capreq_new(pkg->name, pkg->epoch, pkg->ver, pkg->rel, REL_LT, 0);
+     n = rpm_get_obsoletedby_cap(db, dbpkgs, self_cap, ldflags);
+     capreq_free(self_cap);
+     
