@@ -16,6 +16,7 @@ BuildRequires:	bzip2-devel
 BuildRequires:	/usr/bin/pod2man
 BuildRequires:	trurlib-devel >= 0.43.1
 BuildRequires:	curl-devel >= 7.7.4pre1
+BuildRequires:	popt-static
 %{?BOOT:BuildRequires:	zlib-static}
 %{?BOOT:BuildRequires:	bzip2-static}
 %{?BOOT:BuildRequires:	trurlib-static}
