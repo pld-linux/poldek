@@ -18,6 +18,8 @@ Requires:	rpm >= 4.0.2-62
 Requires:	sed
 BuildRequires:	bzip2-devel
 %{?_with_curl:BuildRequires:	curl-devel >= 7.8}
+BuildRequires:	automake
+BuildRequires:	autoconf
 BuildRequires:	openssl-devel
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
