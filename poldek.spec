@@ -29,7 +29,7 @@ BuildRequires:	bzip2-devel
 %{?with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
-BuildRequires:	openssl-devel >= 0.9.7c
+BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
