@@ -46,6 +46,8 @@ BuildRequires:	/usr/bin/pod2man
 %{?_with_static:BuildRequires:	glibc-static}
 Requires:	rpm >= 4.0.2-62
 Requires:	sed
+Requires:	openssl >= 0.9.7c
+Requires:	pcre
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
