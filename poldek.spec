@@ -18,7 +18,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	readline-devel
 BuildRequires:	trurlib-devel >= 0.43.2
 BuildRequires:	zlib-devel
-BuildRequires:	/usr/bin/pod2man
+BuildRequires:	pod2man
 BuildRequires:	pcre-devel
 %{?BOOT:BuildRequires:	bzip2-static}
 %{?BOOT:BuildRequires:	curl-static}
