@@ -12,6 +12,7 @@ Release:	9
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
+# Source0-md5: 4d5ca989b7f78767084bb1872a87c6ba
 Source1:	%{name}.conf
 Patch0:		%{name}-static.patch
 Patch1:		%{name}-etc_dir.patch
