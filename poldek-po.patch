@@ -1,13 +1,13 @@
 --- poldek-0.18.6/po/pl.po	2004-06-28 21:24:02.000000000 +0000
 +++ poldek-0.18.6.new/po/pl.po	2004-08-10 10:21:49.260111680 +0000
 @@ -1007,12 +1007,12 @@
- #: pkgset-install.c:1898
+ #: pkgset-install.c:1897
  #, c-format
  msgid "Need to download about %s of archives. "
 -msgstr ""
 +msgstr "Do ¶ci±gniêcia potrzeba oko³o %s pakietów. "
  
- #: pkgset-install.c:1904
+ #: pkgset-install.c:1903
  #, c-format
  msgid "_After unpacking about %s will be used."
 -msgstr ""
