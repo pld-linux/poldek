@@ -109,6 +109,7 @@ modu³u CPAN.
 %{__autopoint}
 %{__aclocal} -I m4
 %{__autoconf}
+%{__autoheader}
 %{__automake}
 cp -f config.sub trurlib
 %configure \
