@@ -10,10 +10,13 @@ Source0:	%{name}-%{version}.tar.gz
 Requires:	/bin/rpm
 BuildRequires:	db3-devel >= 3.1.14-2
 BuildRequires:	rpm-devel >= 3.0.5
-BuildRequires:	zlib-static
-BuildRequires:	bzip2-static
+BuildRequires:	zlib-devel
+BuildRequires:	bzip2-devel
 BuildRequires:	/usr/bin/pod2man
 BuildRequires:	trurlib-devel >= 0.43.1
+%{?BOOT:BuildRequires:	zlib-static}
+%{?BOOT:BuildRequires:	bzip2-static}
+%{?BOOT:BuildRequires:	trurlib-static}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
