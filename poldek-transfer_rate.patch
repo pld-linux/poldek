@@ -1,0 +1,11 @@
+--- poldek-0.18.7/vfile/vfprogress.c~	2004-09-25 16:15:45.000000000 +0200
++++ poldek-0.18.7/vfile/vfprogress.c	2004-11-16 19:21:35.011756552 +0100
+@@ -171,7 +171,7 @@
+                 bar->transfer_rate = total;
+ 
+             nn = n_snprintf(unit_line, sizeof(unit_line), "[%s (%s/s)]",
+-                            total_str, total_str);
++                            total_str, transfer_str);
+         } else {
+             int n = 0;
+             char eta_str[64];
