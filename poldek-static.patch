@@ -33,3 +33,15 @@
  	AC_CONFIG_SUBDIRS(trurlib)
  	NARRAY="\"$srcdir/$TRURL_DIR/include/trurl/narray.h\""
  fi
+--- poldek-0.18.1/configure.in	Thu May 22 23:02:25 2003
++++ poldek-0.18.1/configure.in-new	Thu May 22 23:02:37 2003
+@@ -290,7 +290,7 @@
+ dnl 4.0.4 has cross dependenecies(?)
+ if test ${is_rpm4_0_4}. = yes. -a ${ENABLE_STATIC}. = yes. ; then
+-	if ${have_beecrypt}. = yes. ; then
++ 	if test ${have_beecrypt}. = yes. ; then
+-		LIBS="$LIBS -lbz2 -lrpmio"
++		LIBS="$LIBS -lbz2 -lrpmio -lbeecrypt -lpthread"
+ 	fi
+ 	LIBS="$LIBS -lbz2 -lrpmio"
+ fi
