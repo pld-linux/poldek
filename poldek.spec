@@ -5,19 +5,6 @@ Version:	0.16
 Release:	2
 License:	GPL
 Group:		Applications/System
-Group(cs):	Aplikace/Systém
-Group(da):	Programmer/System
-Group(de):	Applikationen/System
-Group(es):	Aplicaciones/Sistema
-Group(fr):	Applications/Système
-Group(it):	Applicazioni/Sistema
-Group(ja):	¥¢¥×¥ê¥±¡¼¥·¥ç¥ó/¥·¥¹¥Æ¥à
-Group(no):	Applikasjoner/System
-Group(pl):	Aplikacje/System
-Group(pt):	Aplicações/Sistema
-Group(pt_BR):	Aplicações/Sistema
-Group(ru):	ğÒÉÌÏÖÅÎÉÑ/óÉÓÔÅÍÁ
-Group(sv):	Tillämpningar/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}/%{name}-%{version}.tar.gz
 %{!?_with_static:Requires:	trurlib >= 0.43.3}
 Requires:	/bin/rpm
@@ -68,19 +55,6 @@ instalacji i aktualizacji pakietów.
 Summary:	poldek for bootdisk
 Summary(pl):	poldek dla bootkietki
 Group:		Applications/System
-Group(cs):	Aplikace/Systém
-Group(da):	Programmer/System
-Group(de):	Applikationen/System
-Group(es):	Aplicaciones/Sistema
-Group(fr):	Applications/Système
-Group(it):	Applicazioni/Sistema
-Group(ja):	¥¢¥×¥ê¥±¡¼¥·¥ç¥ó/¥·¥¹¥Æ¥à
-Group(no):	Applikasjoner/System
-Group(pl):	Aplikacje/System
-Group(pt):	Aplicações/Sistema
-Group(pt_BR):	Aplicações/Sistema
-Group(ru):	ğÒÉÌÏÖÅÎÉÑ/óÉÓÔÅÍÁ
-Group(sv):	Tillämpningar/System
 
 %description BOOT
 poldek is a cmdline tool which can be used to verify, install and
