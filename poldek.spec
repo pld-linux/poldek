@@ -47,7 +47,6 @@ BuildRequires:	/usr/bin/pod2man
 Requires:	rpm >= 4.0.2-62
 Requires:	sed
 Requires:	openssl >= 0.9.7c
-Requires:	pcre
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -89,7 +88,7 @@ modu³u CPAN.
 %patch6 -p1
 
 %build
-autopoint --force
+%{__autopoint}
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
