@@ -2,19 +2,20 @@
 # conditional build:
 #  --with static	- don't use shared libraries
 #  --without imode	- don't build interactive mode
-#  --without curl	- don't link curl
+#  --with curl	        - link with curl
 #
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.1
-Release:	4.5
+Release:	5
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
 Source1:	%{name}.conf
 Patch0:		%{name}-static.patch
 Patch1:		%{name}-home_etc.patch
+Patch2:		%{name}-rpm4.2.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 Requires:	rpm >= 4.0.2-62
 Requires:	sed
@@ -57,12 +58,12 @@ shell mode of Perl's CPAN.
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
-instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji
-i usuwania pakietów.
+instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji i
+usuwania pakietów.
 
-Program mo¿e byæ u¿ywany w trybie wsadowym (jak debianowy apt-get)
-lub interaktywnym. Tryb interaktywny posiada interfejs readline
-z dope³nianiem komend i histori±, podobny do trybu shell perlowego
+Program mo¿e byæ u¿ywany w trybie wsadowym (jak debianowy apt-get) lub
+interaktywnym. Tryb interaktywny posiada interfejs readline z
+dope³nianiem komend i histori±, podobny do trybu shell perlowego
 modu³u CPAN.
 
 %{?_with_static:Ta wersja jest konsolidowana statycznie.}
@@ -72,7 +73,8 @@ modu³u CPAN.
 %prep
 %setup -q
 %patch0	-p1
-%patch1 -p1
+#%patch1 -p1
+%patch2 -p1
 
 %build
 autopoint --force
@@ -92,7 +94,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 # no strip cause program's beta stage and core may be useful
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 %{?_with_static:rm -f $RPM_BUILD_ROOT/%{_bindir}/rpmvercmp}
-sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT/etc/%{name}.conf
+sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
 
 %find_lang %{name}
 
