@@ -11,7 +11,7 @@
  #, c-format
  msgid "_After unpacking about %s will be used."
 -msgstr ""
-+msgstr "Po rozpakowaniu oko³o %s zostan± u¿yte."
++msgstr "Po rozpakowaniu oko³o %s zostanie u¿ytych."
  
  #: pkgset-install.c:1931
  #, c-format
