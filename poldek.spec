@@ -4,11 +4,14 @@
 %bcond_without	imode	# don't build interactive mode
 %bcond_with	curl	# link with curl
 #
+# required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
+%define	ver_db	4.2.50-1
+%define	ver_rpm	4.3-0.20030610.29
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.1
-Release:	15
+Release:	16
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
@@ -24,29 +27,34 @@ Patch6:		%{name}-broken-rpmdb.patch
 Patch7:		%{name}-epoch0.patch
 Patch8:		%{name}-ldb4.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
-BuildRequires:	bzip2-devel
-%{?with_curl:BuildRequires:	curl-devel >= 7.8}
 BuildRequires:	automake
 BuildRequires:	autoconf
+BuildRequires:	bzip2-devel
+%{?with_curl:BuildRequires:	curl-devel >= 7.8}
+BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	openssl-devel >= 0.9.7c
 BuildRequires:	pcre-devel
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
-BuildRequires:	rpm-devel >= 4.2.1
+BuildRequires:	rpm-devel >= %{ver_rpm}
 BuildRequires:	zlib-devel
 BuildRequires:	/usr/bin/pod2man
-%{?with_static:BuildRequires:	bzip2-static}
-%{?with_curl:%{?with_static:BuildRequires:	curl-static}}
-%{?with_static:BuildRequires:	ncurses-static}
-%{?with_static:BuildRequires:	openssl-static}
-%{?with_static:BuildRequires:	pcre-static}
-%{?with_static:BuildRequires:	popt-static}
-%{?with_static:BuildRequires:	readline-static}
-%{?with_static:BuildRequires:	rpm-static}
-%{?with_static:BuildRequires:	zlib-static}
-%{?with_static:BuildRequires:	glibc-static}
-Requires:	rpm >= 4.2.1
+%if %{with static}
+BuildRequires:	bzip2-static
+%{?with_curl:BuildRequires:	curl-static}
+BuildRequires:	db-static >= %{ver_db}
+BuildRequires:	ncurses-static
+BuildRequires:	openssl-static
+BuildRequires:	pcre-static
+BuildRequires:	popt-static
+BuildRequires:	readline-static
+BuildRequires:	rpm-static
+BuildRequires:	zlib-static
+BuildRequires:	glibc-static
+%endif
+Requires:	db >= %{ver_db}
+Requires:	rpm >= %{ver_rpm}
 Requires:	sed
 Requires:	openssl >= 0.9.7c
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
