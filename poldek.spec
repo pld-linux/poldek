@@ -20,10 +20,9 @@ Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
 Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
-Patch2:		%{name}-cap_match_req-fix.patch
-Patch3:		%{name}-ignorearch.patch
-Patch4:		%{name}-simplestatic.patch
-Patch5:		%{name}-types.patch
+Patch2:		%{name}-ignorearch.patch
+Patch3:		%{name}-simplestatic.patch
+Patch4:		%{name}-types.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -91,10 +90,9 @@ modu³u CPAN.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p0
-%{?with_ignarch:%patch3 -p1}
-%patch4 -p0
-%patch5 -p1
+%{?with_ignarch:%patch2 -p1}
+%patch3 -p0
+%patch4 -p1
 
 %build
 %{?with_ignarch:rm -f po/pl.gmo}
