@@ -65,6 +65,17 @@ modu³u CPAN.
 %setup -q
 
 %build
+if ! grep -q AM_GNU_GETTEXT_VERSION configure.in ; then
+	cp configure.in configure.in.orig
+	sed -e 's/AM_GNU_GETTEXT\(.*\)/AM_GNU_GETTEXT\1\
+AM_GNU_GETTEXT_VERSION(0.10.40)/' \
+		-e 's=po/Makefile.in=po/Makefile.in intl/Makefile=' \
+		configure.in.orig >configure.in
+	autopoint --force
+fi
+%{__aclocal} -I m4
+%{__autoconf}
+%{__automake}
 %configure \
 	%{?_with_static:--enable-static} \
 	%{?_without_imode:--disable-imode} \
