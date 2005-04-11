@@ -1,0 +1,46 @@
+--- poldek-0.18.8/vfile/vfile.c.orig	2005-04-07 15:38:06.000000000 +0200
++++ poldek-0.18.8/vfile/vfile.c	2005-04-11 16:54:37.000000000 +0200
+@@ -130,8 +130,10 @@
+     z_off_t rc, off = *offset;
+     
+     rc = gzseek(stream, off, whence);
+-    if (rc >= 0)
++    if (rc >= 0) {
++	*offset = rc;
+         rc = 0;
++    }
+ #if ZLIB_TRACE
+     printf("zfseek (%p, %ld, %lld, %d) = %d\n", stream, off, *offset, whence, rc);
+ #endif    
+@@ -349,7 +351,7 @@
+                 vf->vf_stream = fopencookie(gzstream, mode, gzio_cookie);
+                 if (vf->vf_stream != NULL) {
+                     rc = 1;
+-                    fseek(vf->vf_stream, 0, SEEK_SET); /* glibc BUG (?) */
++                    fseek(vf->vf_stream, 0, SEEK_SET); /* XXX glibc BUG (?) */
+                 } else
+                     vfile_err_fn("fopencookie %s: hgw error\n", CL_URL(path));
+ 
+--- poldek-0.18.8/trurlib/nstream.c.orig	2004-05-06 09:57:45.000000000 +0200
++++ poldek-0.18.8/trurlib/nstream.c	2005-04-11 16:54:11.000000000 +0200
+@@ -57,8 +57,10 @@
+     z_off_t rc, off = *offset;
+     
+     rc = gzseek(stream, off, whence);
+-    if (rc >= 0)
++    if (rc >= 0) {
++	*offset = rc;
+         rc = 0;
++    }
+ #if ZLIB_TRACE
+     printf("zfseek (%p, %ld, %lld, %d) = %d\n", stream, off, *offset, whence, rc);
+ #endif    
+@@ -281,7 +283,7 @@
+                     
+                 } else {
+                     st->stream = stream;
+-                    fseek(st->stream, 0, SEEK_SET); /* glibc BUG (?) */
++                    fseek(st->stream, 0, SEEK_SET); /* XXX glibc BUG (?) */
+                     st->type = type;
+                 };
+                 break;
