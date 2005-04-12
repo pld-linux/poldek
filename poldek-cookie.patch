@@ -1,28 +1,5 @@
---- poldek-0.18.8/vfile/vfile.c.orig	2005-04-07 15:38:06.000000000 +0200
-+++ poldek-0.18.8/vfile/vfile.c	2005-04-11 16:54:37.000000000 +0200
-@@ -130,8 +130,10 @@
-     z_off_t rc, off = *offset;
-     
-     rc = gzseek(stream, off, whence);
--    if (rc >= 0)
-+    if (rc >= 0) {
-+	*offset = rc;
-         rc = 0;
-+    }
- #if ZLIB_TRACE
-     printf("zfseek (%p, %ld, %lld, %d) = %d\n", stream, off, *offset, whence, rc);
- #endif    
-@@ -349,7 +351,7 @@
-                 vf->vf_stream = fopencookie(gzstream, mode, gzio_cookie);
-                 if (vf->vf_stream != NULL) {
-                     rc = 1;
--                    fseek(vf->vf_stream, 0, SEEK_SET); /* glibc BUG (?) */
-+                    fseek(vf->vf_stream, 0, SEEK_SET); /* XXX glibc BUG (?) */
-                 } else
-                     vfile_err_fn("fopencookie %s: hgw error\n", CL_URL(path));
- 
 --- poldek-0.18.8/trurlib/nstream.c.orig	2004-05-06 09:57:45.000000000 +0200
-+++ poldek-0.18.8/trurlib/nstream.c	2005-04-11 16:54:11.000000000 +0200
++++ poldek-0.18.8/trurlib/nstream.c	2005-04-12 10:42:44.000000000 +0200
 @@ -57,8 +57,10 @@
      z_off_t rc, off = *offset;
      
@@ -44,3 +21,95 @@
                      st->type = type;
                  };
                  break;
+--- poldek-0.18.8/vfile/vfile.c.orig	2005-04-07 15:38:06.000000000 +0200
++++ poldek-0.18.8/vfile/vfile.c	2005-04-12 10:36:43.000000000 +0200
+@@ -130,8 +130,10 @@
+     z_off_t rc, off = *offset;
+     
+     rc = gzseek(stream, off, whence);
+-    if (rc >= 0)
++    if (rc >= 0) {
++	*offset = rc;
+         rc = 0;
++    }
+ #if ZLIB_TRACE
+     printf("zfseek (%p, %ld, %lld, %d) = %d\n", stream, off, *offset, whence, rc);
+ #endif    
+@@ -349,7 +351,16 @@
+                 vf->vf_stream = fopencookie(gzstream, mode, gzio_cookie);
+                 if (vf->vf_stream != NULL) {
+                     rc = 1;
+-                    fseek(vf->vf_stream, 0, SEEK_SET); /* glibc BUG (?) */
++		    vf->vf_buf = malloc(128); /* use small buffer to avoid reverse gzseeks on small forward fseeks */
++		    if(vf->vf_buf == NULL)
++			vfile_err_fn("buffer malloc failed for %s\n", CL_URL(path));
++		    else
++			if(setvbuf(vf->vf_stream, vf->vf_buf, _IOFBF, 128) != 0) {
++			    vfile_err_fn("setvbuf failed for %s\n", CL_URL(path));
++			    free(vf->vf_buf);
++			    vf->vf_buf = NULL;
++			}
++                    fseek(vf->vf_stream, 0, SEEK_SET); /* XXX glibc BUG (?) */
+                 } else
+                     vfile_err_fn("fopencookie %s: hgw error\n", CL_URL(path));
+ 
+@@ -489,6 +500,7 @@
+     vf.vf_type = vftype;
+     vf.vf_mode = vfmode;
+     vf.vf_flags = 0;
++    vf.vf_buf = NULL;
+     
+     urltype = vf_url_type(path);
+     opened = 0;
+@@ -686,6 +698,8 @@
+         free(vf->vf_tmpath);
+         vf->vf_tmpath = NULL;
+     }
++    if (vf->vf_buf)
++	free(vf->vf_buf);
+     memset(vf, 0, sizeof(*vf));
+     free(vf);
+ }
+--- poldek-0.18.8/vfile/vfile.h.orig	2005-04-07 15:38:06.000000000 +0200
++++ poldek-0.18.8/vfile/vfile.h	2005-04-12 10:36:43.000000000 +0200
+@@ -81,6 +81,7 @@
+ 
+     char          *vf_path;
+     char          *vf_tmpath;
++    char          *vf_buf;
+     int16_t       _refcnt;
+ };
+ 
+--- poldek-0.18.8/pkgfl.c.orig	2004-12-30 13:05:22.000000000 +0100
++++ poldek-0.18.8/pkgfl.c	2005-04-12 09:47:22.000000000 +0200
+@@ -530,7 +530,7 @@
+     tn_buf *nbuf;
+     tn_buf_it nbufi;
+     uint32_t size;
+-    char *buf;
++    char *buf, dummy;
+     
+     if (fread(&size, sizeof(size), 1, stream) != 1)
+         return NULL;
+@@ -548,7 +548,7 @@
+     fl = pkgfl_restore(&nbufi, dirs, include);
+     n_buf_free(nbuf);
+     
+-    fseek(stream, 1, SEEK_CUR); /* skip final '\n' */
++    fread(&dummy, 1, 1, stream); /* skip final '\n' */
+ 
+     return fl;
+ }
+--- poldek-0.18.8/pkgu.c.orig	2002-05-15 17:42:48.000000000 +0200
++++ poldek-0.18.8/pkgu.c	2005-04-12 09:52:45.000000000 +0200
+@@ -239,8 +239,8 @@
+ {
+     uint16_t nsize, nlangs;
+ 
+-    fseek(stream, sizeof(nlangs), SEEK_CUR);
+-    if (fread(&nsize, sizeof(nsize), 1, stream) != 1) {
++    if ((fread(&nlangs, sizeof(nlangs), 1, stream) != 1) ||
++	(fread(&nsize, sizeof(nsize), 1, stream) != 1)) {
+         nsize = 0;
+     } else {
+         nsize = ntoh16(nsize);
