@@ -1,5 +1,61 @@
---- poldek-0.18.8/trurlib/nstream.c.orig	2004-05-06 09:57:45.000000000 +0200
-+++ poldek-0.18.8/trurlib/nstream.c	2005-04-12 10:42:44.000000000 +0200
+diff -urN poldek-0.18.8.org/pkgfl.c poldek-0.18.8/pkgfl.c
+--- poldek-0.18.8.org/pkgfl.c	2004-12-30 13:05:22.000000000 +0100
++++ poldek-0.18.8/pkgfl.c	2005-04-21 22:06:58.126819592 +0200
+@@ -530,7 +530,7 @@
+     tn_buf *nbuf;
+     tn_buf_it nbufi;
+     uint32_t size;
+-    char *buf;
++    char *buf, dummy;
+     
+     if (fread(&size, sizeof(size), 1, stream) != 1)
+         return NULL;
+@@ -548,7 +548,7 @@
+     fl = pkgfl_restore(&nbufi, dirs, include);
+     n_buf_free(nbuf);
+     
+-    fseek(stream, 1, SEEK_CUR); /* skip final '\n' */
++    fread(&dummy, 1, 1, stream); /* skip final '\n' */
+ 
+     return fl;
+ }
+@@ -557,12 +557,18 @@
+ int pkgfl_skip_f(FILE *stream) 
+ {
+     uint32_t size;
++    char *buf;
+     
+     if (fread(&size, sizeof(size), 1, stream) != 1)
+         return 0;
+     
+     size = ntoh32(size);
+-    fseek(stream, size + 1, SEEK_CUR);
++    buf = malloc(size + 1);
++    if (buf)
++    	fread(buf, 1, size + 1, stream);
++    else
++	fseek(stream, size + 1, SEEK_CUR);
++    free(buf);
+     return 1;
+ }
+ 
+diff -urN poldek-0.18.8.org/pkgu.c poldek-0.18.8/pkgu.c
+--- poldek-0.18.8.org/pkgu.c	2002-05-15 17:42:48.000000000 +0200
++++ poldek-0.18.8/pkgu.c	2005-04-21 22:04:22.641456960 +0200
+@@ -239,8 +239,8 @@
+ {
+     uint16_t nsize, nlangs;
+ 
+-    fseek(stream, sizeof(nlangs), SEEK_CUR);
+-    if (fread(&nsize, sizeof(nsize), 1, stream) != 1) {
++    if ((fread(&nlangs, sizeof(nlangs), 1, stream) != 1) ||
++	(fread(&nsize, sizeof(nsize), 1, stream) != 1)) {
+         nsize = 0;
+     } else {
+         nsize = ntoh16(nsize);
+diff -urN poldek-0.18.8.org/trurlib/nstream.c poldek-0.18.8/trurlib/nstream.c
+--- poldek-0.18.8.org/trurlib/nstream.c	2004-05-06 09:57:45.000000000 +0200
++++ poldek-0.18.8/trurlib/nstream.c	2005-04-21 22:04:22.622459848 +0200
 @@ -57,8 +57,10 @@
      z_off_t rc, off = *offset;
      
@@ -21,9 +77,10 @@
                      st->type = type;
                  };
                  break;
---- poldek-0.18.8/vfile/vfile.c.orig	2005-04-07 15:38:06.000000000 +0200
-+++ poldek-0.18.8/vfile/vfile.c	2005-04-12 10:36:43.000000000 +0200
-@@ -130,8 +130,10 @@
+diff -urN poldek-0.18.8.org/vfile/vfile.c poldek-0.18.8/vfile/vfile.c
+--- poldek-0.18.8.org/vfile/vfile.c	2004-02-26 19:22:28.000000000 +0100
++++ poldek-0.18.8/vfile/vfile.c	2005-04-21 22:04:22.630458632 +0200
+@@ -129,8 +129,10 @@
      z_off_t rc, off = *offset;
      
      rc = gzseek(stream, off, whence);
@@ -35,7 +92,7 @@
  #if ZLIB_TRACE
      printf("zfseek (%p, %ld, %lld, %d) = %d\n", stream, off, *offset, whence, rc);
  #endif    
-@@ -349,7 +351,16 @@
+@@ -344,7 +346,16 @@
                  vf->vf_stream = fopencookie(gzstream, mode, gzio_cookie);
                  if (vf->vf_stream != NULL) {
                      rc = 1;
@@ -53,7 +110,7 @@
                  } else
                      vfile_err_fn("fopencookie %s: hgw error\n", CL_URL(path));
  
-@@ -489,6 +500,7 @@
+@@ -484,6 +495,7 @@
      vf.vf_type = vftype;
      vf.vf_mode = vfmode;
      vf.vf_flags = 0;
@@ -61,7 +118,7 @@
      
      urltype = vf_url_type(path);
      opened = 0;
-@@ -686,6 +698,8 @@
+@@ -681,6 +693,8 @@
          free(vf->vf_tmpath);
          vf->vf_tmpath = NULL;
      }
@@ -70,8 +127,9 @@
      memset(vf, 0, sizeof(*vf));
      free(vf);
  }
---- poldek-0.18.8/vfile/vfile.h.orig	2005-04-07 15:38:06.000000000 +0200
-+++ poldek-0.18.8/vfile/vfile.h	2005-04-12 10:36:43.000000000 +0200
+diff -urN poldek-0.18.8.org/vfile/vfile.h poldek-0.18.8/vfile/vfile.h
+--- poldek-0.18.8.org/vfile/vfile.h	2004-06-08 15:57:03.000000000 +0200
++++ poldek-0.18.8/vfile/vfile.h	2005-04-21 22:04:22.634458024 +0200
 @@ -81,6 +81,7 @@
  
      char          *vf_path;
@@ -80,57 +138,3 @@
      int16_t       _refcnt;
  };
  
---- poldek-0.18.8/pkgfl.c.orig	2004-12-30 13:05:22.000000000 +0100
-+++ poldek-0.18.8/pkgfl.c	2005-04-12 09:47:22.000000000 +0200
-@@ -530,7 +530,7 @@
-     tn_buf *nbuf;
-     tn_buf_it nbufi;
-     uint32_t size;
--    char *buf;
-+    char *buf, dummy;
-     
-     if (fread(&size, sizeof(size), 1, stream) != 1)
-         return NULL;
-@@ -548,7 +548,7 @@
-     fl = pkgfl_restore(&nbufi, dirs, include);
-     n_buf_free(nbuf);
-     
--    fseek(stream, 1, SEEK_CUR); /* skip final '\n' */
-+    fread(&dummy, 1, 1, stream); /* skip final '\n' */
- 
-     return fl;
- }
---- poldek-0.18.8/pkgu.c.orig	2002-05-15 17:42:48.000000000 +0200
-+++ poldek-0.18.8/pkgu.c	2005-04-12 09:52:45.000000000 +0200
-@@ -239,8 +239,8 @@
- {
-     uint16_t nsize, nlangs;
- 
--    fseek(stream, sizeof(nlangs), SEEK_CUR);
--    if (fread(&nsize, sizeof(nsize), 1, stream) != 1) {
-+    if ((fread(&nlangs, sizeof(nlangs), 1, stream) != 1) ||
-+	(fread(&nsize, sizeof(nsize), 1, stream) != 1)) {
-         nsize = 0;
-     } else {
-         nsize = ntoh16(nsize);
-diff -urN poldek-0.18.8.org/pkgfl.c poldek-0.18.8/pkgfl.c
---- poldek-0.18.8.org/pkgfl.c	2004-12-30 13:05:22.000000000 +0100
-+++ poldek-0.18.8/pkgfl.c	2005-04-20 23:21:45.000000000 +0200
-@@ -557,12 +557,15 @@
- int pkgfl_skip_f(FILE *stream) 
- {
-     uint32_t size;
-+    char *buf;
-     
-     if (fread(&size, sizeof(size), 1, stream) != 1)
-         return 0;
-     
-     size = ntoh32(size);
--    fseek(stream, size + 1, SEEK_CUR);
-+    /* skip size + 1 bytes */
-+    buf = alloca(size + 1);
-+    fread(buf, 1, size + 1, stream);
-     return 1;
- }
- 
-
