@@ -58,8 +58,8 @@ diff -urN poldek-0.18.8.org/pkgu.c poldek-0.18.8/pkgu.c
 +	    logn(LOGERR, "pkguinf_restore: ftell %ld: %m", currseek);
 +	    return NULL;
 +	}
-+	if (seek >= currseek) {
-+	    currseek = seek - currseek;
++	if (offset >= currseek) {
++	    currseek = offset - currseek;
 +	    if (currseek) {
 +		buf = malloc(currseek);
 +		if (!buf) {
