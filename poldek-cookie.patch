@@ -41,8 +41,50 @@ diff -urN poldek-0.18.8.org/pkgfl.c poldek-0.18.8/pkgfl.c
  
 diff -urN poldek-0.18.8.org/pkgu.c poldek-0.18.8/pkgu.c
 --- poldek-0.18.8.org/pkgu.c	2002-05-15 17:42:48.000000000 +0200
-+++ poldek-0.18.8/pkgu.c	2005-04-21 22:04:22.641456960 +0200
-@@ -239,8 +239,8 @@
++++ poldek-0.18.8/pkgu.c	2005-04-21 22:47:36.188177928 +0200
+@@ -180,11 +180,36 @@
+     void *rawhdr;
+     Header hdr;
+ 
+-    if (offset > 0)
+-        if (fseek(stream, offset, SEEK_SET) != 0) {
+-            logn(LOGERR, "pkguinf_restore: fseek %ld: %m", offset);
+-            return NULL;
+-        }
++    if (offset > 0) {
++	long currseek = ftell(stream);
++    	char *buf = NULL;
++    	if (currseek == -1) {
++	    logn(LOGERR, "pkguinf_restore: ftell %ld: %m", currseek);
++	    return NULL;
++	}
++	if (seek >= currseek) {
++	    currseek = seek - currseek;
++	    if (currseek) {
++		buf = malloc(currseek);
++		if (!buf) {
++		    logn(LOGERR, "pkguinf_restore: malloc: %m");
++		    return NULL;
++		}
++		if (fread(buf, 1, currseek, stream) != currseek) {
++		    logn(LOGERR, "pkguinf_restore: fread error currseek: at %ld %p",
++			   ftell(stream), stream);
++		    return NULL;
++		}
++		free(buf);
++	    }
++	} else {
++
++	    if (fseek(stream, offset, SEEK_SET) != 0) {
++		logn(LOGERR, "pkguinf_restore: fseek %ld: %m", offset);
++		return NULL;
++	    }
++	}
++    }
+     
+     if (fread(&nlangs, sizeof(nlangs), 1, stream) != 1) {
+         logn(LOGERR, "pkguinf_restore: read error nlangs (%m) at %ld %p",
+@@ -239,8 +264,8 @@
  {
      uint16_t nsize, nlangs;
  
