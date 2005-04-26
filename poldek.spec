@@ -3,7 +3,6 @@
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_with	curl	# link with curl
-%bcond_with	distver	# enable distversion patch
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
@@ -11,23 +10,17 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.18.7
-Release:	6%{?with_distver:+distver}
+Version:	0.18.8
+Release:	5
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
-# Source0-md5:	42830ed55809e41059771b87131a84fd
+# Source0-md5:	f7e2978c7f8b35b0b07d0278dd299881
 Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-simplestatic.patch
-Patch3:		%{name}-po.patch
-Patch4:		%{name}-n_free.patch
-Patch5:		%{name}-transfer_rate.patch
-Patch6:		%{name}-capreq.patch
-Patch7:		%{name}-fix_ls_output.patch
-Patch8:		%{name}-depfix-pkgdrags.patch
-Patch12:	%{name}-distver.patch
+Patch3:		%{name}-cookie.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -59,7 +52,6 @@ BuildRequires:	zlib-static
 Requires:	db >= %{ver_db}
 Requires:	ed
 Requires:	rpm >= %{ver_rpm}
-%{?with_distver:Requires:	rpm-lib(distver)}
 Requires:	sed
 Requires:	openssl >= 0.9.7c
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -98,12 +90,6 @@ modu³u CPAN.
 %patch1 -p1
 %patch2 -p0
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p2
-%patch7 -p1
-%patch8 -p0
-%{?with_distver:%patch12 -p1}
 
 %build
 %{__autopoint}
