@@ -156,7 +156,7 @@ echo -e ',s://ftp.pld-linux.org://ftp.%{_target_cpu}.ac.pld-linux.org:g\n,w' |\
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc README* NEWS TODO *sample* conf/poldekrc*
-%attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}.conf
+%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/%{name}*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
