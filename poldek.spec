@@ -31,7 +31,6 @@ BuildRequires:	openssl-devel >= 0.9.6m
 %{?with_static:BuildRequires:	openssl-static}
 BuildRequires:	pcre-devel
 %{?with_static:BuildRequires:	pcre-static}
-BuildRequires:	popt-devel
 %{?with_static:BuildRequires:	popt-static}
 BuildRequires:	readline-devel
 BuildRequires:	rpm-devel >= 4.0.2-62
