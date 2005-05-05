@@ -13,7 +13,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.19.0
-Release:	0.%{snap}.1
+Release:	0.%{snap}.2
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -90,6 +90,9 @@ modu³u CPAN.
 %{__autoconf}
 %{__automake}
 cp -f config.sub trurlib
+# glibc 2.3.5 workaround (to be removed when new snap come)
+perl -pi -e 's|HAVE_FOPENCOOKIE|HAVE_FOPENCOOKIE_XXX|g' trurlib/nstream.c
+
 %configure \
 	%{?with_static:--enable-static} \
 	%{!?with_imode:--disable-imode} \
