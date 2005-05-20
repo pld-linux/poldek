@@ -1,0 +1,251 @@
+diff -ur poldek-0.18.8/main.c poldek-0.18.8-rpm/main.c
+--- poldek-0.18.8/main.c	2004-12-30 13:37:30.000000000 +0100
++++ poldek-0.18.8-rpm/main.c	2005-05-21 00:19:48.878118872 +0200
+@@ -247,6 +247,7 @@
+ #define OPT_ASK                   2006
+ #define OPT_NOASK                 2007
+ #define OPT_RPMOPT                2008
++#define OPT_RPMCMD                2009
+ #define OPT_MERGE                 2101
+ #define OPT_SW_V016               (1 << 0)
+ #define OPT_SW_NOASK              (1 << 1)
+@@ -463,6 +464,7 @@
+ {"version", OPT_BANNER, 0, 0, N_("Display program version information and exit"), 500 },    
+ {"log", OPT_LOG, "FILE", 0, N_("Log program messages to FILE"), 500 },
+ {"v016", OPT_V016, 0, 0, N_("Read indexes created by versions < 0.17"), 500 },
++{"rpmcmd", OPT_RPMCMD, "FILE", 0, N_("Use FILE as rpm program"), 500 },
+ {0,  'v', 0, 0, N_("Be verbose."), 500 },
+ {0,  'q', 0, 0, N_("Do not produce any output."), 500 },
+ { 0, 0, 0, 0, 0, 0 },
+@@ -917,6 +919,10 @@
+             argsp->switches |= OPT_SW_NOCONF;
+             break;
+ 
++        case OPT_RPMCMD:
++            argsp->inst.rpmcommand = prepare_path(arg);
++            break;
++
+         case OPT_SPLITSIZE: {
+             char *p, rc;
+             check_mjrmode(argsp);
+diff -ur poldek-0.18.8/pkgfetch.c poldek-0.18.8-rpm/pkgfetch.c
+--- poldek-0.18.8/pkgfetch.c	2004-05-20 23:47:59.000000000 +0200
++++ poldek-0.18.8-rpm/pkgfetch.c	2005-05-21 00:19:48.879118720 +0200
+@@ -43,7 +43,7 @@
+ 
+ #ifdef HAVE_RPM_4_0    
+ 
+-int package_verify_sign(const char *path, unsigned flags) 
++int package_verify_sign(const char *path, unsigned flags, struct inst_s *inst) 
+ {
+     unsigned rpmflags = 0;
+ 
+@@ -67,7 +67,7 @@
+ 
+ #else  /* HAVE_RPMCHECKSIG */
+ 
+-int package_verify_sign(const char *path, unsigned flags) 
++int package_verify_sign(const char *path, unsigned flags, struct inst_s *inst) 
+ {
+     char **argv;
+     char *cmd;
+@@ -80,8 +80,8 @@
+     argv[n] = NULL;
+     n = 0;
+     
+-    cmd = "/bin/rpm";
+-    argv[n++] = "rpm";
++    cmd = inst->rpmcommand;
++    argv[n++] = inst->rpmcommand;
+     argv[n++] = "-K";
+ 
+     nopts = n;
+@@ -117,7 +117,7 @@
+ 
+ #endif /* HAVE_RPMCHECKSIG */
+ 
+-int package_verify_pgpg_sign(const struct pkg *pkg, const char *localpath) 
++int package_verify_pgpg_sign(const struct pkg *pkg, const char *localpath, struct inst_s *inst) 
+ {
+     int rc = 1;
+ 
+@@ -133,7 +133,7 @@
+         if (pkg->pkgdir->flags & PKGDIR_VRFY_PGP)
+             verify_flags |= PKGVERIFY_PGP;
+         
+-        if (!package_verify_sign(localpath, verify_flags)) {
++        if (!package_verify_sign(localpath, verify_flags, inst)) {
+             logn(LOGERR, "%s: signature verification failed", pkg_snprintf_s(pkg));
+             rc = 0;
+         }
+@@ -145,7 +145,7 @@
+     return rc;
+ }
+ 
+-int packages_fetch(tn_array *pkgs, const char *destdir, int nosubdirs)
++int packages_fetch(tn_array *pkgs, const char *destdir, int nosubdirs, struct inst_s *inst)
+ {
+     int       i, nerr, urltype, ncdroms;
+     tn_array  *urls = NULL;
+@@ -189,7 +189,7 @@
+                 
+             } else {
+                 rpmlib_verbose = -2; /* be quiet */
+-                if (!package_verify_sign(path, PKGVERIFY_MD)) {
++                if (!package_verify_sign(path, PKGVERIFY_MD, inst)) {
+                     logn(LOGERR, _("%s: MD5 signature verification failed"),
+                          n_basenam(path));
+                     nerr++;
+@@ -216,7 +216,7 @@
+             int pkg_ok, v = rpmlib_verbose;
+             
+             rpmlib_verbose = -2; /* be quiet */
+-            pkg_ok = package_verify_sign(path, PKGVERIFY_MD);
++            pkg_ok = package_verify_sign(path, PKGVERIFY_MD, inst);
+             rpmlib_verbose = v;
+             
+             if (pkg_ok)         /* already downloaded,  */
+@@ -283,7 +283,7 @@
+                 char localpath[PATH_MAX];
+                 snprintf(localpath, sizeof(localpath), "%s/%s", real_destdir,
+                          n_basenam(n_array_nth(urls, j)));
+-                if (!package_verify_sign(localpath, PKGVERIFY_MD)) {
++                if (!package_verify_sign(localpath, PKGVERIFY_MD, inst)) {
+                     logn(LOGERR, _("%s: MD5 signature verification failed"),
+                          n_basenam(localpath));
+                     nerr++;
+diff -ur poldek-0.18.8/pkgset-install.c poldek-0.18.8-rpm/pkgset-install.c
+--- poldek-0.18.8/pkgset-install.c	2004-12-30 13:03:52.000000000 +0100
++++ poldek-0.18.8-rpm/pkgset-install.c	2005-05-21 00:19:48.883118112 +0200
+@@ -2115,7 +2115,7 @@
+         if (destdir == NULL)
+             destdir = inst->cachedir;
+ 
+-        rc = packages_fetch(upg->install_pkgs, destdir, inst->fetchdir ? 1 : 0);
++        rc = packages_fetch(upg->install_pkgs, destdir, inst->fetchdir ? 1 : 0, inst);
+ 
+     } else if ((inst->flags & INSTS_NOHOLD) || (rc = check_holds(ps, upg))) {
+         int is_test = inst->flags & INSTS_RPMTEST;
+diff -ur poldek-0.18.8/pkgset.c poldek-0.18.8-rpm/pkgset.c
+--- poldek-0.18.8/pkgset.c	2004-12-30 13:05:24.000000000 +0100
++++ poldek-0.18.8-rpm/pkgset.c	2005-05-21 00:19:48.885117808 +0200
+@@ -144,6 +144,7 @@
+     inst->dumpfile = NULL;
+     inst->rpmopts = NULL;
+     inst->rpmacros = NULL;
++    inst->rpmcommand = "/bin/rpm";
+     inst->askpkg_fn = ask_pkg;
+     inst->ask_fn = ask_yn;
+     inst->rpmacros = n_array_new(2, NULL, NULL);
+diff -ur poldek-0.18.8/pkgset.h poldek-0.18.8-rpm/pkgset.h
+--- poldek-0.18.8/pkgset.h	2004-07-02 19:42:40.000000000 +0200
++++ poldek-0.18.8-rpm/pkgset.h	2005-05-21 00:19:48.886117656 +0200
+@@ -83,6 +83,7 @@
+     const char     *fetchdir;      /* dir to fetch files to  */
+     const char     *cachedir;      /* cache directory        */
+     const char     *dumpfile;      /* file to dump fqpns     */
++    const char     *rpmcommand;    /* deault /bin/rpm        */
+     tn_array       *rpmopts;       /* rpm cmdline opts (char *opts[]) */
+     tn_array       *rpmacros;      /* rpm macros to pass to cmdline (char *opts[]) */
+     tn_array       *hold_patterns;
+@@ -190,7 +191,7 @@
+ 
+ #define packages_unmark_all(pkgs) packages_mark(pkgs, 0, PKG_INDIRMARK | PKG_DIRMARK)
+ 
+-int packages_fetch(tn_array *pkgs, const char *destdir, int nosubdirs);
++int packages_fetch(tn_array *pkgs, const char *destdir, int nosubdirs, struct inst_s *inst);
+ int packages_rpminstall(tn_array *pkgs, struct pkgset *ps, struct inst_s *inst);
+ 
+ int packages_uninstall(tn_array *pkgs, struct inst_s *inst, struct install_info *iinf);
+@@ -206,10 +207,10 @@
+ #define PKGVERIFY_GPG  (1 << 1)
+ #define PKGVERIFY_PGP  (1 << 2)
+ 
+-int package_verify_sign(const char *path, unsigned flags);
++int package_verify_sign(const char *path, unsigned flags, struct inst_s *inst);
+ 
+ /* looks if pkg->pkgdir has set VERSIGN flag */
+-int package_verify_pgpg_sign(const struct pkg *pkg, const char *localpath);
++int package_verify_pgpg_sign(const struct pkg *pkg, const char *localpath, struct inst_s *inst);
+ 
+ #include "pkgset-load.h"
+ 
+diff -ur poldek-0.18.8/rpminstall.c poldek-0.18.8-rpm/rpminstall.c
+--- poldek-0.18.8/rpminstall.c	2004-12-01 17:22:38.000000000 +0100
++++ poldek-0.18.8-rpm/rpminstall.c	2005-05-21 00:19:48.887117504 +0200
+@@ -236,21 +236,21 @@
+     n = 0;
+ 
+     
+-    if (!packages_fetch(pkgs, inst->cachedir, 0))
++    if (!packages_fetch(pkgs, inst->cachedir, 0, inst))
+         return 0;
+     
+     if (inst->flags & INSTS_RPMTEST) {
+-        cmd = "/bin/rpm";
+-        argv[n++] = "rpm";
++        cmd = inst->rpmcommand;
++        argv[n++] = inst->rpmcommand;
+         
+     } else if (inst->flags & INSTS_USESUDO) {
+         cmd = "/usr/bin/sudo";
+         argv[n++] = "sudo";
+-        argv[n++] = "/bin/rpm";
++        argv[n++] = inst->rpmcommand;
+         
+     } else {
+-        cmd = "/bin/rpm";
+-        argv[n++] = "rpm";
++        cmd = inst->rpmcommand;
++        argv[n++] = inst->rpmcommand;
+     }
+     
+     if (inst->flags & INSTS_INSTALL)
+@@ -343,7 +343,7 @@
+                                buf, name);
+             }
+ 
+-            if (!package_verify_pgpg_sign(pkg, path))
++            if (!package_verify_pgpg_sign(pkg, path, inst))
+                 nsignerr++;
+             
+             s = alloca(len + 1);
+diff -ur poldek-0.18.8/shell/get.c poldek-0.18.8-rpm/shell/get.c
+--- poldek-0.18.8/shell/get.c	2002-03-25 21:30:08.000000000 +0100
++++ poldek-0.18.8-rpm/shell/get.c	2005-05-21 00:20:40.173320816 +0200
+@@ -119,7 +119,7 @@
+         destdirp = destdir;
+     }
+     
+-    if (!packages_fetch(pkgs, destdirp, 1))
++    if (!packages_fetch(pkgs, destdirp, 1, cmdarg->sh_s->inst))
+         err++;
+     
+  l_end:
+Only in poldek-0.18.8-rpm/shell: get.c~
+diff -ur poldek-0.18.8/uninstall.c poldek-0.18.8-rpm/uninstall.c
+--- poldek-0.18.8/uninstall.c	2002-11-22 18:07:26.000000000 +0100
++++ poldek-0.18.8-rpm/uninstall.c	2005-05-21 00:19:48.889117200 +0200
+@@ -340,17 +340,17 @@
+     n = 0;
+     
+     if (inst->flags & INSTS_RPMTEST) {
+-        cmd = "/bin/rpm";
+-        argv[n++] = "rpm";
++        cmd = inst->rpmcommand;
++        argv[n++] = inst->rpmcommand;
+         
+     } else if (inst->flags & INSTS_USESUDO) {
+         cmd = "/usr/bin/sudo";
+         argv[n++] = "sudo";
+-        argv[n++] = "/bin/rpm";
++        argv[n++] = inst->rpmcommand;
+         
+     } else {
+-        cmd = "/bin/rpm";
+-        argv[n++] = "rpm";
++        cmd = inst->rpmcommand;
++        argv[n++] = inst->rpmcommand;
+     }
+     
+     argv[n++] = "--erase";
