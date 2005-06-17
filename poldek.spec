@@ -5,13 +5,13 @@
 %bcond_with	curl	# link with curl
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.3.27-1
-%define	ver_rpm	4.3-0.20040107.34
+%define	ver_db	4.2.50-1
+%define	ver_rpm	4.4.1
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.8
-Release:	6
+Release:	8
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
@@ -20,8 +20,8 @@ Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-simplestatic.patch
-Patch3:		%{name}-gcc4.patch
-Patch4:		%{name}-cookie.patch
+Patch3:		%{name}-cookie.patch
+Patch4:		%{name}-rpmcmd.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -156,7 +156,7 @@ echo -e ',s://ftp.pld-linux.org://ftp.%{_target_cpu}.ac.pld-linux.org:g\n,w' |\
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc README* NEWS TODO *sample* conf/poldekrc*
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
+%attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}.conf
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/%{name}*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
