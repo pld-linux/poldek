@@ -6,12 +6,12 @@
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
-%define	ver_rpm	4.3-0.20040107.34
+%define	ver_rpm	4.4.1
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.18.8
-Release:	7
+Release:	8
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
