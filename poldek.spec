@@ -25,6 +25,7 @@ BuildRequires:	autoconf
 BuildRequires:	bzip2-devel
 BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
+BuildRequires:	home-etc-devel
 BuildRequires:	libtool
 BuildRequires:	openssl-devel >= 0.9.7c
 BuildRequires:	pcre-devel
