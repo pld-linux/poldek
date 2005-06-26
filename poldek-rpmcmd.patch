@@ -13,7 +13,7 @@ diff -ur poldek-0.18.8/main.c poldek-0.18.8-rpm/main.c
  {"version", OPT_BANNER, 0, 0, N_("Display program version information and exit"), 500 },    
  {"log", OPT_LOG, "FILE", 0, N_("Log program messages to FILE"), 500 },
  {"v016", OPT_V016, 0, 0, N_("Read indexes created by versions < 0.17"), 500 },
-+{"rpmcmd", OPT_RPMCMD, "FILE", 0, N_("Use FILE as rpm program"), 500 },
++{"pmcmd", OPT_RPMCMD, "FILE", 0, N_("Use FILE as rpm program"), 500 },
  {0,  'v', 0, 0, N_("Be verbose."), 500 },
  {0,  'q', 0, 0, N_("Do not produce any output."), 500 },
  { 0, 0, 0, 0, 0, 0 },
