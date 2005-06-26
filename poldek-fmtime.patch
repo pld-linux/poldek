@@ -1,0 +1,110 @@
+Index: pkgdir.c
+===================================================================
+RCS file: /cvsroot/installer/poldek/Attic/pkgdir.c,v
+retrieving revision 1.39.4.7
+retrieving revision 1.39.4.8
+diff -u -r1.39.4.7 -r1.39.4.8
+--- pkgdir.c	6 May 2004 07:03:58 -0000	1.39.4.7
++++ pkgdir.c	15 May 2005 17:04:58 -0000	1.39.4.8
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -80,6 +80,7 @@
+     uint32_t   size;
+     uint32_t   fsize;
+     uint32_t   btime;
++    uint32_t   fmtime;
+     uint32_t   groupid;
+     tn_array   *caps;
+     tn_array   *reqs;
+@@ -1093,6 +1094,7 @@
+             case 'A':
+             case 'O':
+             case 'n':
++            case 't':
+                 if (!add2pkgtags(&pkgt, *line, val, pkgdir->path, offs)) {
+                     nerr++;
+                     goto l_end;
+@@ -1320,6 +1322,10 @@
+             }
+             break;
+ 
++        case 't':
++            if (sscanf(value, "%u", &pkgt->fmtime) != 1)
++                pkgt->fmtime = 0;
++            break;
+             
+         case 'S':
+             if (pkgt->flags & PKGT_HAS_SIZE) {
+@@ -1407,7 +1413,7 @@
+ 
+     if (pkgt->flags & PKGT_HAS_FN) 
+         fn = pkgt->fn;
+-    
++
+     if (*pkgt->name == '\0' || *pkgt->evr == '\0' || *pkgt->arch == '\0') 
+         return NULL;
+     
+@@ -1422,6 +1428,7 @@
+     pkg = pkg_new(pkgt->name, epoch, version, release, arch, os, fn, 
+                   pkgt->size, pkgt->fsize, pkgt->btime);
+     pkg->groupid = pkgt->groupid;
++    pkg->fmtime = pkgt->fmtime;
+     
+     if (pkg == NULL) {
+         logn(LOGERR, _("error reading %s's data"), pkgt->name);
+Index: pkgdir_save.c
+===================================================================
+RCS file: /cvsroot/installer/poldek/Attic/pkgdir_save.c,v
+retrieving revision 1.8.6.2
+retrieving revision 1.8.6.3
+diff -u -r1.8.6.2 -r1.8.6.3
+--- pkgdir_save.c	5 May 2004 16:56:43 -0000	1.8.6.2
++++ pkgdir_save.c	15 May 2005 17:04:58 -0000	1.8.6.3
+@@ -7,7 +7,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -170,6 +170,9 @@
+ 
+     if (pkg->fn)
+         fprintf(stream, "n: %s\n", pkg->fn);
++
++    if (pkg->fmtime)
++        fprintf(stream, "t: %u\n", pkg->fmtime);
+     
+     fprintf(stream, "F:\n");
+     store_pkg_fields(stream, pkg->size, pkg->fsize, pkg->btime, pkg->groupid);
+Index: pkg.h
+===================================================================
+RCS file: /cvsroot/installer/poldek/pkg.h,v
+retrieving revision 1.37.4.3
+retrieving revision 1.37.4.4
+diff -u -r1.37.4.3 -r1.37.4.4
+--- pkg.h	22 Mar 2004 17:31:51 -0000	1.37.4.3
++++ pkg.h	15 May 2005 17:04:58 -0000	1.37.4.4
+@@ -1,4 +1,4 @@
+-/* $Id$ */
++/* $Id$ */
+ #ifndef  POLDEK_PKG_H
+ #define  POLDEK_PKG_H
+ 
+@@ -100,6 +100,7 @@
+     uint32_t     size;        /* installed size    */
+     uint32_t     fsize;       /* package file size */
+     uint32_t     btime;       /* build time        */
++    uint32_t     fmtime;
+     int32_t      epoch;
+     char         *name;
+     char         *ver;
