@@ -10,19 +10,16 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.18.8
-Release:	10
+Version:	0.18.9
+Release:	0.1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
-# Source0-md5:	f7e2978c7f8b35b0b07d0278dd299881
+# Source0-md5:	c49eb9086a7ee77e50c527f9c95e41aa
 Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-simplestatic.patch
-Patch3:		%{name}-cookie.patch
-Patch4:		%{name}-rpmcmd.patch
-Patch5:		%{name}-fmtime.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -51,8 +48,8 @@ BuildRequires:	readline-static
 BuildRequires:	rpm-static
 BuildRequires:	zlib-static
 %endif
+Requires(triggerpostun):	sed >= 4.0
 Requires:	db >= %{ver_db}
-Requires:	ed
 Requires:	rpm >= %{ver_rpm}
 Requires:	sed
 Requires:	openssl >= 0.9.7c
@@ -71,6 +68,8 @@ shell mode of Perl's CPAN.
 %{?with_static:This version is statically linked.}
 
 %{!?with_imode:This version hasn't got interactive mode.}
+
+#' vim
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
@@ -91,9 +90,6 @@ modu³u CPAN.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p0
-%patch3 -p1
-%patch4 -p1
-%patch5 -p0
 
 %build
 %{__autopoint}
@@ -140,25 +136,28 @@ sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{n
 
 %find_lang %{name}
 
+# no poldek-{devel,static}
+rm -rf $RPM_BUILD_ROOT%{_includedir}
+rm -rf $RPM_BUILD_ROOT%{_libdir}/lib*.a
+rm -rf $RPM_BUILD_ROOT%{_libdir}/libtrurl.so.0.4.0
+rm -rf $RPM_BUILD_ROOT%{_libdir}/libtrurl.la
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %triggerpostun -- poldek <= 0.18.3-5
-if grep -q '^promoteepoch.*yes' %{_sysconfdir}/poldek.conf ; then
-	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed -s %{_sysconfdir}/poldek.conf
-fi
+sed -i -e '/^promoteepoch:.*yes/s/^/#/' %{_sysconfdir}/poldek.conf
 
 # otherwise don't touch
 %ifarch i386 i586 i686 ppc sparc alpha amd64 athlon
 %triggerpostun -- poldek <= 0.18.7-1
-echo -e ',s://ftp.pld-linux.org://ftp.%{_target_cpu}.ac.pld-linux.org:g\n,w' |\
-	ed -s /etc/poldek.conf ||:
+sed -i -e 's://ftp.pld-linux.org://ftp.%{_target_cpu}.ac.pld-linux.org:g' /etc/poldek.conf
 %endif
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc README* NEWS TODO *sample* conf/poldekrc*
-%attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}.conf
+%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}.conf
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/%{name}*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
