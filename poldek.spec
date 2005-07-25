@@ -30,11 +30,11 @@ BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
+BuildRequires:	perl-tools-pod
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
 BuildRequires:	rpm-devel >= %{ver_rpm}
 BuildRequires:	zlib-devel
-BuildRequires:	perl-tools-pod
 %if %{with static}
 BuildRequires:	bzip2-static
 %{?with_curl:BuildRequires:	curl-static}
