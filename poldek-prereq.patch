@@ -1,0 +1,18 @@
+--- poldek-0.18.9/capreq.c.orig	2004-12-30 13:05:19.000000000 +0100
++++ poldek-0.18.9/capreq.c	2005-07-25 15:16:01.000000000 +0200
+@@ -646,10 +646,13 @@
+                     cr->cr_flags |= CAPREQ_PREREQ | CAPREQ_PREREQ_UN;
+                 }
+ #else
++#  if RPMSENSE_PREREQ != RPMSENSE_ANY /* rpm 4.4 drops legacy PreReq support */
+                 if (isLegacyPreReq(flag)) { /* prepared by rpm < 4.0.2  */
+                     cr->cr_flags |= CAPREQ_PREREQ | CAPREQ_PREREQ_UN;
+-                
+-                } else if (isInstallPreReq(flag)) {
++
++                } else
++#  endif
++		if (isInstallPreReq(flag)) {
+                     cr->cr_flags |= CAPREQ_PREREQ;
+                 
+                 } else if (isErasePreReq(flag)) {
