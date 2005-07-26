@@ -161,7 +161,8 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %endif
 %endif
 
-sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+%{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
+sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 
 %find_lang %{name}
 
