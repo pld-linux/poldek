@@ -10,20 +10,17 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.18.8
-Release:	11
+Version:	0.18.9
+Release:	1.1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
-# Source0-md5:	f7e2978c7f8b35b0b07d0278dd299881
+# Source0-md5:	c49eb9086a7ee77e50c527f9c95e41aa
 Source1:	%{name}.conf
 Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-simplestatic.patch
-Patch3:		%{name}-gcc4.patch
-Patch4:		%{name}-cookie.patch
-Patch5:		%{name}-rpmcmd.patch
-Patch6:		%{name}-fmtime.patch
+Patch3:		%{name}-prereq.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -33,11 +30,11 @@ BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
+BuildRequires:	perl-tools-pod
 BuildRequires:	popt-devel
 BuildRequires:	readline-devel
 BuildRequires:	rpm-devel >= %{ver_rpm}
 BuildRequires:	zlib-devel
-BuildRequires:	perl-tools-pod
 %if %{with static}
 BuildRequires:	bzip2-static
 %{?with_curl:BuildRequires:	curl-static}
@@ -52,8 +49,8 @@ BuildRequires:	readline-static
 BuildRequires:	rpm-static
 BuildRequires:	zlib-static
 %endif
+Requires(triggerpostun):	sed >= 4.0
 Requires:	db >= %{ver_db}
-Requires:	ed
 Requires:	rpm >= %{ver_rpm}
 Requires:	sed
 Requires:	openssl >= 0.9.7c
@@ -72,6 +69,8 @@ shell mode of Perl's CPAN.
 %{?with_static:This version is statically linked.}
 
 %{!?with_imode:This version hasn't got interactive mode.}
+
+#' vim
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
@@ -93,9 +92,6 @@ modu³u CPAN.
 %patch1 -p1
 %patch2 -p0
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p0
 
 %build
 %{__autopoint}
@@ -142,19 +138,22 @@ sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{n
 
 %find_lang %{name}
 
+# no poldek-{devel,static}
+rm -rf $RPM_BUILD_ROOT%{_includedir}
+rm -rf $RPM_BUILD_ROOT%{_libdir}/lib*.a
+rm -rf $RPM_BUILD_ROOT%{_libdir}/libtrurl.so.0.4.0
+rm -rf $RPM_BUILD_ROOT%{_libdir}/libtrurl.la
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %triggerpostun -- poldek <= 0.18.3-5
-if grep -q '^promoteepoch.*yes' %{_sysconfdir}/poldek.conf ; then
-	echo -e ',s:^promoteepoch:# promoteepoch:g\n,w' | ed -s %{_sysconfdir}/poldek.conf
-fi
+sed -i -e '/^promoteepoch:.*yes/s/^/#/' %{_sysconfdir}/poldek.conf
 
 # otherwise don't touch
 %ifarch i386 i586 i686 ppc sparc alpha amd64 athlon
 %triggerpostun -- poldek <= 0.18.7-1
-echo -e ',s://ftp.pld-linux.org://ftp.%{_target_cpu}.ac.pld-linux.org:g\n,w' |\
-	ed -s /etc/poldek.conf ||:
+sed -i -e 's://ftp.pld-linux.org://ftp.%{_target_cpu}.ac.pld-linux.org:g' /etc/poldek.conf
 %endif
 
 %files -f %{name}.lang
