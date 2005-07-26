@@ -25,7 +25,7 @@ BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	home-etc-devel
 BuildRequires:	libtool
-BuildRequires:	openssl-devel >= 0.9.7c
+BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	perl-tools-pod
 BuildRequires:	popt-devel
@@ -36,6 +36,7 @@ BuildRequires:	zlib-devel
 BuildRequires:	bzip2-static
 BuildRequires:	db-static >= %{ver_db}
 BuildRequires:	glibc-static
+BuildRequires:	libselinux-static
 BuildRequires:	ncurses-static
 BuildRequires:	openssl-static
 BuildRequires:	pcre-static
@@ -44,8 +45,9 @@ BuildRequires:	readline-static
 BuildRequires:	rpm-static
 BuildRequires:	zlib-static
 %endif
+Requires(triggerpostun):	sed >= 4.0
 Requires:	db >= %{ver_db}
-Requires:	openssl >= 0.9.7c
+Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
