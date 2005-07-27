@@ -193,6 +193,7 @@ sed -i -e 's://ftp.pld-linux.org://ftp.ac.pld-linux.org:g' /etc/poldek.conf
 %attr(755,root,root) %{_libdir}/%{name}/*
 %{_mandir}/man1/%{name}*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
+%{_infodir}/poldek.info*
 
 %files libs
 %defattr(644,root,root,755)
