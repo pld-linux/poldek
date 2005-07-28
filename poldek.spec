@@ -11,12 +11,13 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.19.0
-Release:	1
+Release:	1.%{snap}
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 # Source0-md5:	d529239d781c3d9e36577305d46d1a37
 Source1:	%{name}.conf
+Patch0:		%{name}-prereq.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -63,8 +64,6 @@ interface with command line autocompletion and history, similar to the
 shell mode of Perl's CPAN.
 
 %{?with_static:This version is statically linked.}
-
-%{!?with_imode:This version hasn't got interactive mode.}
 
 %{!?with_imode:This version hasn't got interactive mode.}
 
@@ -119,6 +118,7 @@ Biblioteki statyczne poldka.
 
 %prep
 %setup -q -n %{name}-%{version}-cvs%{snap}
+%patch0 -p1
 
 %build
 %{__autopoint}
@@ -168,17 +168,17 @@ sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{n
 
 %find_lang %{name}
 
+%clean
+rm -rf $RPM_BUILD_ROOT
+
 %post
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
 
 %postun
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
 
-%post libs	-p /sbin/ldconfig
-%postun libs	-p /sbin/ldconfig
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+%post	libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
 
 %triggerpostun -- poldek <= 0.18.3-5
 sed -i -e '/^promoteepoch:.*yes/s/^/#/' %{_sysconfdir}/poldek.conf
@@ -203,13 +203,13 @@ sed -i -e 's://ftp.pld-linux.org://ftp.ac.pld-linux.org:g' /etc/poldek.conf
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so.*
+%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/lib*.so
-%{_includedir}/*
 %{_libdir}/lib*.la
+%{_includedir}/*
 
 %files static
 %defattr(644,root,root,755)
