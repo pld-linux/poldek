@@ -184,12 +184,16 @@ rm -rf $RPM_BUILD_ROOT
 %postun	libs -p /sbin/ldconfig
 
 %triggerpostun -- poldek <= 0.18.3-5
-sed -i -e '/^promoteepoch:.*yes/s/^/#/' %{_sysconfdir}/poldek.conf
+if [ -f /etc/poldek.conf ]; then
+	sed -i -e '/^promoteepoch:.*yes/s/^/#/' /etc/poldek.conf
+fi
 
 # otherwise don't touch
 %ifarch i386 i586 i686 ppc sparc alpha amd64 athlon
 %triggerpostun -- poldek <= 0.18.7-1
-sed -i -e 's://ftp.pld-linux.org://ftp.ac.pld-linux.org:g' /etc/poldek.conf
+if [ -f /etc/poldek.conf ]; then
+	sed -i -e 's://ftp.pld-linux.org://ftp.ac.pld-linux.org:g' /etc/poldek.conf
+fi
 %endif
 
 %triggerpostun -- poldek < 0.19.0-1.20050613.22.0
