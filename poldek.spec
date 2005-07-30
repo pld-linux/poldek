@@ -217,6 +217,8 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 	}
 
 	}' < /etc/poldek.conf.rpmsave >> /etc/poldek/source.conf
+	echo "Converted old custom sources (non-ac dist ones) from /etc/poldek.conf.rpmsave to new poldek format in /etc/poldek/source.conf"
+
 #	mv -f /etc/poldek.conf.rpmsave /etc/poldek.conf.converted.rpmsave
 fi
 
