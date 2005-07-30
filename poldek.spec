@@ -11,7 +11,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.19.0
-Release:	1.%{snap}
+Release:	1.%{snap}.0
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -66,6 +66,8 @@ shell mode of Perl's CPAN.
 %{?with_static:This version is statically linked.}
 
 %{!?with_imode:This version hasn't got interactive mode.}
+
+#'
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
@@ -188,6 +190,34 @@ sed -i -e '/^promoteepoch:.*yes/s/^/#/' %{_sysconfdir}/poldek.conf
 %triggerpostun -- poldek <= 0.18.7-1
 sed -i -e 's://ftp.pld-linux.org://ftp.ac.pld-linux.org:g' /etc/poldek.conf
 %endif
+
+%triggerpostun -- poldek < 0.19.0-1.20050613.22.0
+if [ -f /etc/poldek.conf.rpmsave ]; then
+	awk '/^source/ {
+	name = $3;
+	path = $4;
+	auto = "yes";
+	autoup = "yes";
+	type = "pdir";
+
+	if (sub(",noauto", "", name)) {
+		auto = "no";
+	}
+
+	# skip ac sources. already in new config.
+	if (name !~ /^ac(-(ready|test|supported|updates-(general|security)))?$/) {
+		print "[source]";
+		print "name = " name;
+		print "type = " type;
+		print "path = " path;
+		print "auto = " auto;
+		print "autoup = " autoup;
+		print "";
+	}
+
+	}' < /etc/poldek.conf.rpmsave >> /etc/poldek/source.conf
+#	mv -f /etc/poldek.conf.rpmsave /etc/poldek.conf.converted.rpmsave
+fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
