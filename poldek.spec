@@ -47,6 +47,7 @@ BuildRequires:	rpm-static
 BuildRequires:	zlib-static
 %endif
 Requires(triggerpostun):	sed >= 4.0
+Requires(triggerpostun):	awk
 Requires:	db >= %{ver_db}
 Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
