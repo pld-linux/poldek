@@ -11,7 +11,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.19.0
-Release:	1.%{snap}.0
+Release:	1.%{snap}.4
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -169,6 +169,13 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 
+# get rid of non-pld sources
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora}-source.conf
+# include them in %doc
+rm -rf configs
+cp -a conf configs
+rm -f configs/Makefile*
+
 %find_lang %{name}
 
 %clean
@@ -223,12 +230,15 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 	}' < /etc/poldek.conf.rpmsave >> /etc/poldek/source.conf
 	echo "Converted old custom sources (non-ac dist ones) from /etc/poldek.conf.rpmsave to new poldek format in /etc/poldek/source.conf"
 
-#	mv -f /etc/poldek.conf.rpmsave /etc/poldek.conf.converted.rpmsave
+	# propagate use_sudo to new config. only works for untouched poldek.conf and that's intentional.
+	if grep -q '^use_sudo.*=.*yes' /etc/poldek.conf.rpmsave; then
+		sed -i -e '/^#use sudo = no/s/^.*/use sudo = yes/' /etc/poldek/poldek.conf
+	fi
 fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc README* NEWS TODO conf/*.conf
+%doc README* NEWS TODO configs/
 %dir %{_sysconfdir}/%{name}
 %attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}/*.conf
 %attr(755,root,root) %{_bindir}/*
