@@ -11,12 +11,13 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.19.0
-Release:	1.%{snap}.4
+Release:	1.%{snap}.5
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 # Source0-md5:	d529239d781c3d9e36577305d46d1a37
 Source1:	%{name}.conf
+Source2:	%{name}-multilib.conf
 Patch0:		%{name}-prereq.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
@@ -150,8 +151,12 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 #
 # CHANGE IT WHEN SWITCHING poldek.conf FROM AC TO TH !!!
 #
-%ifarch i386 i586 i686 ppc sparc alpha amd64 athlon
+%ifarch i386 i586 i686 ppc sparc alpha athlon
 %define		_ftp_arch	%{_target_cpu}
+%else
+%ifarch amd64
+%define		_ftp_arch	%{_target_cpu}
+%define		_ftp_alt_arch	athlon
 %else
 %ifarch i486
 %define		_ftp_arch	i386
@@ -165,9 +170,14 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %endif
 %endif
 %endif
+%endif
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
+
+%ifarch amd64
+sed "s|%%ARCH%%|%{_ftp_alt_arch}|g" < %{SOURCE2} >> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
+%endif
 
 # get rid of non-pld sources
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora}-source.conf
