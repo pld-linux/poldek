@@ -173,7 +173,12 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %endif
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
-sed "s|%%ARCH%%|%{_ftp_arch}|g" < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
+
+sed -e "s|%%ARCH%%|%{_ftp_arch}|g" \
+%ifarch amd64
+	-e "s|%%ALT_ARCH%%|%{_ftp_alt_arch}|g" \
+%endif
+	< %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 
 %ifarch amd64
 sed "s|%%ARCH%%|%{_ftp_alt_arch}|g" < %{SOURCE2} >> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
