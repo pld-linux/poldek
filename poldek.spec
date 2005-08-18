@@ -156,7 +156,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %else
 %ifarch amd64
 %define		_ftp_arch	%{_target_cpu}
-%define		_ftp_alt_arch	athlon
+%define		_ftp_alt_arch	i686
 %else
 %ifarch i486
 %define		_ftp_arch	i386
