@@ -11,7 +11,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.19.0
-Release:	1.%{snap}.6
+Release:	1.%{snap}.7
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -248,6 +248,12 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 	# propagate use_sudo to new config. only works for untouched poldek.conf and that's intentional.
 	if grep -q '^use_sudo.*=.*yes' /etc/poldek.conf.rpmsave; then
 		sed -i -e '/^#use sudo = no/s/^.*/use sudo = yes/' /etc/poldek/poldek.conf
+	fi
+
+	# copy hold=
+	hold=$(grep ^hold /etc/poldek.conf.rpmsave)
+	if [ "$hold" ]; then
+		sed -i -e "/^#hold =/s/^.*/$hold/" /etc/poldek/poldek.conf
 	fi
 fi
 
