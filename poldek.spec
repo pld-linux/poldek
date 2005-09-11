@@ -19,6 +19,7 @@ Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Patch0:		%{name}-prereq.patch
+Patch1:		%{name}-endian.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -123,6 +124,7 @@ Biblioteki statyczne poldka.
 %prep
 %setup -q -n %{name}-%{version}-cvs%{snap}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__autopoint}
