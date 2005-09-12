@@ -235,13 +235,13 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 
 	# skip ac sources. already in new config.
 	if (name !~ /^ac(-(ready|test|supported|updates-(general|security)))?$/) {
+		print "";
 		print "[source]";
 		print "name = " name;
 		print "type = " type;
 		print "path = " path;
 		print "auto = " auto;
 		print "autoup = " autoup;
-		print "";
 	}
 
 	}' < /etc/poldek.conf.rpmsave >> /etc/poldek/source.conf
