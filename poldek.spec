@@ -87,7 +87,7 @@ modu³u CPAN.
 %{!?with_imode:Ta wersja nie posiada trybu interaktywnego.}
 
 %package libs
-Summary:        poldek library
+Summary:        poldek libraries
 Summary(pl):    Biblioteki poldka
 Group:          Libraries
 
@@ -179,6 +179,8 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 sed -e "s|%%ARCH%%|%{_ftp_arch}|g" \
 %ifarch amd64
 	-e "s|%%ALT_ARCH%%|%{_ftp_alt_arch}|g" \
+%else
+	-e '/%%ALT_ARCH%%/d' \
 %endif
 	< %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 
