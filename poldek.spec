@@ -21,6 +21,7 @@ Patch0:		%{name}-etc_dir.patch
 Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-simplestatic.patch
 Patch3:		%{name}-prereq.patch
+Patch4:		%{name}-vf_append.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -92,6 +93,7 @@ modu³u CPAN.
 %patch1 -p1
 %patch2 -p0
 %patch3 -p1
+%patch4 -p0
 
 %build
 %{__autopoint}
