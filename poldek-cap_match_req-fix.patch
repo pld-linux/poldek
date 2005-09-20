@@ -1,0 +1,17 @@
+Index: pkg.c
+===================================================================
+RCS file: /cvsroot/installer/poldek/pkg.c,v
+retrieving revision 1.51.4.2
+diff -u -r1.51.4.2 pkg.c
+--- pkg.c	30 Dec 2003 18:19:52 -0000	1.51.4.2
++++ pkg.c	19 Feb 2004 00:18:18 -0000
+@@ -717,6 +717,9 @@
+     if ((strcmp(capreq_name(cap), capreq_name(req))) != 0)
+         return 0;
+ 
++    if (!capreq_versioned(req))
++	return 1;
++
+     if (capreq_has_epoch(cap)) {
+         if (!capreq_has_epoch(req) && poldek_conf_promote_epoch) {
+             if (verbose > 1)
