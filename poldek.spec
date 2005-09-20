@@ -7,15 +7,19 @@
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.18.3
-Release:	6
+Version:	0.18.6
+Release:	1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.gz
-# Source0-md5:	339c54b86bfd733851c0f7125057f446
+# Source0-md5:	99d118c986e8102e11b81768499ec0bd
 Source1:	%{name}.conf
-Patch0:		%{name}-retr_term.patch
-Patch1:		%{name}-sigsegv.patch
+Patch0:         %{name}-retr_term.patch
+Patch1:         %{name}-simplestatic.patch
+Patch2:         %{name}-pkgorder.patch
+Patch3:         %{name}-sigsegv.patch
+Patch4:         %{name}-caplookup.patch
+Patch5:         %{name}-progress2.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	/usr/bin/pod2man
 BuildRequires:	autoconf
@@ -30,13 +34,13 @@ BuildRequires:	openssl-devel >= 0.9.6m
 %{?with_static:BuildRequires:	openssl-static}
 BuildRequires:	pcre-devel
 %{?with_static:BuildRequires:	pcre-static}
+BuildRequires:	popt-devel
 %{?with_static:BuildRequires:	popt-static}
 BuildRequires:	readline-devel
 BuildRequires:	rpm-devel >= 4.0.2-62
 %{?with_static:BuildRequires:	rpm-static}
 BuildRequires:	zlib-devel
 %{?with_static:BuildRequires:	zlib-static}
-Requires:	ed
 Requires:	rpm >= 4.0.2-62
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -73,6 +77,10 @@ modu³u CPAN.
 %setup -q
 %patch0 -p1
 %patch1 -p0
+%patch2 -p0
+%patch3 -p0
+%patch4 -p0
+%patch5 -p1
 
 %build
 if ! grep -q AM_GNU_GETTEXT_VERSION configure.in ; then
@@ -101,15 +109,12 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{?with_static:rm -f $RPM_BUILD_ROOT/%{_bindir}/rpmvercmp}
-sed "s|%%ARCH%%|%{_target_cpu}|g" < %{SOURCE1} > $RPM_BUILD_ROOT/etc/%{name}.conf
+sed "s|/i686/|/%{_target_cpu}/|g" < %{SOURCE1} > $RPM_BUILD_ROOT/etc/%{name}.conf
 
 %find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%triggerpostun -- poldek <= 0.18.3-4
-echo -e ',s://ftp.pld-linux.org://ftp.%{_target_cpu}.ra.pld-linux.org:g\n,w' | ed -s /etc/poldek.conf
 
 %triggerpostun -- poldek <= 0.18.3-1
 if ! grep -q promoteepoch /etc/poldek.conf ; then
