@@ -11,13 +11,14 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.19.0
-Release:	1.%{snap}.1
+Release:	1.%{snap}.2
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 # Source0-md5:	50c7135af609a874103a9dacdaf76b2b
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
+Source3:	%{name}-aliases.conf
 Patch0:		%{name}-prereq.patch
 Patch1:		%{name}-am-ac.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
@@ -187,6 +188,8 @@ sed -e "s|%%ARCH%%|%{_ftp_arch}|g" \
 %ifarch amd64
 sed "s|%%ARCH%%|%{_ftp_alt_arch}|g" < %{SOURCE2} >> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 %endif
+
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
 
 # get rid of non-pld sources
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora}-source.conf
