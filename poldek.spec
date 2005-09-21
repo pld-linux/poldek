@@ -20,12 +20,12 @@ Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
 Patch0:		%{name}-prereq.patch
-Patch1:		%{name}-am-ac.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	bzip2-devel
 BuildRequires:	db-devel >= %{ver_db}
+BuildRequires:	check
 BuildRequires:	gettext-autopoint
 BuildRequires:	home-etc-devel
 BuildRequires:	libtool
@@ -125,7 +125,6 @@ Biblioteki statyczne poldka.
 %prep
 %setup -q -n %{name}-%{version}-cvs%{snap}
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__autopoint}
