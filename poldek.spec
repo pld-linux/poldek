@@ -21,6 +21,7 @@ Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
 Patch0:		%{name}-prereq.patch
 Patch1:		%{name}-configure.patch
+Patch2:		%{name}-nodebug.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -129,6 +130,7 @@ Biblioteki statyczne poldka.
 %setup -q -n %{name}-%{version}-cvs%{snap}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__autopoint}
