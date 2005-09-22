@@ -30,6 +30,7 @@ BuildRequires:	check
 BuildRequires:	gettext-autopoint
 BuildRequires:	home-etc-devel
 BuildRequires:	libtool
+BuildRequires:	libxml2-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	perl-tools-pod
@@ -140,7 +141,6 @@ perl -pi -e 's|HAVE_FOPENCOOKIE|HAVE_FOPENCOOKIE_XXX|g' trurlib/nstream.c
 %configure \
 	%{?with_static:--enable-static} \
 	%{!?with_imode:--disable-imode} \
-	--without-metadata-repository \
 	--enable-nls
 %{__make}
 
