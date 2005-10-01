@@ -1,0 +1,71 @@
+diff -urN poldek-0.18.9.org/split.c poldek-0.18.9/split.c
+--- poldek-0.18.9.org/split.c	2002-06-12 17:50:57.000000000 +0200
++++ poldek-0.18.9/split.c	2005-10-01 19:54:04.000000000 +0200
+@@ -35,8 +35,8 @@
+ 
+ struct chunk {
+     int       no;
+-    unsigned  size;
+-    unsigned  maxsize;
++    unsigned  long size;
++    unsigned  long maxsize;
+     int       items;
+     tn_array  *pkgs;
+ };
+@@ -46,7 +46,7 @@
+     char        mask[0];
+ };
+ 
+-static struct chunk *chunk_new(int no, int maxsize)
++static struct chunk *chunk_new(int no, unsigned long maxsize)
+ {
+     struct chunk *chunk;
+ 
+@@ -238,7 +238,7 @@
+ 
+ 
+ static
+-int try_package(int deep, unsigned *chunk_size, unsigned maxsize,
++int try_package(int deep, unsigned *chunk_size, unsigned long maxsize,
+                 struct pkg *pkg, tn_array *stack) 
+ {
+     int i, rc = 1;
+@@ -253,7 +253,7 @@
+     n_array_push(stack, pkg_link(pkg));
+     *chunk_size += pkg->fsize;
+     
+-    DBGF("trying %s: %d (%d) > %d\n", pkg_snprintf_s(pkg), *chunk_size,
++    DBGF("trying %s: %d (%d) > %ld\n", pkg_snprintf_s(pkg), *chunk_size,
+          pkg->fsize, maxsize);
+     
+     if (*chunk_size > maxsize)
+@@ -319,7 +319,7 @@
+ 
+ 
+ static
+-int make_chunks(tn_array *pkgs, unsigned split_size, unsigned first_free_space,
++int make_chunks(tn_array *pkgs, unsigned long split_size, unsigned long first_free_space,
+                 const char *outprefix)
+ {
+     int             i, chunk_no = 0, rc = 1;
+@@ -371,7 +371,7 @@
+         
+         snprintf(path, sizeof(path), "%s.%d", outprefix, chunk->no);
+         
+-        msgn(0, _("Writing %s (%4d packages, % 10d bytes, "
++        msgn(0, _("Writing %s (%4d packages, % 15ld bytes, "
+                   "pri min, max = %d, %d)"),
+              path, chunk->items, chunk->size, pri_min, pri_max);
+         
+diff -urN poldek-0.18.9.org/split.h poldek-0.18.9/split.h
+--- poldek-0.18.9.org/split.h	2001-09-11 18:08:37.000000000 +0200
++++ poldek-0.18.9/split.h	2005-10-01 19:49:30.000000000 +0200
+@@ -4,7 +4,7 @@
+ 
+ int packages_set_priorities(tn_array *pkgs, const char *splitconf_path);
+ 
+-int packages_split(tn_array *pkgs, unsigned split_size, unsigned first_free_space,
++int packages_split(tn_array *pkgs, unsigned long split_size, unsigned long first_free_space,
+                    const char *splitconf_path, const char *outprefix);
+ 
+ #endif
