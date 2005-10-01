@@ -7,8 +7,8 @@ diff -urbB poldek-0.18.9.org/main.c poldek-0.18.9/main.c
  struct split_conf {
 -    int   size;
 -    int   first_free_space;
-+    unsigned long   size;
-+    unsigned long   first_free_space;
++    unsigned long long   size;
++    unsigned long long   first_free_space;
      char  *conf;
      char  *prefix;
  };
@@ -21,8 +21,8 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
      int       no;
 -    unsigned  size;
 -    unsigned  maxsize;
-+    unsigned  long size;
-+    unsigned  long maxsize;
++    unsigned  long long size;
++    unsigned  long long maxsize;
      int       items;
      tn_array  *pkgs;
  };
@@ -31,7 +31,7 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
  };
  
 -static struct chunk *chunk_new(int no, int maxsize)
-+static struct chunk *chunk_new(int no, unsigned long maxsize)
++static struct chunk *chunk_new(int no, unsigned long long maxsize)
  {
      struct chunk *chunk;
  
@@ -40,7 +40,7 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
  
  static
 -int try_package(int deep, unsigned *chunk_size, unsigned maxsize,
-+int try_package(int deep, unsigned *chunk_size, unsigned long maxsize,
++int try_package(int deep, unsigned *chunk_size, unsigned long long maxsize,
                  struct pkg *pkg, tn_array *stack) 
  {
      int i, rc = 1;
@@ -58,7 +58,7 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
  
  static
 -int make_chunks(tn_array *pkgs, unsigned split_size, unsigned first_free_space,
-+int make_chunks(tn_array *pkgs, unsigned long split_size, unsigned long first_free_space,
++int make_chunks(tn_array *pkgs, unsigned long long split_size, unsigned long long first_free_space,
                  const char *outprefix)
  {
      int             i, chunk_no = 0, rc = 1;
@@ -76,7 +76,7 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
  
  
 -int packages_split(tn_array *pkgs, unsigned split_size, unsigned first_free_space, 
-+int packages_split(tn_array *pkgs, unsigned long split_size, unsigned long first_free_space, 
++int packages_split(tn_array *pkgs, unsigned long long split_size, unsigned long long first_free_space, 
                     const char *splitconf_path, const char *outprefix)
  {
      tn_array *defs = NULL, *packages = NULL, *ordered_pkgs = NULL;
@@ -88,7 +88,7 @@ diff -urbB poldek-0.18.9.org/split.h poldek-0.18.9/split.h
  int packages_set_priorities(tn_array *pkgs, const char *splitconf_path);
  
 -int packages_split(tn_array *pkgs, unsigned split_size, unsigned first_free_space,
-+int packages_split(tn_array *pkgs, unsigned long split_size, unsigned long first_free_space,
++int packages_split(tn_array *pkgs, unsigned long long split_size, unsigned long long first_free_space,
                     const char *splitconf_path, const char *outprefix);
  
  #endif
