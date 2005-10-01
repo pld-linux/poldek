@@ -22,6 +22,7 @@ Patch1:		%{name}-retr_term.patch
 Patch2:		%{name}-simplestatic.patch
 Patch3:		%{name}-prereq.patch
 Patch4:		%{name}-vf_append.patch
+Patch5:		%{name}-huge-split.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -94,6 +95,7 @@ modu³u CPAN.
 %patch2 -p0
 %patch3 -p1
 %patch4 -p0
+%patch5 -p1
 
 %build
 %{__autopoint}
