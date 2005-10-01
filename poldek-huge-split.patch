@@ -1,4 +1,18 @@
-diff -urN poldek-0.18.9.org/split.c poldek-0.18.9/split.c
+diff -urbB poldek-0.18.9.org/main.c poldek-0.18.9/main.c
+--- poldek-0.18.9.org/main.c	2005-07-03 15:04:16.000000000 +0200
++++ poldek-0.18.9/main.c	2005-10-01 20:26:06.201719750 +0200
+@@ -124,8 +124,8 @@
+ #define INDEXTYPE_TXTZ    2
+ 
+ struct split_conf {
+-    int   size;
+-    int   first_free_space;
++    unsigned long   size;
++    unsigned long   first_free_space;
+     char  *conf;
+     char  *prefix;
+ };
+diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
 --- poldek-0.18.9.org/split.c	2002-06-12 17:50:57.000000000 +0200
 +++ poldek-0.18.9/split.c	2005-10-01 20:16:47.000000000 +0200
 @@ -35,8 +35,8 @@
@@ -66,7 +80,7 @@ diff -urN poldek-0.18.9.org/split.c poldek-0.18.9/split.c
                     const char *splitconf_path, const char *outprefix)
  {
      tn_array *defs = NULL, *packages = NULL, *ordered_pkgs = NULL;
-diff -urN poldek-0.18.9.org/split.h poldek-0.18.9/split.h
+diff -urbB poldek-0.18.9.org/split.h poldek-0.18.9/split.h
 --- poldek-0.18.9.org/split.h	2001-09-11 18:08:37.000000000 +0200
 +++ poldek-0.18.9/split.h	2005-10-01 19:49:30.000000000 +0200
 @@ -4,7 +4,7 @@
