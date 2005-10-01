@@ -1,6 +1,6 @@
 diff -urbB poldek-0.18.9.org/main.c poldek-0.18.9/main.c
 --- poldek-0.18.9.org/main.c	2005-07-03 15:04:16.000000000 +0200
-+++ poldek-0.18.9/main.c	2005-10-01 20:26:06.201719750 +0200
++++ poldek-0.18.9/main.c	2005-10-01 20:52:44.029577750 +0200
 @@ -124,8 +124,8 @@
  #define INDEXTYPE_TXTZ    2
  
@@ -14,7 +14,7 @@ diff -urbB poldek-0.18.9.org/main.c poldek-0.18.9/main.c
  };
 diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
 --- poldek-0.18.9.org/split.c	2002-06-12 17:50:57.000000000 +0200
-+++ poldek-0.18.9/split.c	2005-10-01 20:16:47.000000000 +0200
++++ poldek-0.18.9/split.c	2005-10-01 20:56:52.169085500 +0200
 @@ -35,8 +35,8 @@
  
  struct chunk {
@@ -53,6 +53,15 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
           pkg->fsize, maxsize);
      
      if (*chunk_size > maxsize)
+@@ -278,7 +278,7 @@
+ int chunk_add(struct chunk *chunk, struct pkg *pkg) 
+ {
+     int i, rc = 0;
+-    int chunk_size = 0;
++    unsigned long long chunk_size = 0;
+     tn_array *stack = NULL;
+ 
+     
 @@ -319,7 +319,7 @@
  
  
@@ -82,7 +91,7 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
      tn_array *defs = NULL, *packages = NULL, *ordered_pkgs = NULL;
 diff -urbB poldek-0.18.9.org/split.h poldek-0.18.9/split.h
 --- poldek-0.18.9.org/split.h	2001-09-11 18:08:37.000000000 +0200
-+++ poldek-0.18.9/split.h	2005-10-01 19:49:30.000000000 +0200
++++ poldek-0.18.9/split.h	2005-10-01 20:52:44.029577750 +0200
 @@ -4,7 +4,7 @@
  
  int packages_set_priorities(tn_array *pkgs, const char *splitconf_path);
