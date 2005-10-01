@@ -1,6 +1,6 @@
-diff -urbB poldek-0.18.9.org/main.c poldek-0.18.9/main.c
---- poldek-0.18.9.org/main.c	2005-07-03 15:04:16.000000000 +0200
-+++ poldek-0.18.9/main.c	2005-10-01 20:52:44.029577750 +0200
+diff -urBb poldek-0.18.9.org/main.c poldek-0.18.9/main.c
+--- poldek-0.18.9.org/main.c	2005-07-03 13:04:16.000000000 +0000
++++ poldek-0.18.9/main.c	2005-10-01 19:58:23.000000000 +0000
 @@ -124,8 +124,8 @@
  #define INDEXTYPE_TXTZ    2
  
@@ -12,9 +12,23 @@ diff -urbB poldek-0.18.9.org/main.c poldek-0.18.9/main.c
      char  *conf;
      char  *prefix;
  };
-diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
---- poldek-0.18.9.org/split.c	2002-06-12 17:50:57.000000000 +0200
-+++ poldek-0.18.9/split.c	2005-10-01 20:56:52.169085500 +0200
+@@ -930,11 +930,11 @@
+             argsp->mjrmode = MODE_SPLIT;
+ 
+             if ((p = strrchr(arg, ':'))) {
+-                rc = sscanf(arg, "%d:%d", &argsp->split_conf.size,
++                rc = sscanf(arg, "%lld:%lld", &argsp->split_conf.size,
+                             &argsp->split_conf.first_free_space);
+                 rc = (rc == 2);
+             } else {
+-                rc = sscanf(arg, "%d", &argsp->split_conf.size);
++                rc = sscanf(arg, "%lld", &argsp->split_conf.size);
+                 rc = (rc == 1);
+             }
+             if (!rc) {
+diff -urBb poldek-0.18.9.org/split.c poldek-0.18.9/split.c
+--- poldek-0.18.9.org/split.c	2002-06-12 15:50:57.000000000 +0000
++++ poldek-0.18.9/split.c	2005-10-01 19:59:02.000000000 +0000
 @@ -35,8 +35,8 @@
  
  struct chunk {
@@ -40,7 +54,7 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
  
  static
 -int try_package(int deep, unsigned *chunk_size, unsigned maxsize,
-+int try_package(int deep, unsigned *chunk_size, unsigned long long maxsize,
++int try_package(int deep, unsigned long long *chunk_size, unsigned long long maxsize,
                  struct pkg *pkg, tn_array *stack) 
  {
      int i, rc = 1;
@@ -49,7 +63,7 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
      *chunk_size += pkg->fsize;
      
 -    DBGF("trying %s: %d (%d) > %d\n", pkg_snprintf_s(pkg), *chunk_size,
-+    DBGF("trying %s: %d (%d) > %ld\n", pkg_snprintf_s(pkg), *chunk_size,
++    DBGF("trying %s: %lld (%d) > %lld\n", pkg_snprintf_s(pkg), *chunk_size,
           pkg->fsize, maxsize);
      
      if (*chunk_size > maxsize)
@@ -80,6 +94,17 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
                    "pri min, max = %d, %d)"),
               path, chunk->items, chunk->size, pri_min, pri_max);
          
+@@ -379,8 +379,8 @@
+         if ((vf = vfile_open(path, VFT_STDIO, VFM_RW)) == NULL)
+             return 0;
+ 
+-#if 0        
+-        fprintf(vf->vf_stream, "# chunk #%d: %d packages, %d bytes\n",
++#if 0
++        fprintf(vf->vf_stream, "# chunk #%d: %d packages, %lld bytes\n",
+                 i, chunk->items, chunk->size);
+ #endif
+         chunk_dump(chunk, vf->vf_stream);
 @@ -427,7 +427,7 @@
  }
  
@@ -89,9 +114,9 @@ diff -urbB poldek-0.18.9.org/split.c poldek-0.18.9/split.c
                     const char *splitconf_path, const char *outprefix)
  {
      tn_array *defs = NULL, *packages = NULL, *ordered_pkgs = NULL;
-diff -urbB poldek-0.18.9.org/split.h poldek-0.18.9/split.h
---- poldek-0.18.9.org/split.h	2001-09-11 18:08:37.000000000 +0200
-+++ poldek-0.18.9/split.h	2005-10-01 20:52:44.029577750 +0200
+diff -urBb poldek-0.18.9.org/split.h poldek-0.18.9/split.h
+--- poldek-0.18.9.org/split.h	2001-09-11 16:08:37.000000000 +0000
++++ poldek-0.18.9/split.h	2005-10-01 19:00:42.000000000 +0000
 @@ -4,7 +4,7 @@
  
  int packages_set_priorities(tn_array *pkgs, const char *splitconf_path);
