@@ -1,0 +1,11 @@
+--- poldek-0.19.0-cvs20050921.00/configure.in.orig	2005-07-17 14:45:53.000000000 +0200
++++ poldek-0.19.0-cvs20050921.00/configure.in	2005-09-22 00:58:52.000000000 +0200
+@@ -325,6 +325,8 @@
+         [ AC_MSG_ERROR(["/usr/include/libxml2/libxml/xmlversion.h not found"])])
+     AC_DEFINE([WITH_METADATA_REPOSITORY],1,[defined if metadata is enabled])
+     AM_CONDITIONAL(WITH_METADATA_REPOSITORY, true)
++else
++	AM_CONDITIONAL(WITH_METADATA_REPOSITORY, false)
+ fi
+ AC_SUBST(LIBXML2_INCLUDE)
+ 
