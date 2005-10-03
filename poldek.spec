@@ -11,7 +11,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.19.0
-Release:	1.%{snap}.4
+Release:	1.%{snap}.5
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -23,6 +23,7 @@ Patch0:		%{name}-prereq.patch
 Patch1:		%{name}-configure.patch
 Patch2:		%{name}-nodebug.patch
 Patch3:		%{name}-compare.patch
+Patch4:		%{name}-split64.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -133,6 +134,7 @@ Biblioteki statyczne poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p0
 
 %build
 %{__autopoint}
