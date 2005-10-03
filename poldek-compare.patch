@@ -1,0 +1,12 @@
+diff -urN poldek-0.19.0-cvs20050921.00.org/pkgset-req.c poldek-0.19.0-cvs20050921.00/pkgset-req.c
+--- poldek-0.19.0-cvs20050921.00.org/pkgset-req.c	2005-07-10 14:25:02.000000000 +0200
++++ poldek-0.19.0-cvs20050921.00/pkgset-req.c	2005-10-03 11:40:10.333900296 +0200
+@@ -256,7 +256,7 @@
+ 
+ 	j = i;
+ 
+-	while (j > 0 && pkg_cmp_name_evr(tmp, pkgs[j - 1]) < 0) {
++	while (j > 0 && pkg_cmp_name_evr_rev(tmp, pkgs[j - 1]) < 0) {
+ 	    pkgs[j] = pkgs[j - 1];
+ 	    j--;
+ 	}
