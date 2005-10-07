@@ -6,24 +6,19 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
 %define	ver_rpm	4.4.1
-%define	snap	20050921.00
+%define	snap	20051007.18
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.19.0
-Release:	1.%{snap}.5
+Release:	1.%{snap}.1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	50c7135af609a874103a9dacdaf76b2b
+# Source0-md5:	53f5d5748f4653bb533952389486b3db
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
-Patch0:		%{name}-prereq.patch
-Patch1:		%{name}-configure.patch
-Patch2:		%{name}-nodebug.patch
-Patch3:		%{name}-compare.patch
-Patch4:		%{name}-split64.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -130,11 +125,6 @@ Biblioteki statyczne poldka.
 
 %prep
 %setup -q -n %{name}-%{version}-cvs%{snap}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p0
 
 %build
 %{__autopoint}
