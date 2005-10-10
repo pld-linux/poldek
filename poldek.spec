@@ -6,7 +6,7 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
 %define	ver_rpm	4.4.1
-%define	snap	20051007.18
+%define	snap	20051010.17
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
@@ -14,8 +14,9 @@ Version:	0.19.0
 Release:	1.%{snap}.1
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	53f5d5748f4653bb533952389486b3db
+# Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
+Source0:	%{name}-%{version}-cvs%{snap}.tar.bz2
+# Source0-md5:	8e8a62781bbda45822e1f1707792615b
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
@@ -136,7 +137,7 @@ cp -f config.sub trurlib
 perl -pi -e 's|HAVE_FOPENCOOKIE|HAVE_FOPENCOOKIE_XXX|g' trurlib/nstream.c
 
 %configure \
-	%{?with_static:--enable-static} \
+	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
 	--enable-nls
 %{__make}
