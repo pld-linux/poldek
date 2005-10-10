@@ -14,8 +14,7 @@ Version:	0.19.0
 Release:	1.%{snap}.1
 License:	GPL v2
 Group:		Applications/System
-# Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	%{name}-%{version}-cvs%{snap}.tar.bz2
+Source0:	http://team.pld.org.pl/~mis/poldek/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 # Source0-md5:	8e8a62781bbda45822e1f1707792615b
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
