@@ -41,6 +41,7 @@ BuildRequires:	bzip2-static
 BuildRequires:	db-static >= %{ver_db}
 BuildRequires:	glibc-static
 BuildRequires:	libselinux-static
+BuildRequires:	libxml2-static
 BuildRequires:	ncurses-static
 BuildRequires:	openssl-static
 BuildRequires:	pcre-static
@@ -88,6 +89,7 @@ modu³u CPAN.
 
 %{!?with_imode:Ta wersja nie posiada trybu interaktywnego.}
 
+%if %{without static}
 %package libs
 Summary:        poldek libraries
 Summary(pl):    Biblioteki poldka
@@ -98,6 +100,7 @@ poldek library.
 
 %description libs -l pl
 Biblioteki poldka.
+%endif
 
 %package devel
 Summary:        Header files for poldek libraries
@@ -208,8 +211,10 @@ rm -rf $RPM_BUILD_ROOT
 %postun
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
 
+%if %{without static}
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
+%endif
 
 %triggerpostun -- poldek <= 0.18.3-5
 if [ -f /etc/poldek.conf ]; then
@@ -275,13 +280,15 @@ fi
 %lang(pl) %{_mandir}/pl/man1/%{name}*
 %{_infodir}/poldek.info*
 
+%if %{without static}
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%endif
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
+%{!?with_static:%attr(755,root,root) %{_libdir}/lib*.so}
 %{_libdir}/lib*.la
 %{_includedir}/*
 
