@@ -24,8 +24,8 @@ Patch2:		http://cvs.pld.org.pl/installer/poldek/vfile/extcompr.c?r1=1.7&r2=1.8
 Patch3:		%{name}-ask-abort.patch
 Patch4:		http://cvs.pld.org.pl/installer/poldek/vfcompr?r1=1.4&r2=1.6
 URL:		http://team.pld.org.pl/~mis/poldek/
-BuildRequires:	automake
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	bzip2-devel
 BuildRequires:	check
 BuildRequires:	db-devel >= %{ver_db}
