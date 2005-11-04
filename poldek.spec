@@ -142,8 +142,6 @@ Biblioteki statyczne poldka.
 %{__autoconf}
 %{__automake}
 cp -f config.sub trurlib
-# glibc 2.3.5 workaround (to be removed when new snap come)
-perl -pi -e 's|HAVE_FOPENCOOKIE|HAVE_FOPENCOOKIE_XXX|g' trurlib/nstream.c
 
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
@@ -277,7 +275,7 @@ fi
 %defattr(644,root,root,755)
 %doc README* NEWS TODO configs/
 %dir %{_sysconfdir}/%{name}
-%attr(644,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}/*.conf
+%config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}/*.conf
 %attr(755,root,root) %{_bindir}/*
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/*
