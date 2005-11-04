@@ -27,8 +27,8 @@ URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	bzip2-devel
-BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	check
+BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	home-etc-devel
 BuildRequires:	libtool
@@ -93,7 +93,6 @@ modu³u CPAN.
 
 %{!?with_imode:Ta wersja nie posiada trybu interaktywnego.}
 
-%if %{without static}
 %package libs
 Summary:        poldek libraries
 Summary(pl):    Biblioteki poldka
@@ -104,7 +103,6 @@ poldek library.
 
 %description libs -l pl
 Biblioteki poldka.
-%endif
 
 %package devel
 Summary:        Header files for poldek libraries
@@ -220,10 +218,8 @@ rm -rf $RPM_BUILD_ROOT
 %postun
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
 
-%if %{without static}
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
-%endif
 
 %triggerpostun -- poldek <= 0.18.3-5
 if [ -f /etc/poldek.conf ]; then
