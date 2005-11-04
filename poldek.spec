@@ -99,7 +99,7 @@ Summary(pl):    Biblioteki poldka
 Group:          Libraries
 
 %description libs
-poldek library.
+poldek libraries.
 
 %description libs -l pl
 Biblioteki poldka.
