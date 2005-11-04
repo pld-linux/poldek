@@ -30,7 +30,6 @@ BuildRequires:	bzip2-devel
 BuildRequires:	check
 BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
-BuildRequires:	home-etc-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	openssl-devel >= 0.9.7d
