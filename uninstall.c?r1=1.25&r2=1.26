@@ -1,0 +1,24 @@
+===================================================================
+RCS file: /cvsroot/installer/poldek/cli/uninstall.c,v
+retrieving revision 1.25
+retrieving revision 1.26
+diff -u -r1.25 -r1.26
+--- installer/poldek/cli/uninstall.c	2005/07/12 17:29:09	1.25
++++ installer/poldek/cli/uninstall.c	2005/11/05 00:14:38	1.26
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <limits.h>
+@@ -171,6 +171,7 @@
+                 
+                 ts->setop(ts, POLDEK_OP_GREEDY, bool);
+             }
++            break;
+             
+         case 't':
+             if (ts->getop(ts, POLDEK_OP_TEST))
