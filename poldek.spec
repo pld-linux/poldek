@@ -4,13 +4,13 @@
 %bcond_without	imode	# don't build interactive mode
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.3.27-1
-%define	ver_rpm	4.4.2
+%define	ver_db	4.2.50-1
+%define	ver_rpm	4.4.1
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	1.5
+Release:	2
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
@@ -18,12 +18,8 @@ Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
-# drop?
-#PatchX:		%{name}-etc_dir.patch
-# drop?
-#PatchX:		%{name}-retr_term.patch
-# is still needed?
-#Patch2:		%{name}-simplestatic.patch
+Patch0:		%{name}-cvs-fixes.patch
+Patch1:		%{name}-ask-abort.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -58,6 +54,7 @@ Requires(triggerpostun):	sed >= 4.0
 Requires(triggerpostun):	awk
 Requires:       %{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
+Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -129,6 +126,8 @@ Biblioteki statyczne poldka.
 
 %prep
 %setup -q
+%patch0 -p2
+%patch1 -p0
 
 %build
 %{__autopoint}
