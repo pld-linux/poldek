@@ -1,0 +1,111 @@
+===================================================================
+RCS file: /cvsroot/installer/poldek/pkgset-install.c,v
+retrieving revision 1.147
+retrieving revision 1.148
+diff -u -r1.147 -r1.148
+--- installer/poldek/pkgset-install.c	2005/10/24 15:30:40	1.147
++++ installer/poldek/pkgset-install.c	2005/11/01 19:36:36	1.148
+ #ifdef HAVE_CONFIG_H
+@@ -1174,7 +1174,9 @@
+     memset(&successor, 0, sizeof(successor));
+     if (process_as == PROCESS_AS_ORPHAN &&
+         upg->ts->getop(upg->ts, POLDEK_OP_AGGREEDY)) {
+-        if (pkg_drags(pkg, ps, upg) == 0) {
++	int ndrags = pkg_drags(pkg, ps, upg);
++	DBGF("%s, ndrags %d\n", pkg_id(pkg), ndrags);
++        if (ndrags == 0 || 1) { /* XXX cond temporary disabled - needs test */
+             struct pkg *p;
+             int is_marked = 0, ndragged = 0, by_obsoletes = 0;
+ 
+@@ -1186,9 +1188,10 @@
+             successor.realpkg = p;
+             successor.by_obsoletes = by_obsoletes;
+             
+-            /* do not follow successor if package drags something and
+-              is not marked */
+-            if (p && (ndragged = pkg_drags(p, ps, upg)) > 0 && is_marked == 0) {
++            /* do not follow successor if it drags more packages than orphaned one
++	     * and successor is not marked */
++	    
++            if (p && (ndragged = pkg_drags(p, ps, upg)) > ndrags && is_marked == 0) {
+                 DBGF("OMIT select_successor %s -> %s (%d)\n",
+                      pkg_id(pkg), pkg_id(p), ndragged);
+                 p = NULL;
+===================================================================
+RCS file: /cvsroot/installer/poldek/vfile/misc.c,v
+retrieving revision 1.11
+retrieving revision 1.12
+diff -u -r1.11 -r1.12
+--- installer/poldek/vfile/misc.c	2005/07/17 15:04:34	1.11
++++ installer/poldek/vfile/misc.c	2005/11/02 19:45:40	1.12
+@@ -58,7 +58,7 @@
+     
+     p = path;
+     p++;
+-    ndots = 0;
++    ndots = -1;
+     
+     while (*p) {
+         switch (*p) {
+@@ -71,11 +71,12 @@
+                 break;
+ 
+             case '.':
+-                ndots++;
++                if (ndots >= 0)
++                    ndots++;
+                 break;
+ 
+             default:
+-                ndots = 0;
++                ndots = -1;
+                 
+                 if (!isalnum(*p) && strchr("-+/._@!~", *p) == NULL) {
+                     vf_logerr("%s:%c non alphanumeric characters not allowed\n",
+===================================================================
+RCS file: /cvsroot/installer/poldek/vfile/extcompr.c,v
+retrieving revision 1.7
+retrieving revision 1.8
+diff -u -r1.7 -r1.8
+--- installer/poldek/vfile/extcompr.c	2005/05/15 15:46:59	1.7
++++ installer/poldek/vfile/extcompr.c	2005/11/02 20:10:36	1.8
+@@ -195,7 +195,7 @@
+     if (uncompr == NULL)
+         return -1;
+ 
+-    if (*vfile_verbose) 
++    if (*vfile_verbose > 0) 
+         vf_loginfo(_("Decompressing %s...\n"), n_basenam(path));
+     return vf_do_compr(uncompr, "-d", path, destpath);
+ }
+===================================================================
+RCS file: /cvsroot/installer/poldek/cli/uninstall.c,v
+retrieving revision 1.25
+retrieving revision 1.26
+diff -u -r1.25 -r1.26
+--- installer/poldek/cli/uninstall.c	2005/07/12 17:29:09	1.25
++++ installer/poldek/cli/uninstall.c	2005/11/05 00:14:38	1.26
+@@ -171,6 +171,7 @@
+                 
+                 ts->setop(ts, POLDEK_OP_GREEDY, bool);
+             }
++            break;
+             
+         case 't':
+             if (ts->getop(ts, POLDEK_OP_TEST))
+===================================================================
+RCS file: /cvsroot/installer/poldek/vfcompr,v
+retrieving revision 1.4
+retrieving revision 1.6
+diff -u -r1.4 -r1.6
+--- installer/poldek/vfcompr	2004/07/05 19:15:10	1.4
++++ installer/poldek/vfcompr	2005/11/02 20:25:37	1.6
+@@ -19,7 +22,7 @@
+     typeset src=$1
+     typeset dest=$2
+ 
+-    md5file="${src}-vfcompr.md5"
++    md5file="${dest}-vfcompr.md5"
+     #echo "$md5file"
+     if [ -f $dest -a -f "$md5file" ]; then
+         #echo md5sum --check "$md5file"
