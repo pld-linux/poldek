@@ -5,7 +5,7 @@
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.3.27-1
-%define	ver_rpm	4.4.2
+%define	ver_rpm	4.4.3
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
@@ -24,6 +24,8 @@ Source3:	%{name}-aliases.conf
 #PatchX:		%{name}-retr_term.patch
 # is still needed?
 #Patch2:		%{name}-simplestatic.patch
+Patch0:		%{name}-rpm_4_4_3.patch
+Patch1:		%{name}-obsoletes.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -76,8 +78,6 @@ shell mode of Perl's CPAN.
 
 %{!?with_imode:This version hasn't got interactive mode.}
 
-#'
-
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
 instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji i
@@ -129,6 +129,8 @@ Biblioteki statyczne poldka.
 
 %prep
 %setup -q
+%patch0 -p0
+%patch1 -p0
 
 %build
 %{__autopoint}
