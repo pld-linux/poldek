@@ -1,0 +1,213 @@
+Index: pm/rpm/misc.c
+===================================================================
+RCS file: /cvsroot/installer/poldek/pm/rpm/misc.c,v
+retrieving revision 1.4
+retrieving revision 1.5
+diff -u -r1.4 -r1.5
+--- pm/rpm/misc.c	12 May 2005 15:44:41 -0000	1.4
++++ pm/rpm/misc.c	21 Nov 2005 17:01:34 -0000	1.5
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -23,6 +23,9 @@
+ #include <string.h>
+ 
+ #include <rpm/rpmlib.h>
++#if HAVE_RPMDSRPMLIB
++# include <rpm/rpmds.h>
++#endif
+ 
+ #include <trurl/nassert.h>
+ #include <trurl/nstr.h>
+@@ -33,21 +36,49 @@
+ #include "log.h"
+ #include "pm/pm.h"
+ 
+-tn_array *pm_rpm_rpmlib_caps(void) 
++#if HAVE_RPMDSRPMLIB            /* rpmdsRpmlib() => rpm >= 4.4.3 */
++static int get_rpmlib_caps(tn_array *caps)
++{
++    rpmds ds = NULL;
++    
++    if (rpmdsRpmlib(&ds, NULL) != 0)
++        return 0;
++    
++    ds = rpmdsInit(ds);
++    while (rpmdsNext(ds) >= 0) {
++        const char *name, *evr;
++        char tmp[256];
++        struct capreq *cr;
++        uint32_t flags;
++
++        name = rpmdsN(ds);
++        evr = rpmdsEVR(ds);
++        flags = rpmdsFlags(ds);
++        
++        n_assert(flags & RPMSENSE_EQUAL);
++        n_assert((flags & (RPMSENSE_LESS | RPMSENSE_GREATER)) == 0);
++
++        n_strncpy(tmp, evr, 128);
++        cr = capreq_new_evr(name, tmp, REL_EQ, 0);
++        if (cr) 
++            n_array_push(caps, cr);
++    }
++    ds = rpmdsFree(ds);
++    return n_array_size(caps);
++}
++#endif  /* HAVE_RPMDSRPMLIB */
++
++#if HAVE_RPMGETRPMLIBPROVIDES   /* rpmGetRpmlibProvides() => rpm < 4.4.3 */
++static int get_rpmlib_caps_rpm_lt_4_4_3(tn_array *caps) 
+ {
+     char **names = NULL, **versions = NULL, *evr;
+     int *flags = NULL, n = 0, i;
+-    tn_array *caps;
+-    
+-#if HAVE_RPMGETRPMLIBPROVIDES
++
+     n = rpmGetRpmlibProvides((const char ***)&names, &flags, (const char ***)&versions);
+-#endif
+-    
+     if (n <= 0)
+-        return NULL;
++        return 0;
+ 
+     caps = capreq_arr_new(0);
+-    
+     evr = alloca(128);
+     
+     for (i=0; i<n; i++) {
+@@ -62,19 +93,39 @@
+             n_array_push(caps, cr);
+     }
+ 
+-    if (names)
+-        free(names);
+-    
+-    if (flags)
+-        free(flags);
++    n_cfree(&names);
++    n_cfree(&flags);
++    n_cfree(&versions);
++    return 1;
++}
++#endif
+ 
+-    if (versions)
+-        free(versions);
++tn_array *pm_rpm_rpmlib_caps(void) 
++{
++    tn_array *caps;
++    int rc = 0;
++    
++    caps = capreq_arr_new(0);
+     
+-    n_array_sort(caps);
++#if HAVE_RPMDSRPMLIB            /* rpm >= 4.4.3 */
++    rc = get_rpmlib_caps(caps);
++#else
++# if HAVE_RPMGETRPMLIBPROVIDES
++    rc = get_rpmlib_caps_rpm_lt_4_4_3(caps);
++# endif
++#endif
++    
++    if (rc) {
++        n_array_sort(caps);
++        
++    } else {
++        n_array_free(caps);
++        caps = NULL;
++    }
+     return caps;
+ }
+ 
++
+ const char *pm_rpm_get_arch(void *pm_rpm) 
+ {
+     pm_rpm = pm_rpm;
+Index: pm/rpm/pm_rpm.h
+===================================================================
+RCS file: /cvsroot/installer/poldek/pm/rpm/pm_rpm.h,v
+retrieving revision 1.11
+retrieving revision 1.12
+diff -u -r1.11 -r1.12
+--- pm/rpm/pm_rpm.h	24 Oct 2005 15:25:58 -0000	1.11
++++ pm/rpm/pm_rpm.h	21 Nov 2005 17:01:34 -0000	1.12
+@@ -10,6 +10,14 @@
+ # include <rpm/rpmts.h>
+ #endif
+ 
++/* RPMTAG_COPYRIGHT disappears in 4.4.3 but don't know from
++   when RPMTAG_LICENSE starts */
++#ifdef RPMTAG_COPYRIGHT         
++# define PM_RPMTAG_LICENSE RPMTAG_COPYRIGHT
++#else
++# define PM_RPMTAG_LICENSE RPMTAG_LICENSE
++#endif
++
+ #include <trurl/trurl.h>
+ #include "poldek.h"
+ #include "pm/pm.h"
+Index: pkgu.c
+===================================================================
+RCS file: /cvsroot/installer/poldek/pkgu.c,v
+retrieving revision 1.30
+retrieving revision 1.31
+diff -u -r1.30 -r1.31
+--- pkgu.c	18 Oct 2005 16:25:12 -0000	1.30
++++ pkgu.c	21 Nov 2005 17:01:34 -0000	1.31
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <ctype.h>
+@@ -337,7 +337,7 @@
+     }
+ 
+     pkgu->vendor = cp_tag(pkgu->_na, h, RPMTAG_VENDOR);
+-    pkgu->license = cp_tag(pkgu->_na, h, RPMTAG_COPYRIGHT);
++    pkgu->license = cp_tag(pkgu->_na, h, PM_RPMTAG_LICENSE);
+     pkgu->url = cp_tag(pkgu->_na, h, RPMTAG_URL);
+     pkgu->distro = cp_tag(pkgu->_na, h, RPMTAG_DISTRIBUTION);
+     pkgu->buildhost = cp_tag(pkgu->_na, h, RPMTAG_BUILDHOST);
+@@ -370,7 +370,7 @@
+         headerAddEntry(hdr, RPMTAG_VENDOR, RPM_STRING_TYPE, pkgu->vendor, 1);
+     
+     if (pkgu->license)
+-        headerAddEntry(hdr, RPMTAG_COPYRIGHT, RPM_STRING_TYPE, pkgu->license, 1);
++        headerAddEntry(hdr, PM_RPMTAG_LICENSE, RPM_STRING_TYPE, pkgu->license, 1);
+     
+     if (pkgu->url)
+         headerAddEntry(hdr, RPMTAG_URL, RPM_STRING_TYPE, pkgu->url, 1);
+Index: configure.in
+===================================================================
+RCS file: /cvsroot/installer/poldek/configure.in,v
+retrieving revision 1.121
+retrieving revision 1.122
+diff -u -r1.121 -r1.122
+--- configure.in	4 Nov 2005 17:44:21 -0000	1.121
++++ configure.in	21 Nov 2005 17:01:34 -0000	1.122
+@@ -293,9 +293,10 @@
+ 	LIBS="$LIBS -lbz2 -lrpmio"
+ fi
+ 
+-AC_CHECK_FUNCS(rpmGetRpmlibProvides,,
+-	[AC_MSG_WARN("[poldek will not work fine with rpmlib\(...\) capabilities"])],
+-	[$CONF_IN_LDFLAGS])
++AC_CHECK_FUNCS(rpmdsRpmlib,,
++               [ AC_CHECK_FUNCS(rpmGetRpmlibProvides,,
++          	 [AC_MSG_WARN(["poldek will not work fine with rpmlib\(...\) capabilities"])],
++          	 [$CONF_IN_LDFLAGS])], [$CONF_IN_LDFLAGS])
+ 
+ 
+ dnl metadata & xml2
