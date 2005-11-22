@@ -24,8 +24,10 @@ Source3:	%{name}-aliases.conf
 #PatchX:		%{name}-retr_term.patch
 # is still needed?
 #Patch2:		%{name}-simplestatic.patch
-Patch0:		%{name}-rpm_4_4_3.patch
-Patch1:		%{name}-obsoletes.patch
+Patch0:		%{name}-cvs-fixes.patch
+Patch1:		%{name}-ask-abort.patch
+Patch2:		%{name}-obsoletes.patch
+Patch3:		%{name}-rpm_4_4_3.patch
 URL:		http://team.pld.org.pl/~mis/poldek/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -129,8 +131,10 @@ Biblioteki statyczne poldka.
 
 %prep
 %setup -q
-%patch0 -p0
+%patch0 -p2
 %patch1 -p0
+%patch2 -p0
+%patch3 -p0
 
 %build
 %{__autopoint}
