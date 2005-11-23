@@ -10,7 +10,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	2.2
+Release:	2.3
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
@@ -158,18 +158,15 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-#
-# CHANGE IT WHEN SWITCHING poldek.conf FROM AC TO TH !!!
-#
-%ifarch i386 i586 i686 ppc sparc alpha athlon
+%ifarch i486 i686 ppc sparc alpha athlon
 %define		_ftp_arch	%{_target_cpu}
 %else
-%ifarch amd64
+%ifarch %{x8664}
 %define		_ftp_arch	%{_target_cpu}
 %define		_ftp_alt_arch	i686
 %else
-%ifarch i486
-%define		_ftp_arch	i386
+%ifarch i586
+%define		_ftp_arch	i486
 %else
 %ifarch pentium2 pentium3 pentium4
 %define		_ftp_arch	i686
