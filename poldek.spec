@@ -153,15 +153,18 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-%ifarch i486 i686 ppc sparc alpha athlon
+#
+# CHANGE IT WHEN SWITCHING poldek.conf FROM AC TO TH !!!
+#
+%ifarch i386 i586 i686 ppc sparc alpha athlon
 %define		_ftp_arch	%{_target_cpu}
 %else
-%ifarch %{x8664}
+%ifarch amd64
 %define		_ftp_arch	%{_target_cpu}
 %define		_ftp_alt_arch	i686
 %else
-%ifarch i586
-%define		_ftp_arch	i486
+%ifarch i486
+%define		_ftp_arch	i386
 %else
 %ifarch pentium2 pentium3 pentium4
 %define		_ftp_arch	i686
