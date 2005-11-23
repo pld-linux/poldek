@@ -162,7 +162,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %define		_ftp_arch	%{_target_cpu}
 %else
 %ifarch %{x8664}
-%define		_ftp_arch	%{_target_cpu}
+%define		_ftp_arch	x86_64
 %define		_ftp_alt_arch	i686
 %else
 %ifarch i586
@@ -182,14 +182,14 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
 sed -e "s|%%ARCH%%|%{_ftp_arch}|g" \
-%ifarch amd64
+%ifarch %{x8664}
 	-e "s|%%ALT_ARCH%%|%{_ftp_alt_arch}|g" \
 %else
 	-e '/%%ALT_ARCH%%/d' \
 %endif
 	< %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 
-%ifarch amd64
+%ifarch %{x8664}
 sed "s|%%ARCH%%|%{_ftp_alt_arch}|g" < %{SOURCE2} >> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 %endif
 
