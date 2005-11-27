@@ -252,12 +252,7 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 	}
 
 	}' < /etc/poldek.conf.rpmsave >> /etc/poldek/source.conf
-	echo "Converted old custom sources (non-ac dist ones) from /etc/poldek.conf.rpmsave to new poldek format in /etc/poldek/source.conf"
-
-	# propagate use_sudo to new config. only works for untouched poldek.conf and that's intentional.
-	if grep -q '^use_sudo.*=.*yes' /etc/poldek.conf.rpmsave; then
-		sed -i -e '/^#use sudo = no/s/^.*/use sudo = yes/' /etc/poldek/poldek.conf
-	fi
+	echo "Converted old custom sources from /etc/poldek.conf.rpmsave to new poldek format in /etc/poldek/source.conf"
 
 	# copy hold=
 	hold=$(grep ^hold /etc/poldek.conf.rpmsave)
