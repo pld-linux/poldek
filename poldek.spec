@@ -58,8 +58,8 @@ BuildRequires:	readline-static
 BuildRequires:	rpm-static
 BuildRequires:	zlib-static
 %endif
-Requires(triggerpostun):	sed >= 4.0
 Requires(triggerpostun):	awk
+Requires(triggerpostun):	sed >= 4.0
 Requires:       %{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
 Requires:	rpm >= %{ver_rpm}
@@ -95,9 +95,9 @@ modu³u CPAN.
 %{!?with_imode:Ta wersja nie posiada trybu interaktywnego.}
 
 %package libs
-Summary:        poldek libraries
-Summary(pl):    Biblioteki poldka
-Group:          Libraries
+Summary:	poldek libraries
+Summary(pl):	Biblioteki poldka
+Group:		Libraries
 
 %description libs
 poldek libraries.
@@ -106,9 +106,9 @@ poldek libraries.
 Biblioteki poldka.
 
 %package devel
-Summary:        Header files for poldek libraries
-Summary(pl):    Pliki nag³ówkowe bibliotek poldka
-Group:          Development/Libraries
+Summary:	Header files for poldek libraries
+Summary(pl):	Pliki nag³ówkowe bibliotek poldka
+Group:		Development/Libraries
 Requires:       %{name}-libs = %{version}-%{release}
 
 %description devel
@@ -118,9 +118,9 @@ Header files for poldek libraries.
 Pliki nag³ówkowe bibliotek poldka.
 
 %package static
-Summary:        poldek static libraries
-Summary(pl):    Biblioteki statyczne poldka
-Group:          Development/Libraries
+Summary:	poldek static libraries
+Summary(pl):	Biblioteki statyczne poldka
+Group:		Development/Libraries
 Requires:       %{name}-devel = %{version}-%{release}
 
 %description static
@@ -267,7 +267,7 @@ fi
 %defattr(644,root,root,755)
 %doc README* NEWS TODO configs/
 %dir %{_sysconfdir}/%{name}
-%config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}/*.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf
 %attr(755,root,root) %{_bindir}/*
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/*
