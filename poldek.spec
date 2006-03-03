@@ -28,7 +28,7 @@ Patch0:		%{name}-cvs-fixes.patch
 Patch1:		%{name}-ask-abort.patch
 Patch2:		%{name}-obsoletes.patch
 Patch3:		%{name}-rpm_4_4_3.patch
-URL:		http://poldek.pld-linux.org
+URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
