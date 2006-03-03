@@ -13,7 +13,7 @@ Version:	0.20
 Release:	4
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
+Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
 # Source0-md5:	61c0c03ee4a9de36339fc943b6901266
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
