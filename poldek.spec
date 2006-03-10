@@ -13,7 +13,7 @@ Version:	0.20
 Release:	3
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://team.pld.org.pl/~mis/poldek/download/%{name}-%{version}.tar.bz2
+Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
 # Source0-md5:	61c0c03ee4a9de36339fc943b6901266
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
@@ -23,7 +23,7 @@ Patch1:		%{name}-ask-abort.patch
 Patch2:		%{name}-obsoletes.patch
 Patch3:		%{name}-completion.patch
 Patch4:		%{name}-notimestamps.patch
-URL:		http://team.pld.org.pl/~mis/poldek/
+URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
@@ -53,9 +53,9 @@ BuildRequires:	readline-static
 BuildRequires:	rpm-static
 BuildRequires:	zlib-static
 %endif
-Requires(triggerpostun):	sed >= 4.0
 Requires(triggerpostun):	awk
-Requires:       %{name}-libs = %{version}-%{release}
+Requires(triggerpostun):	sed >= 4.0
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
 Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
@@ -93,9 +93,9 @@ modu³u CPAN.
 %{!?with_imode:Ta wersja nie posiada trybu interaktywnego.}
 
 %package libs
-Summary:        poldek libraries
-Summary(pl):    Biblioteki poldka
-Group:          Libraries
+Summary:	poldek libraries
+Summary(pl):	Biblioteki poldka
+Group:		Libraries
 
 %description libs
 poldek libraries.
@@ -104,10 +104,10 @@ poldek libraries.
 Biblioteki poldka.
 
 %package devel
-Summary:        Header files for poldek libraries
-Summary(pl):    Pliki nag³ówkowe bibliotek poldka
-Group:          Development/Libraries
-Requires:       %{name}-libs = %{version}-%{release}
+Summary:	Header files for poldek libraries
+Summary(pl):	Pliki nag³ówkowe bibliotek poldka
+Group:		Development/Libraries
+Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 Header files for poldek libraries.
@@ -116,10 +116,10 @@ Header files for poldek libraries.
 Pliki nag³ówkowe bibliotek poldka.
 
 %package static
-Summary:        poldek static libraries
-Summary(pl):    Biblioteki statyczne poldka
-Group:          Development/Libraries
-Requires:       %{name}-devel = %{version}-%{release}
+Summary:	poldek static libraries
+Summary(pl):	Biblioteki statyczne poldka
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 poldek static libraries.
@@ -279,7 +279,7 @@ fi
 %defattr(644,root,root,755)
 %doc README* NEWS TODO configs/
 %dir %{_sysconfdir}/%{name}
-%config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/%{name}/*.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf
 %attr(755,root,root) %{_bindir}/*
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/*
