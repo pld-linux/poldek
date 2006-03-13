@@ -60,7 +60,7 @@ BuildRequires:	zlib-static
 %endif
 Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
-Requires:       %{name}-libs = %{version}-%{release}
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
 Requires:	rpm >= %{ver_rpm}
 Requires:	sed
@@ -109,7 +109,7 @@ Biblioteki poldka.
 Summary:	Header files for poldek libraries
 Summary(pl):	Pliki nag³ówkowe bibliotek poldka
 Group:		Development/Libraries
-Requires:       %{name}-libs = %{version}-%{release}
+Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 Header files for poldek libraries.
@@ -121,7 +121,7 @@ Pliki nag³ówkowe bibliotek poldka.
 Summary:	poldek static libraries
 Summary(pl):	Biblioteki statyczne poldka
 Group:		Development/Libraries
-Requires:       %{name}-devel = %{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 poldek static libraries.
