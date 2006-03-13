@@ -237,9 +237,16 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 	auto = "yes";
 	autoup = "yes";
 	type = "pdir";
+	pri = "";
 
 	if (sub(",noauto", "", name)) {
 		auto = "no";
+	}
+
+	# process pri=\d+
+	if (match(name, /,pri=[0-9]+/)) {
+		pri = substr(name, RSTART + 5, RLENGTH - 5);
+		name = substr(name, 1, RSTART - 1) substr(name, RSTART + RLENGTH);
 	}
 
 	# skip ac sources. already in new config.
@@ -251,6 +258,9 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 		print "path = " path;
 		print "auto = " auto;
 		print "autoup = " autoup;
+		if (pri) {
+			print "pri = " pri;
+		}
 	}
 
 	}' < /etc/poldek.conf.rpmsave >> /etc/poldek/source.conf
