@@ -195,3 +195,162 @@ diff -u -r1.107 -r1.108
      }
      
      return 0;
+--- poldek/poldek/pm/pkgdb.c	2005/10/24 15:25:58	1.21
++++ poldek/poldek/pm/pkgdb.c	2006/03/18 15:18:04	1.22
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <stdlib.h>
+@@ -440,6 +440,9 @@
+                                     tn_array *unistdbpkgs, unsigned ldflags)
+ {
+     tn_array *dbpkgs = NULL;
++
++    n_assert(db);
++    n_assert(cap);
+     pkgdb_search(db, &dbpkgs, PMTAG_CAP, capreq_name(cap),
+                  unistdbpkgs, ldflags);
+     return dbpkgs;
+diff -u poldek/poldek/uninstall.c poldek/poldek/uninstall.c
+--- poldek/poldek/uninstall.c	2006/03/18 15:18:04	1.38
++++ poldek/poldek/uninstall.c	2006/03/18 17:03:48	1.39
+@@ -1,5 +1,5 @@
+ /*
+-  Copyright (C) 2000 - 2005 Pawel A. Gajda <mis@k2.net.pl>
++  Copyright (C) 2000 - 2006 Pawel A. Gajda <mis@k2.net.pl>
+ 
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License, version 2 as
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <errno.h>
+@@ -407,7 +407,7 @@
+     tn_array *dbpkgs;
+     int i, nmatches = 0;
+ 
+-    
++    n_assert(cr);
+     DBGF("get_provides %s\n", capreq_snprintf_s(cr));
+     dbpkgs = pkgdb_get_provides_dbpkgs(ts->db, cr, NULL, uninst_LDFLAGS);
+ 
+@@ -431,7 +431,8 @@
+         } else {                /* with version */
+             if (ts->getop(ts, POLDEK_OP_CAPLOOKUP)) {
+                 if (pkg_xmatch_req(dbpkg, cr, POLDEK_MA_PROMOTE_REQEPOCH))
+-                            matched = 1;
++                    matched = 1;
++                
+             } else {
+                 if (strcmp(dbpkg->name, capreq_name(cr)) == 0) {
+                     DBGF("n (%s, %s) %d\n", dbpkg->name,
+@@ -457,15 +458,20 @@
+     return nmatches;
+ }
+ 
+-static int resolve_package(struct uninstall_ctx *uctx, struct poldek_ts *ts, const char *mask)
++static int resolve_package(struct uninstall_ctx *uctx, struct poldek_ts *ts,
++                           const char *mask)
+ {
+     char           *p;
+     struct capreq  *cr, *cr_evr;
+     int            resolved = 0;
+     
+     cr = NULL; cr_evr = NULL;
+-    
+-    if ((p = strchr(mask, '#')) == NULL) {
++
++    DBGF("mask=%s\n", mask); 
++    /* No EVR mask or empty EVR (last char '#') */
++    if ((p = strchr(mask, '#')) == NULL || *(p + 1) == '\0') {
++        if (p)
++            *p = '\0';
+         capreq_new_name_a(mask, cr);
+             
+     } else {
+@@ -479,8 +485,10 @@
+         *p = '\0';
+         p++;
+ 
+-        if (poldek_util_parse_evr(p, &epoch, &ver, &rel))
++        if (poldek_util_parse_evr(p, &epoch, &ver, &rel)) {
+             cr = cr_evr = capreq_new(NULL, tmp, epoch, ver, rel, REL_EQ, 0);
++            DBGF("cap=%s\n", capreq_snprintf_s(cr)); 
++        }
+     }
+     
+     if (do_resolve_package(uctx, ts, mask, cr))
+@@ -529,7 +537,6 @@
+                     int32_t e = 0;
+ 
+                     n_strdupap(mask, &tmp);
+-                    
+                     if (poldek_util_parse_nevr(tmp, &n, &e, &v, &r)) {
+                         if (e)
+                             n_snprintf(nmask, sizeof(nmask), "%s#%d:%s-%s", n, e, v, r);
+@@ -538,7 +545,7 @@
+ 
+                         msgn(2, "    Trying %s\n", nmask);
+                         DBGF("try %s => %s (%s, %s, %s)\n", mask, nmask, n, v, r);
+-                        matched = resolve_package(uctx, ts, tmp);
++                        matched = resolve_package(uctx, ts, nmask);
+                     }
+                 }
+             }
+--- poldek/poldek/conf.c	2005/11/05 17:47:55	1.79
++++ poldek/poldek/conf.c	2006/03/18 15:27:47	1.80
+@@ -1,5 +1,5 @@
+ /*
+-  Copyright (C) 2000 - 2005 Pawel A. Gajda <mis@k2.net.pl>
++  Copyright (C) 2000 - 2006 Pawel A. Gajda <mis@k2.net.pl>
+ 
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License, version 2 as
+@@ -137,9 +137,15 @@
+         sep = " \t,";
+     
+     p = v = n_str_tokl(vstr, sep);
+-    if (v == NULL)
++
++    if (v == NULL)              /* n_str_tokl error */
+         return 0;
+ 
++    if (*v == NULL) {             /* empty option value */
++        n_str_tokl_free(v);
++        return 1;
++    }
++
+     if (n_hash_exists(ht, name)) {
+         opt = n_hash_get(ht, name);
+         
+@@ -166,6 +172,7 @@
+         }
+         p++;
+     }
++
+     n_str_tokl_free(v);
+     return 1;
+ }
+--- poldek/poldek/cli/main.c	2005/11/06 19:26:27	1.54
++++ poldek/poldek/cli/main.c	2006/03/18 15:55:37	1.55
+@@ -115,8 +115,8 @@
+ {"upconf", OPT_UPCONF, 0, 0, N_("Update remote configuration files (if any)"),
+      OPT_GID },
+ 
+-{"version", OPT_BANNER, 0, 0, N_("Display program version information and exit"),
+-     OPT_GID },
++{"version", OPT_BANNER, 0, OPTION_HIDDEN,
++     N_("Display program version information and exit"), OPT_GID },
+     
+ {"log", OPT_LOG, "FILE", 0, N_("Log program messages to FILE"), OPT_GID },
+ {"runas", OPT_RUNAS, "USER", 0, N_("Run program as user USER"), OPT_GID },
