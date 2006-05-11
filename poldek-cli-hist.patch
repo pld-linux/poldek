@@ -5,15 +5,6 @@ retrieving revision 1.29
 diff -u -r1.28 -r1.29
 --- poldek/poldek/cli/shell.c	2006/01/07 01:06:48	1.28
 +++ poldek/poldek/cli/shell.c	2006/05/11 09:51:53	1.29
-@@ -11,7 +11,7 @@
- */
- 
- /*
--  $Id$
-+  $Id$
- */
- 
- #ifdef HAVE_CONFIG_H
 @@ -356,22 +356,34 @@
          snprintf(prompt, sizeof(prompt), "poldek:%s%s> ",
                   currdir == NULL ? "/" : *currdir->name == '/' ? "" : "/",
