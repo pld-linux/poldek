@@ -19,15 +19,16 @@ Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
 # drop?
-#PatchX:		%{name}-etc_dir.patch
+#PatchX:	%{name}-etc_dir.patch
 # drop?
-#PatchX:		%{name}-retr_term.patch
+#PatchX:	%{name}-retr_term.patch
 # is still needed?
-#Patch2:		%{name}-simplestatic.patch
+#Patch2:	%{name}-simplestatic.patch
 Patch0:		%{name}-cvs-fixes.patch
 Patch1:		%{name}-ask-abort.patch
 Patch2:		%{name}-obsoletes.patch
 Patch3:		%{name}-rpm_4_4_3.patch
+Patch4:		%{name}-cli-hist.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -79,6 +80,7 @@ shell mode of Perl's CPAN.
 %{?with_static:This version is statically linked.}
 
 %{!?with_imode:This version hasn't got interactive mode.}
+#'vim
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
@@ -135,6 +137,7 @@ Biblioteki statyczne poldka.
 %patch1 -p0
 %patch2 -p0
 %patch3 -p0
+%patch4 -p2
 
 %build
 %{__autopoint}
