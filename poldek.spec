@@ -10,7 +10,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	7
+Release:	8
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -27,6 +27,7 @@ Patch5:		%{name}-config.patch
 Patch6:		%{name}-uninstall-multilib.patch
 Patch7:		%{name}-bug-5774.patch
 Patch8:		%{name}-cli-hist.patch
+Patch9:		%{name}-vserver-packages.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -142,6 +143,7 @@ Biblioteki statyczne poldka.
 %patch6 -p0
 %patch7 -p2
 %patch8 -p2
+%patch9 -p1
 
 %build
 %{__autopoint}
