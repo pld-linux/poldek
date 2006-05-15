@@ -4,13 +4,13 @@
 %bcond_without	imode	# don't build interactive mode
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.3.27-1
-%define	ver_rpm	4.4.3
+%define	ver_db	4.2.50-1
+%define	ver_rpm	4.4.1
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	5
+Release:	8
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -18,16 +18,16 @@ Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
-# drop?
-#PatchX:		%{name}-etc_dir.patch
-# drop?
-#PatchX:		%{name}-retr_term.patch
-# is still needed?
-#Patch2:		%{name}-simplestatic.patch
 Patch0:		%{name}-cvs-fixes.patch
 Patch1:		%{name}-ask-abort.patch
 Patch2:		%{name}-obsoletes.patch
-Patch3:		%{name}-rpm_4_4_3.patch
+Patch3:		%{name}-completion.patch
+Patch4:		%{name}-notimestamps.patch
+Patch5:		%{name}-config.patch
+Patch6:		%{name}-uninstall-multilib.patch
+Patch7:		%{name}-bug-5774.patch
+Patch8:		%{name}-cli-hist.patch
+Patch9:		%{name}-vserver-packages.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -62,6 +62,7 @@ Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
+Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -79,6 +80,8 @@ shell mode of Perl's CPAN.
 %{?with_static:This version is statically linked.}
 
 %{!?with_imode:This version hasn't got interactive mode.}
+
+#'
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
@@ -134,7 +137,13 @@ Biblioteki statyczne poldka.
 %patch0 -p2
 %patch1 -p0
 %patch2 -p0
-%patch3 -p0
+%patch3 -p2
+%patch4 -p1
+%patch5 -p1
+%patch6 -p0
+%patch7 -p2
+%patch8 -p2
+%patch9 -p1
 
 %build
 %{__autopoint}
@@ -158,15 +167,18 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-%ifarch i486 i686 ppc sparc alpha athlon
+#
+# CHANGE IT WHEN SWITCHING poldek.conf FROM AC TO TH !!!
+#
+%ifarch i386 i586 i686 ppc sparc alpha athlon
 %define		_ftp_arch	%{_target_cpu}
 %else
 %ifarch %{x8664}
-%define		_ftp_arch	x86_64
+%define		_ftp_arch	amd64
 %define		_ftp_alt_arch	i686
 %else
-%ifarch i586
-%define		_ftp_arch	i486
+%ifarch i486
+%define		_ftp_arch	i386
 %else
 %ifarch pentium2 pentium3 pentium4
 %define		_ftp_arch	i686
