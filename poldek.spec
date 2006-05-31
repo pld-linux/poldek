@@ -31,6 +31,7 @@ Patch3:		%{name}-rpm_4_4_3.patch
 Patch4:		%{name}-cli-hist.patch
 Patch5:		%{name}-vserver-packages.patch
 Patch6:		%{name}-config.patch
+Patch7:		%{name}-multilib.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -142,6 +143,7 @@ Biblioteki statyczne poldka.
 %patch4 -p2
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 %{__autopoint}
@@ -188,16 +190,14 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-sed -e "s|%%ARCH%%|%{_ftp_arch}|g" \
-%ifarch %{x8664}
-	-e "s|%%ALT_ARCH%%|%{_ftp_alt_arch}|g" \
-%else
-	-e '/%%ALT_ARCH%%/d' \
-%endif
-	< %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
+sed -e '
+	s|%%ARCH%%|%{_ftp_arch}|g
+' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 
 %ifarch %{x8664}
-sed "s|%%ARCH%%|%{_ftp_alt_arch}|g" < %{SOURCE2} >> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
+sed '
+	s|%%ARCH%%|%{_ftp_alt_arch}|g
+' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-multilib-source.conf
 %endif
 
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
