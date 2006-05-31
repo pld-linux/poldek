@@ -10,7 +10,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	8
+Release:	9
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -28,6 +28,7 @@ Patch6:		%{name}-uninstall-multilib.patch
 Patch7:		%{name}-bug-5774.patch
 Patch8:		%{name}-cli-hist.patch
 Patch9:		%{name}-vserver-packages.patch
+Patch10:	%{name}-multilib.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -144,6 +145,9 @@ Biblioteki statyczne poldka.
 %patch7 -p2
 %patch8 -p2
 %patch9 -p1
+%ifarch %{x8664}
+%patch10 -p1
+%endif
 
 %build
 %{__autopoint}
@@ -193,16 +197,14 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-sed -e "s|%%ARCH%%|%{_ftp_arch}|g" \
-%ifarch %{x8664}
-	-e "s|%%ALT_ARCH%%|%{_ftp_alt_arch}|g" \
-%else
-	-e '/%%ALT_ARCH%%/d' \
-%endif
-	< %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
+sed -e '
+	s|%%ARCH%%|%{_ftp_arch}|g
+' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
 
 %ifarch %{x8664}
-sed "s|%%ARCH%%|%{_ftp_alt_arch}|g" < %{SOURCE2} >> $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
+sed '
+	s|%%ARCH%%|%{_ftp_alt_arch}|g
+' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-multilib-source.conf
 %endif
 
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
