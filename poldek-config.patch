@@ -9,3 +9,11 @@
  
  # Prevent package listed from being upgraded if they are already installed.
  # hold = kernel* dev
+--- poldek-0.20/conf/source.conf~	2005-10-28 19:16:24.000000000 +0300
++++ poldek-0.20/conf/source.conf	2006-05-31 22:45:40.030363503 +0300
+@@ -82,4 +82,4 @@
+ #hold   = kernel*
+ #ignore = kernel*-smp-*
+ #dscr   = pl_PL
+-  
++
