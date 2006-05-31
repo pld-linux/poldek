@@ -30,6 +30,7 @@ Patch2:		%{name}-obsoletes.patch
 Patch3:		%{name}-rpm_4_4_3.patch
 Patch4:		%{name}-cli-hist.patch
 Patch5:		%{name}-vserver-packages.patch
+Patch6:		%{name}-config.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -140,6 +141,7 @@ Biblioteki statyczne poldka.
 %patch3 -p0
 %patch4 -p2
 %patch5 -p1
+%patch6 -p1
 
 %build
 %{__autopoint}
