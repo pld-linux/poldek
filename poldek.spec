@@ -10,7 +10,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	9
+Release:	9.1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -45,6 +45,7 @@ BuildRequires:	popt-devel
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 BuildRequires:	zlib-devel
+BuildRequires:	python-devel
 %if %{with static}
 BuildRequires:	bzip2-static
 BuildRequires:	db-static >= %{ver_db}
@@ -133,6 +134,19 @@ poldek static libraries.
 %description static -l pl
 Biblioteki statyczne poldka.
 
+%package -n python-poldek
+Summary:	Python modules for poldek
+Summary(pl):	Modu³y jêzyka Python dla poldka
+Group:		Libraries/Python
+Requires:	%{name}-libs = %{version}-%{release}
+%pyrequires_eq	python-libs
+
+%description -n python-poldek
+Python modules for poldek.
+
+%description -n python-poldek -l pl
+Modu³y jêzyka Python dla poldka.
+
 %prep
 %setup -q
 %patch0 -p2
@@ -159,6 +173,7 @@ cp -f config.sub trurlib
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
+	--with-python \
 	--enable-nls
 %{__make}
 
@@ -167,6 +182,9 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
+
+%{__make} -C python install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
@@ -217,6 +235,9 @@ cp -a conf configs
 rm -f configs/Makefile*
 
 %find_lang %{name}
+
+%py_postclean
+rm -f $RPM_BUILD_ROOT%{_libdir}/_poldekmod.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -314,3 +335,9 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/lib*.a
+
+%files -n python-poldek
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/_poldekmod.so
+%{py_sitescriptdir}/poldek.py[co]
+%{py_sitescriptdir}/poldekmod.py[co]
