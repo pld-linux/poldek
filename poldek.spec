@@ -10,7 +10,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	9.1
+Release:	9.2
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -42,10 +42,10 @@ BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	perl-tools-pod
 BuildRequires:	popt-devel
+BuildRequires:	python-devel
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 BuildRequires:	zlib-devel
-BuildRequires:	python-devel
 %if %{with static}
 BuildRequires:	bzip2-static
 BuildRequires:	db-static >= %{ver_db}
@@ -237,6 +237,8 @@ rm -f configs/Makefile*
 %find_lang %{name}
 
 %py_postclean
+install -d $RPM_BUILD_ROOT%{py_sitedir}
+mv $RPM_BUILD_ROOT{%{_libdir},%{py_sitedir}}/_poldekmod.so
 rm -f $RPM_BUILD_ROOT%{_libdir}/_poldekmod.la
 
 %clean
@@ -338,6 +340,6 @@ fi
 
 %files -n python-poldek
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/_poldekmod.so
+%attr(755,root,root) %{py_sitedir}/_poldekmod.so
 %{py_sitescriptdir}/poldek.py[co]
 %{py_sitescriptdir}/poldekmod.py[co]
