@@ -2,6 +2,7 @@
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
+%bcond_without	python	# don't build python bindings
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
@@ -42,7 +43,7 @@ BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	perl-tools-pod
 BuildRequires:	popt-devel
-BuildRequires:	python-devel
+%{?with_python:BuildRequires:	python-devel}
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 BuildRequires:	zlib-devel
@@ -173,7 +174,7 @@ cp -f config.sub trurlib
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
-	--with-python \
+	%{?with_python:--with-python} \
 	--enable-nls
 %{__make}
 
@@ -184,8 +185,10 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+%if %{with python}
 %{__make} -C python install \
 	DESTDIR=$RPM_BUILD_ROOT
+%endif
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
@@ -338,8 +341,10 @@ fi
 %defattr(644,root,root,755)
 %{_libdir}/lib*.a
 
+%if %{with python}
 %files -n python-poldek
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/_poldekmod.so
 %{py_sitescriptdir}/poldek.py[co]
 %{py_sitescriptdir}/poldekmod.py[co]
+%endif
