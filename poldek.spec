@@ -231,8 +231,10 @@ rm -rf configs
 cp -a conf configs
 rm -f configs/Makefile*
 
+%if %{with python}
 %py_postclean
 rm -f $RPM_BUILD_ROOT%{py_sitedir}/_poldekmod.la
+%endif
 
 %find_lang %{name}
 
