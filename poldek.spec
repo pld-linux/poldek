@@ -239,10 +239,12 @@ rm -f configs/Makefile*
 
 %find_lang %{name}
 
+%if %{with python}
 %py_postclean
 install -d $RPM_BUILD_ROOT%{py_sitedir}
 mv $RPM_BUILD_ROOT{%{_libdir},%{py_sitedir}}/_poldekmod.so
 rm -f $RPM_BUILD_ROOT%{_libdir}/_poldekmod.la
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
