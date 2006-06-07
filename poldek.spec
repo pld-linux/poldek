@@ -2,6 +2,7 @@
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
+%bcond_without	python	# don't build python bindings
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.3.27-1
@@ -10,7 +11,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	6
+Release:	9.3
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -45,6 +46,7 @@ BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	perl-tools-pod
 BuildRequires:	popt-devel
+%{?with_python:BuildRequires:	python-devel}
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 BuildRequires:	zlib-devel
@@ -134,6 +136,19 @@ poldek static libraries.
 %description static -l pl
 Biblioteki statyczne poldka.
 
+%package -n python-poldek
+Summary:	Python modules for poldek
+Summary(pl):	Modu³y jêzyka Python dla poldka
+Group:		Libraries/Python
+Requires:	%{name}-libs = %{version}-%{release}
+%pyrequires_eq	python-libs
+
+%description -n python-poldek
+Python modules for poldek.
+
+%description -n python-poldek -l pl
+Modu³y jêzyka Python dla poldka.
+
 %prep
 %setup -q
 %patch0 -p2
@@ -155,7 +170,8 @@ cp -f config.sub trurlib
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
-	--enable-nls
+	--enable-nls \
+	%{?with_python:--with-python}
 %{__make}
 
 %install
@@ -164,6 +180,12 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%if %{with python}
+%{__make} -C python install \
+	DESTDIR=$RPM_BUILD_ROOT \
+	libdir=%{py_sitedir}
+%endif
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
@@ -208,6 +230,9 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora}-source.conf
 rm -rf configs
 cp -a conf configs
 rm -f configs/Makefile*
+
+%py_postclean
+rm -f $RPM_BUILD_ROOT%{py_sitedir}/_poldekmod.la
 
 %find_lang %{name}
 
@@ -307,3 +332,11 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/lib*.a
+
+%if %{with python}
+%files -n python-poldek
+%defattr(644,root,root,755)
+%attr(755,root,root) %{py_sitedir}/_poldekmod.so
+%{py_sitescriptdir}/poldek.py[co]
+%{py_sitescriptdir}/poldekmod.py[co]
+%endif
