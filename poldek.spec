@@ -25,11 +25,8 @@ Source3:	%{name}-aliases.conf
 #PatchX:	%{name}-retr_term.patch
 # is still needed?
 #Patch2:	%{name}-simplestatic.patch
-Patch0:		%{name}-cvs-fixes.patch
-Patch1:		%{name}-ask-abort.patch
+Patch0:		%{name}-20060726cvs.patch
 Patch2:		%{name}-obsoletes.patch
-Patch3:		%{name}-rpm_4_4_3.patch
-Patch4:		%{name}-cli-hist.patch
 Patch5:		%{name}-vserver-packages.patch
 Patch6:		%{name}-config.patch
 Patch7:		%{name}-multilib.patch
@@ -151,11 +148,8 @@ Modu³y jêzyka Python dla poldka.
 
 %prep
 %setup -q
-%patch0 -p2
-%patch1 -p0
+%patch0 -p1
 %patch2 -p0
-%patch3 -p0
-%patch4 -p2
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
