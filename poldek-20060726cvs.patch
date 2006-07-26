@@ -1,6 +1,6 @@
 diff -urN poldek-0.20.org/arg_packages.c poldek-0.20/arg_packages.c
 --- poldek-0.20.org/arg_packages.c	2005-10-07 21:00:16.000000000 +0200
-+++ poldek-0.20/arg_packages.c	2006-04-02 21:10:36.000000000 +0200
++++ poldek-0.20/arg_packages.c	2006-07-26 20:25:54.027315250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -137,7 +137,7 @@ diff -urN poldek-0.20.org/arg_packages.c poldek-0.20/arg_packages.c
          n_array_clean(aps->resolved_pkgs);
 diff -urN poldek-0.20.org/arg_packages.h poldek-0.20/arg_packages.h
 --- poldek-0.20.org/arg_packages.h	2005-05-25 19:53:19.000000000 +0200
-+++ poldek-0.20/arg_packages.h	2006-04-02 21:10:36.000000000 +0200
++++ poldek-0.20/arg_packages.h	2006-07-26 20:25:54.027315250 +0200
 @@ -1,4 +1,4 @@
 -/* $Id$ */
 +/* $Id$ */
@@ -154,7 +154,7 @@ diff -urN poldek-0.20.org/arg_packages.h poldek-0.20/arg_packages.h
  int arg_packages_add_pkgmask(struct arg_packages *aps, const char *mask);
 diff -urN poldek-0.20.org/ask.c poldek-0.20/ask.c
 --- poldek-0.20.org/ask.c	2003-04-14 18:28:09.000000000 +0200
-+++ poldek-0.20/ask.c	2005-11-03 01:16:58.000000000 +0100
++++ poldek-0.20/ask.c	2006-07-26 20:25:54.027315250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -186,7 +186,7 @@ diff -urN poldek-0.20.org/ask.c poldek-0.20/ask.c
      //printf("Selected %d\n", a);
 diff -urN poldek-0.20.org/cli/alias.c poldek-0.20/cli/alias.c
 --- poldek-0.20.org/cli/alias.c	2005-05-24 21:54:22.000000000 +0200
-+++ poldek-0.20/cli/alias.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/alias.c	2006-07-26 20:25:54.027315250 +0200
 @@ -7,13 +7,13 @@
  */
  
@@ -355,7 +355,7 @@ diff -urN poldek-0.20.org/cli/alias.c poldek-0.20/cli/alias.c
 -
 diff -urN poldek-0.20.org/cli/cd.c poldek-0.20/cli/cd.c
 --- poldek-0.20.org/cli/cd.c	2005-06-12 23:11:08.000000000 +0200
-+++ poldek-0.20/cli/cd.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/cd.c	2006-07-26 20:25:54.027315250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -384,7 +384,7 @@ diff -urN poldek-0.20.org/cli/cd.c poldek-0.20/cli/cd.c
  
 diff -urN poldek-0.20.org/cli/cli.c poldek-0.20/cli/cli.c
 --- poldek-0.20.org/cli/cli.c	2005-10-12 01:20:12.000000000 +0200
-+++ poldek-0.20/cli/cli.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/cli.c	2006-07-26 20:25:54.027315250 +0200
 @@ -1,5 +1,5 @@
  /*
 -  Copyright (C) 2000 - 2004 Pawel A. Gajda <mis@pld.org.pl>
@@ -592,7 +592,7 @@ diff -urN poldek-0.20.org/cli/cli.c poldek-0.20/cli/cli.c
      return rc;
 diff -urN poldek-0.20.org/cli/cmd_chain.c poldek-0.20/cli/cmd_chain.c
 --- poldek-0.20.org/cli/cmd_chain.c	2005-10-21 17:59:28.000000000 +0200
-+++ poldek-0.20/cli/cmd_chain.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/cmd_chain.c	2006-07-26 20:25:54.031315500 +0200
 @@ -1,32 +1,37 @@
 -/* 
 -  Copyright (C) 2000 - 2004 Pawel A. Gajda (mis@k2.net.pl)
@@ -748,7 +748,7 @@ diff -urN poldek-0.20.org/cli/cmd_chain.c poldek-0.20/cli/cmd_chain.c
          
 diff -urN poldek-0.20.org/cli/cmd.h poldek-0.20/cli/cmd.h
 --- poldek-0.20.org/cli/cmd.h	2005-05-15 17:53:07.000000000 +0200
-+++ poldek-0.20/cli/cmd.h	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/cmd.h	2006-07-26 20:25:54.031315500 +0200
 @@ -1,4 +1,4 @@
 -/* $Id$ */
 +/* $Id$ */
@@ -777,7 +777,7 @@ diff -urN poldek-0.20.org/cli/cmd.h poldek-0.20/cli/cmd.h
  };
 diff -urN poldek-0.20.org/cli/cmd_pipe.c poldek-0.20/cli/cmd_pipe.c
 --- poldek-0.20.org/cli/cmd_pipe.c	2005-04-27 20:28:32.000000000 +0200
-+++ poldek-0.20/cli/cmd_pipe.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/cmd_pipe.c	2006-07-26 20:25:54.031315500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -799,7 +799,7 @@ diff -urN poldek-0.20.org/cli/cmd_pipe.c poldek-0.20/cli/cmd_pipe.c
  
 diff -urN poldek-0.20.org/cli/dbcache.c poldek-0.20/cli/dbcache.c
 --- poldek-0.20.org/cli/dbcache.c	2005-09-17 17:36:21.000000000 +0200
-+++ poldek-0.20/cli/dbcache.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/dbcache.c	2006-07-26 20:25:54.031315500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -819,7 +819,7 @@ diff -urN poldek-0.20.org/cli/dbcache.c poldek-0.20/cli/dbcache.c
  #include <sigint/sigint.h>
 diff -urN poldek-0.20.org/cli/dent.c poldek-0.20/cli/dent.c
 --- poldek-0.20.org/cli/dent.c	2005-10-26 16:41:05.000000000 +0200
-+++ poldek-0.20/cli/dent.c	2006-04-02 21:01:35.000000000 +0200
++++ poldek-0.20/cli/dent.c	2006-07-26 20:25:54.031315500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -882,7 +882,7 @@ diff -urN poldek-0.20.org/cli/dent.c poldek-0.20/cli/dent.c
      //if (flags & ARG_PACKAGES_RESOLV_UNAMBIGUOUS)
 diff -urN poldek-0.20.org/cli/desc.c poldek-0.20/cli/desc.c
 --- poldek-0.20.org/cli/desc.c	2005-10-18 20:01:34.000000000 +0200
-+++ poldek-0.20/cli/desc.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/desc.c	2006-07-26 20:25:54.031315500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -903,7 +903,7 @@ diff -urN poldek-0.20.org/cli/desc.c poldek-0.20/cli/desc.c
  static
 diff -urN poldek-0.20.org/cli/external.c poldek-0.20/cli/external.c
 --- poldek-0.20.org/cli/external.c	2005-05-15 17:53:08.000000000 +0200
-+++ poldek-0.20/cli/external.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/external.c	2006-07-26 20:25:54.031315500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -924,7 +924,7 @@ diff -urN poldek-0.20.org/cli/external.c poldek-0.20/cli/external.c
  
 diff -urN poldek-0.20.org/cli/get.c poldek-0.20/cli/get.c
 --- poldek-0.20.org/cli/get.c	2005-10-17 23:05:23.000000000 +0200
-+++ poldek-0.20/cli/get.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/get.c	2006-07-26 20:25:54.031315500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -960,7 +960,7 @@ diff -urN poldek-0.20.org/cli/get.c poldek-0.20/cli/get.c
  {
 diff -urN poldek-0.20.org/cli/help.c poldek-0.20/cli/help.c
 --- poldek-0.20.org/cli/help.c	2004-12-18 14:26:52.000000000 +0100
-+++ poldek-0.20/cli/help.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/help.c	2006-07-26 20:25:54.031315500 +0200
 @@ -1,5 +1,5 @@
  /*
 -  Copyright (C) 2000 - 2002 Pawel A. Gajda <mis@k2.net.pl>
@@ -992,7 +992,7 @@ diff -urN poldek-0.20.org/cli/help.c poldek-0.20/cli/help.c
  static
 diff -urN poldek-0.20.org/cli/install.c poldek-0.20/cli/install.c
 --- poldek-0.20.org/cli/install.c	2005-10-17 23:13:14.000000000 +0200
-+++ poldek-0.20/cli/install.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/install.c	2006-07-26 20:25:54.031315500 +0200
 @@ -7,7 +7,7 @@
  */
  
@@ -1045,7 +1045,7 @@ diff -urN poldek-0.20.org/cli/install.c poldek-0.20/cli/install.c
  
 diff -urN poldek-0.20.org/cli/ls.c poldek-0.20/cli/ls.c
 --- poldek-0.20.org/cli/ls.c	2005-10-18 20:01:35.000000000 +0200
-+++ poldek-0.20/cli/ls.c	2005-11-07 22:30:57.000000000 +0100
++++ poldek-0.20/cli/ls.c	2006-07-26 20:25:54.035315750 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -1118,7 +1118,7 @@ diff -urN poldek-0.20.org/cli/ls.c poldek-0.20/cli/ls.c
  
 diff -urN poldek-0.20.org/cli/main.c poldek-0.20/cli/main.c
 --- poldek-0.20.org/cli/main.c	2005-10-27 00:46:07.000000000 +0200
-+++ poldek-0.20/cli/main.c	2006-03-18 16:55:37.000000000 +0100
++++ poldek-0.20/cli/main.c	2006-07-26 20:25:54.035315750 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -1149,7 +1149,7 @@ diff -urN poldek-0.20.org/cli/main.c poldek-0.20/cli/main.c
  {"runas", OPT_RUNAS, "USER", 0, N_("Run program as user USER"), OPT_GID },
 diff -urN poldek-0.20.org/cli/op_makeidx.c poldek-0.20/cli/op_makeidx.c
 --- poldek-0.20.org/cli/op_makeidx.c	2005-10-10 00:35:28.000000000 +0200
-+++ poldek-0.20/cli/op_makeidx.c	2006-05-12 01:47:38.000000000 +0200
++++ poldek-0.20/cli/op_makeidx.c	2006-07-26 20:25:54.035315750 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -1313,7 +1313,7 @@ diff -urN poldek-0.20.org/cli/op_makeidx.c poldek-0.20/cli/op_makeidx.c
      tn_array *types = n_array_new(4, free, (tn_fn_cmp)strcmp);
 diff -urN poldek-0.20.org/cli/reload.c poldek-0.20/cli/reload.c
 --- poldek-0.20.org/cli/reload.c	2005-10-12 01:20:12.000000000 +0200
-+++ poldek-0.20/cli/reload.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/reload.c	2006-07-26 20:25:54.035315750 +0200
 @@ -11,11 +11,12 @@
  */
  
@@ -1339,7 +1339,7 @@ diff -urN poldek-0.20.org/cli/reload.c poldek-0.20/cli/reload.c
  static int reload(struct cmdctx *cmdctx) 
 diff -urN poldek-0.20.org/cli/search.c poldek-0.20/cli/search.c
 --- poldek-0.20.org/cli/search.c	2005-10-18 20:01:35.000000000 +0200
-+++ poldek-0.20/cli/search.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/search.c	2006-07-26 20:25:54.035315750 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -1360,7 +1360,7 @@ diff -urN poldek-0.20.org/cli/search.c poldek-0.20/cli/search.c
  static struct pattern *build_pattern(struct cmdctx *cmdctx, char *arg)
 diff -urN poldek-0.20.org/cli/shell.c poldek-0.20/cli/shell.c
 --- poldek-0.20.org/cli/shell.c	2005-10-12 01:20:12.000000000 +0200
-+++ poldek-0.20/cli/shell.c	2006-05-11 11:51:53.000000000 +0200
++++ poldek-0.20/cli/shell.c	2006-07-26 20:25:54.035315750 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -1466,7 +1466,7 @@ diff -urN poldek-0.20.org/cli/shell.c poldek-0.20/cli/shell.c
          
 diff -urN poldek-0.20.org/cli/uninstall.c poldek-0.20/cli/uninstall.c
 --- poldek-0.20.org/cli/uninstall.c	2005-07-15 20:00:21.000000000 +0200
-+++ poldek-0.20/cli/uninstall.c	2005-11-06 20:26:27.000000000 +0100
++++ poldek-0.20/cli/uninstall.c	2006-07-26 20:25:54.047316500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -1495,7 +1495,7 @@ diff -urN poldek-0.20.org/cli/uninstall.c poldek-0.20/cli/uninstall.c
              if (ts->getop(ts, POLDEK_OP_TEST))
 diff -urN poldek-0.20.org/conf/centos-source.conf poldek-0.20/conf/centos-source.conf
 --- poldek-0.20.org/conf/centos-source.conf	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/conf/centos-source.conf	2005-10-30 12:56:58.000000000 +0100
++++ poldek-0.20/conf/centos-source.conf	2006-07-26 20:25:54.051316750 +0200
 @@ -0,0 +1,41 @@
 +# $Id$
 +
@@ -1540,7 +1540,7 @@ diff -urN poldek-0.20.org/conf/centos-source.conf poldek-0.20/conf/centos-source
 +#auto   = no
 diff -urN poldek-0.20.org/conf/Makefile.am poldek-0.20/conf/Makefile.am
 --- poldek-0.20.org/conf/Makefile.am	2005-10-28 18:15:27.000000000 +0200
-+++ poldek-0.20/conf/Makefile.am	2005-10-30 12:56:57.000000000 +0100
++++ poldek-0.20/conf/Makefile.am	2006-07-26 20:25:54.051316750 +0200
 @@ -1,13 +1,14 @@
 -# $Id$
 +# $Id$
@@ -1561,7 +1561,7 @@ diff -urN poldek-0.20.org/conf/Makefile.am poldek-0.20/conf/Makefile.am
  
 diff -urN poldek-0.20.org/conf/mdk-source.conf poldek-0.20/conf/mdk-source.conf
 --- poldek-0.20.org/conf/mdk-source.conf	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/conf/mdk-source.conf	2003-01-30 19:08:29.000000000 +0100
++++ poldek-0.20/conf/mdk-source.conf	2006-07-26 20:25:54.059317250 +0200
 @@ -0,0 +1,6 @@
 +# $Id$
 +
@@ -1571,7 +1571,7 @@ diff -urN poldek-0.20.org/conf/mdk-source.conf poldek-0.20/conf/mdk-source.conf
 +prefix1 = ftp://ftp.ps.pl/mirrors/mandrake/8.2/i586/Mandrake/RPMS/
 diff -urN poldek-0.20.org/conf.c poldek-0.20/conf.c
 --- poldek-0.20.org/conf.c	2005-10-07 21:00:16.000000000 +0200
-+++ poldek-0.20/conf.c	2006-04-02 21:10:36.000000000 +0200
++++ poldek-0.20/conf.c	2006-07-26 20:25:54.059317250 +0200
 @@ -1,5 +1,5 @@
  /*
 -  Copyright (C) 2000 - 2005 Pawel A. Gajda <mis@k2.net.pl>
@@ -2108,7 +2108,7 @@ diff -urN poldek-0.20.org/conf.c poldek-0.20/conf.c
 -#endif /* xml */
 diff -urN poldek-0.20.org/conf.h poldek-0.20/conf.h
 --- poldek-0.20.org/conf.h	2005-05-05 20:54:31.000000000 +0200
-+++ poldek-0.20/conf.h	2006-04-02 21:10:36.000000000 +0200
++++ poldek-0.20/conf.h	2006-07-26 20:25:54.059317250 +0200
 @@ -1,4 +1,4 @@
 -/* $Id$ */
 +/* $Id$ */
@@ -2140,7 +2140,7 @@ diff -urN poldek-0.20.org/conf.h poldek-0.20/conf.h
  
 diff -urN poldek-0.20.org/configure.in poldek-0.20/configure.in
 --- poldek-0.20.org/configure.in	2005-10-28 17:32:26.000000000 +0200
-+++ poldek-0.20/configure.in	2006-07-09 23:24:56.000000000 +0200
++++ poldek-0.20/configure.in	2006-07-26 20:25:54.067317750 +0200
 @@ -1,5 +1,5 @@
  dnl Process this file with autoconf to produce a configure script.
 -dnl $Id$
@@ -2178,7 +2178,7 @@ diff -urN poldek-0.20.org/configure.in poldek-0.20/configure.in
          doc/Makefile
 diff -urN poldek-0.20.org/conf_intern.h poldek-0.20/conf_intern.h
 --- poldek-0.20.org/conf_intern.h	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/conf_intern.h	2005-11-01 20:14:19.000000000 +0100
++++ poldek-0.20/conf_intern.h	2006-07-26 20:25:54.067317750 +0200
 @@ -0,0 +1,41 @@
 +/* $Id$ */
 +/* ini-like config parsing module */
@@ -2223,7 +2223,7 @@ diff -urN poldek-0.20.org/conf_intern.h poldek-0.20/conf_intern.h
 +#endif
 diff -urN poldek-0.20.org/doc/conf-xml2c.xsl poldek-0.20/doc/conf-xml2c.xsl
 --- poldek-0.20.org/doc/conf-xml2c.xsl	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/conf-xml2c.xsl	2005-11-01 20:08:20.000000000 +0100
++++ poldek-0.20/doc/conf-xml2c.xsl	2006-07-26 20:25:54.067317750 +0200
 @@ -0,0 +1,59 @@
 +<xsl:stylesheet version="1.0" 
 +		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -2286,7 +2286,7 @@ diff -urN poldek-0.20.org/doc/conf-xml2c.xsl poldek-0.20/doc/conf-xml2c.xsl
 +
 diff -urN poldek-0.20.org/doc/conf-xml2.sh poldek-0.20/doc/conf-xml2.sh
 --- poldek-0.20.org/doc/conf-xml2.sh	2005-05-23 21:05:05.000000000 +0200
-+++ poldek-0.20/doc/conf-xml2.sh	2005-11-01 20:08:20.000000000 +0100
++++ poldek-0.20/doc/conf-xml2.sh	2006-07-26 20:25:54.075318250 +0200
 @@ -22,6 +22,10 @@
  }
  
@@ -2310,7 +2310,7 @@ diff -urN poldek-0.20.org/doc/conf-xml2.sh poldek-0.20/doc/conf-xml2.sh
     [ -n "$NAME" ] || exit 1
 diff -urN poldek-0.20.org/doc/conf-xml2testconf.xsl poldek-0.20/doc/conf-xml2testconf.xsl
 --- poldek-0.20.org/doc/conf-xml2testconf.xsl	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/conf-xml2testconf.xsl	2005-11-01 20:08:20.000000000 +0100
++++ poldek-0.20/doc/conf-xml2testconf.xsl	2006-07-26 20:25:54.075318250 +0200
 @@ -0,0 +1,59 @@
 +<xsl:stylesheet version="1.0" 
 +		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -2373,7 +2373,7 @@ diff -urN poldek-0.20.org/doc/conf-xml2testconf.xsl poldek-0.20/doc/conf-xml2tes
 +
 diff -urN poldek-0.20.org/doc/homepage/download-body.html poldek-0.20/doc/homepage/download-body.html
 --- poldek-0.20.org/doc/homepage/download-body.html	2005-10-28 17:32:27.000000000 +0200
-+++ poldek-0.20/doc/homepage/download-body.html	2005-11-01 20:06:41.000000000 +0100
++++ poldek-0.20/doc/homepage/download-body.html	2006-07-26 20:25:54.075318250 +0200
 @@ -7,22 +7,27 @@
  <li> <a href="download/poldek-POLDEK_VERSION.tar.bz2">poldek-POLDEK_VERSION.tar.bz2</a></li>
  <li> <a href="download/poldek-POLDEK_VERSION-1.src.rpm">poldek-POLDEK_VERSION-1.src.rpm</a> </li>
@@ -2442,7 +2442,7 @@ diff -urN poldek-0.20.org/doc/homepage/download-body.html poldek-0.20/doc/homepa
 +</p> 
 diff -urN poldek-0.20.org/doc/homepage/Makefile.am poldek-0.20/doc/homepage/Makefile.am
 --- poldek-0.20.org/doc/homepage/Makefile.am	2005-10-28 18:38:17.000000000 +0200
-+++ poldek-0.20/doc/homepage/Makefile.am	2005-11-06 22:00:58.000000000 +0100
++++ poldek-0.20/doc/homepage/Makefile.am	2006-07-26 20:25:54.079318500 +0200
 @@ -1,4 +1,4 @@
 -# $Id$
 +# $Id$
@@ -2473,7 +2473,7 @@ diff -urN poldek-0.20.org/doc/homepage/Makefile.am poldek-0.20/doc/homepage/Make
  
 diff -urN poldek-0.20.org/doc/homepage/style.css poldek-0.20/doc/homepage/style.css
 --- poldek-0.20.org/doc/homepage/style.css	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/homepage/style.css	2005-10-24 17:26:24.000000000 +0200
++++ poldek-0.20/doc/homepage/style.css	2006-07-26 20:25:54.087319000 +0200
 @@ -0,0 +1,147 @@
 +html {
 +  background: white;
@@ -2624,7 +2624,7 @@ diff -urN poldek-0.20.org/doc/homepage/style.css poldek-0.20/doc/homepage/style.
 +
 diff -urN poldek-0.20.org/doc/homepage/support-body.html poldek-0.20/doc/homepage/support-body.html
 --- poldek-0.20.org/doc/homepage/support-body.html	2005-10-24 13:24:54.000000000 +0200
-+++ poldek-0.20/doc/homepage/support-body.html	2005-10-31 14:31:31.000000000 +0100
++++ poldek-0.20/doc/homepage/support-body.html	2006-07-26 20:25:54.087319000 +0200
 @@ -1,3 +1,12 @@
 +<!-- 
 +
@@ -2661,7 +2661,7 @@ diff -urN poldek-0.20.org/doc/homepage/support-body.html poldek-0.20/doc/homepag
  
 diff -urN poldek-0.20.org/doc/Makefile.am poldek-0.20/doc/Makefile.am
 --- poldek-0.20.org/doc/Makefile.am	2005-10-28 18:50:15.000000000 +0200
-+++ poldek-0.20/doc/Makefile.am	2005-11-06 22:00:58.000000000 +0100
++++ poldek-0.20/doc/Makefile.am	2006-07-26 20:25:54.087319000 +0200
 @@ -1,4 +1,4 @@
 -# $Id$
 +# $Id$
@@ -2679,7 +2679,7 @@ diff -urN poldek-0.20.org/doc/Makefile.am poldek-0.20/doc/Makefile.am
  NEWS.docb.tmp: NEWS.xml NEWSdocb.xsl NEWSto
 diff -urN poldek-0.20.org/doc/manual-web.xsl poldek-0.20/doc/manual-web.xsl
 --- poldek-0.20.org/doc/manual-web.xsl	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/manual-web.xsl	2005-10-28 17:30:56.000000000 +0200
++++ poldek-0.20/doc/manual-web.xsl	2006-07-26 20:25:54.095319500 +0200
 @@ -0,0 +1,11 @@
 +<?xml version='1.0'?>
 +<!-- add home link, applied as -m argument of xmlto -->
@@ -2694,7 +2694,7 @@ diff -urN poldek-0.20.org/doc/manual-web.xsl poldek-0.20/doc/manual-web.xsl
 +</xsl:stylesheet>
 diff -urN poldek-0.20.org/doc/manual.xml poldek-0.20/doc/manual.xml
 --- poldek-0.20.org/doc/manual.xml	2005-10-28 17:32:27.000000000 +0200
-+++ poldek-0.20/doc/manual.xml	2005-11-06 21:20:54.000000000 +0100
++++ poldek-0.20/doc/manual.xml	2006-07-26 20:25:54.095319500 +0200
 @@ -66,8 +66,8 @@
  </author>
  </authorgroup>
@@ -2892,7 +2892,7 @@ diff -urN poldek-0.20.org/doc/manual.xml poldek-0.20/doc/manual.xml
      <screen>
 diff -urN poldek-0.20.org/doc/manual.xsl poldek-0.20/doc/manual.xsl
 --- poldek-0.20.org/doc/manual.xsl	2005-10-28 17:32:27.000000000 +0200
-+++ poldek-0.20/doc/manual.xsl	2005-11-01 20:08:20.000000000 +0100
++++ poldek-0.20/doc/manual.xsl	2006-07-26 20:25:54.095319500 +0200
 @@ -10,7 +10,7 @@
  <xsl:param name="html.stylesheet.type">text/css</xsl:param>
  <xsl:param name="html.stylesheet" select="'manual.css'"></xsl:param>
@@ -2904,7 +2904,7 @@ diff -urN poldek-0.20.org/doc/manual.xsl poldek-0.20/doc/manual.xsl
  </xsl:stylesheet>
 diff -urN poldek-0.20.org/doc/mkindex.pl poldek-0.20/doc/mkindex.pl
 --- poldek-0.20.org/doc/mkindex.pl	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/mkindex.pl	2005-10-25 23:57:09.000000000 +0200
++++ poldek-0.20/doc/mkindex.pl	2006-07-26 20:25:54.095319500 +0200
 @@ -0,0 +1,92 @@
 +#!/usr/bin/perl -w
 +use strict;
@@ -3000,7 +3000,7 @@ diff -urN poldek-0.20.org/doc/mkindex.pl poldek-0.20/doc/mkindex.pl
 +}
 diff -urN poldek-0.20.org/doc/NEWSdocb.xsl poldek-0.20/doc/NEWSdocb.xsl
 --- poldek-0.20.org/doc/NEWSdocb.xsl	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/NEWSdocb.xsl	2005-11-06 21:36:29.000000000 +0100
++++ poldek-0.20/doc/NEWSdocb.xsl	2006-07-26 20:25:54.103320000 +0200
 @@ -0,0 +1,99 @@
 +<!-- convert NEWS.xml to docbook document -->
 +<xsl:stylesheet version="1.0" 
@@ -3103,7 +3103,7 @@ diff -urN poldek-0.20.org/doc/NEWSdocb.xsl poldek-0.20/doc/NEWSdocb.xsl
 +
 diff -urN poldek-0.20.org/doc/NEWSto poldek-0.20/doc/NEWSto
 --- poldek-0.20.org/doc/NEWSto	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/NEWSto	2005-11-06 21:36:43.000000000 +0100
++++ poldek-0.20/doc/NEWSto	2006-07-26 20:25:54.103320000 +0200
 @@ -0,0 +1,140 @@
 +#!/usr/bin/perl -w
 +# $Id$
@@ -3247,7 +3247,7 @@ diff -urN poldek-0.20.org/doc/NEWSto poldek-0.20/doc/NEWSto
 +}
 diff -urN poldek-0.20.org/doc/NEWS.xml poldek-0.20/doc/NEWS.xml
 --- poldek-0.20.org/doc/NEWS.xml	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/NEWS.xml	2005-11-06 21:36:29.000000000 +0100
++++ poldek-0.20/doc/NEWS.xml	2006-07-26 20:25:54.103320000 +0200
 @@ -0,0 +1,1133 @@
 +<?xml version="1.0"?>
 +<news>
@@ -4384,7 +4384,7 @@ diff -urN poldek-0.20.org/doc/NEWS.xml poldek-0.20/doc/NEWS.xml
 +</news>
 diff -urN poldek-0.20.org/doc/NEWS.xsl poldek-0.20/doc/NEWS.xsl
 --- poldek-0.20.org/doc/NEWS.xsl	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/NEWS.xsl	2005-10-28 17:30:56.000000000 +0200
++++ poldek-0.20/doc/NEWS.xsl	2006-07-26 20:25:54.103320000 +0200
 @@ -0,0 +1,16 @@
 +<?xml version='1.0'?>
 +<!-- NEWS customizations, applied as -m argument of xmlto -->
@@ -4402,48 +4402,9 @@ diff -urN poldek-0.20.org/doc/NEWS.xsl poldek-0.20/doc/NEWS.xsl
 +
 +<xsl:param name="generate.toc"/>
 +</xsl:stylesheet>
-diff -urN poldek-0.20.org/doc/pl/.cvsignore poldek-0.20/doc/pl/.cvsignore
---- poldek-0.20.org/doc/pl/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/doc/pl/.cvsignore	2003-01-18 15:32:43.000000000 +0100
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/doc/poldek.1.xml poldek-0.20/doc/poldek.1.xml
 --- poldek-0.20.org/doc/poldek.1.xml	2005-07-06 09:31:50.000000000 +0200
-+++ poldek-0.20/doc/poldek.1.xml	2005-11-01 20:08:20.000000000 +0100
++++ poldek-0.20/doc/poldek.1.xml	2006-07-26 20:25:54.111320500 +0200
 @@ -42,8 +42,8 @@
  </para>
  
@@ -4473,7 +4434,7 @@ diff -urN poldek-0.20.org/doc/poldek.1.xml poldek-0.20/doc/poldek.1.xml
    <citerefentry>
 diff -urN poldek-0.20.org/doc/poldek.conf.xml poldek-0.20/doc/poldek.conf.xml
 --- poldek-0.20.org/doc/poldek.conf.xml	2005-10-28 18:11:14.000000000 +0200
-+++ poldek-0.20/doc/poldek.conf.xml	2005-11-01 20:08:20.000000000 +0100
++++ poldek-0.20/doc/poldek.conf.xml	2006-07-26 20:25:54.111320500 +0200
 @@ -1,4 +1,23 @@
  <?xml version='1.0'?>
 +
@@ -4865,7 +4826,7 @@ diff -urN poldek-0.20.org/doc/poldek.conf.xml poldek-0.20/doc/poldek.conf.xml
      The syntax of "cmd" is:
 diff -urN poldek-0.20.org/gensym.sh poldek-0.20/gensym.sh
 --- poldek-0.20.org/gensym.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/gensym.sh	2004-09-27 22:21:28.000000000 +0200
++++ poldek-0.20/gensym.sh	2006-07-26 20:25:54.115320750 +0200
 @@ -0,0 +1,43 @@
 +#!/bin/sh
 +
@@ -4912,7 +4873,7 @@ diff -urN poldek-0.20.org/gensym.sh poldek-0.20/gensym.sh
 +fi
 diff -urN poldek-0.20.org/getlib.sh poldek-0.20/getlib.sh
 --- poldek-0.20.org/getlib.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/getlib.sh	2005-06-13 20:48:08.000000000 +0200
++++ poldek-0.20/getlib.sh	2006-07-26 20:25:54.119321000 +0200
 @@ -0,0 +1,50 @@
 +#!/bin/sh
 +# $Id$
@@ -4966,7 +4927,7 @@ diff -urN poldek-0.20.org/getlib.sh poldek-0.20/getlib.sh
 +
 diff -urN poldek-0.20.org/install/conflicts.c poldek-0.20/install/conflicts.c
 --- poldek-0.20.org/install/conflicts.c	2005-07-09 19:51:18.000000000 +0200
-+++ poldek-0.20/install/conflicts.c	2005-11-03 01:21:05.000000000 +0100
++++ poldek-0.20/install/conflicts.c	2006-07-26 20:25:54.119321000 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -4993,19 +4954,9 @@ diff -urN poldek-0.20.org/install/conflicts.c poldek-0.20/install/conflicts.c
          }
          tomark = real_tomark;
          
-diff -urN poldek-0.20.org/install/.cvsignore poldek-0.20/install/.cvsignore
---- poldek-0.20.org/install/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/install/.cvsignore	2005-07-09 19:51:19.000000000 +0200
-@@ -0,0 +1,6 @@
-+Makefile.in
-+Makefile
-+.deps
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/install/icaps.c poldek-0.20/install/icaps.c
 --- poldek-0.20.org/install/icaps.c	2005-07-09 19:51:18.000000000 +0200
-+++ poldek-0.20/install/icaps.c	2005-11-04 22:25:46.000000000 +0100
++++ poldek-0.20/install/icaps.c	2006-07-26 20:25:54.123321250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -5106,7 +5057,7 @@ diff -urN poldek-0.20.org/install/icaps.c poldek-0.20/install/icaps.c
  }
 diff -urN poldek-0.20.org/install/ictx.h poldek-0.20/install/ictx.h
 --- poldek-0.20.org/install/ictx.h	2005-10-18 20:02:16.000000000 +0200
-+++ poldek-0.20/install/ictx.h	2005-11-03 01:21:05.000000000 +0100
++++ poldek-0.20/install/ictx.h	2006-07-26 20:25:54.131321750 +0200
 @@ -138,4 +138,7 @@
  int in_process_package(int indent, struct install_ctx *ictx,
                         struct pkg *pkg, int process_as);
@@ -5117,7 +5068,7 @@ diff -urN poldek-0.20.org/install/ictx.h poldek-0.20/install/ictx.h
  #endif
 diff -urN poldek-0.20.org/install/install.c poldek-0.20/install/install.c
 --- poldek-0.20.org/install/install.c	2005-10-20 19:39:12.000000000 +0200
-+++ poldek-0.20/install/install.c	2005-11-03 01:21:05.000000000 +0100
++++ poldek-0.20/install/install.c	2006-07-26 20:25:54.131321750 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -5140,7 +5091,7 @@ diff -urN poldek-0.20.org/install/install.c poldek-0.20/install/install.c
          return 1;
 diff -urN poldek-0.20.org/install/misc.c poldek-0.20/install/misc.c
 --- poldek-0.20.org/install/misc.c	2005-10-20 19:57:51.000000000 +0200
-+++ poldek-0.20/install/misc.c	2005-11-03 01:18:36.000000000 +0100
++++ poldek-0.20/install/misc.c	2006-07-26 20:25:54.139322250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -5178,7 +5129,7 @@ diff -urN poldek-0.20.org/install/misc.c poldek-0.20/install/misc.c
 +}
 diff -urN poldek-0.20.org/install/requirements.c poldek-0.20/install/requirements.c
 --- poldek-0.20.org/install/requirements.c	2005-10-20 20:19:16.000000000 +0200
-+++ poldek-0.20/install/requirements.c	2005-11-03 01:46:26.000000000 +0100
++++ poldek-0.20/install/requirements.c	2006-07-26 20:25:54.139322250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -5235,7 +5186,7 @@ diff -urN poldek-0.20.org/install/requirements.c poldek-0.20/install/requirement
                  p = NULL;
 diff -urN poldek-0.20.org/INSTALL poldek-0.20/INSTALL
 --- poldek-0.20.org/INSTALL	2002-05-13 22:24:43.000000000 +0200
-+++ poldek-0.20/INSTALL	2005-11-01 20:22:43.000000000 +0100
++++ poldek-0.20/INSTALL	2006-07-26 20:25:54.139322250 +0200
 @@ -1,12 +1,14 @@
  Build requirements: $ grep ^BuildReq poldek.spec
 +To build without libxml2, use --without-xml-metadata option as follows:
@@ -5258,7 +5209,7 @@ diff -urN poldek-0.20.org/INSTALL poldek-0.20/INSTALL
  
 diff -urN poldek-0.20.org/lib_init.c poldek-0.20/lib_init.c
 --- poldek-0.20.org/lib_init.c	2005-10-27 00:49:40.000000000 +0200
-+++ poldek-0.20/lib_init.c	2006-04-02 21:10:36.000000000 +0200
++++ poldek-0.20/lib_init.c	2006-07-26 20:25:54.147322750 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -5767,7 +5718,7 @@ diff -urN poldek-0.20.org/lib_init.c poldek-0.20/lib_init.c
          if (n_array_size(ctx->dest_sources) == 0) {
 diff -urN poldek-0.20.org/libpoldek.sym poldek-0.20/libpoldek.sym
 --- poldek-0.20.org/libpoldek.sym	2005-10-21 01:01:10.000000000 +0200
-+++ poldek-0.20/libpoldek.sym	2005-11-05 18:47:55.000000000 +0100
++++ poldek-0.20/libpoldek.sym	2006-07-26 20:25:54.147322750 +0200
 @@ -272,6 +272,8 @@
  poldek_ts_setop
  poldek_ts_type
@@ -5779,7 +5730,7 @@ diff -urN poldek-0.20.org/libpoldek.sym poldek-0.20/libpoldek.sym
  poldek_util_lc_lang
 diff -urN poldek-0.20.org/log.c poldek-0.20/log.c
 --- poldek-0.20.org/log.c	2005-10-27 00:46:07.000000000 +0200
-+++ poldek-0.20/log.c	2005-11-01 20:17:45.000000000 +0100
++++ poldek-0.20/log.c	2006-07-26 20:25:54.155323250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -5983,7 +5934,7 @@ diff -urN poldek-0.20.org/log.c poldek-0.20/log.c
 -        
 diff -urN poldek-0.20.org/Makefile.am poldek-0.20/Makefile.am
 --- poldek-0.20.org/Makefile.am	2005-10-28 18:06:59.000000000 +0200
-+++ poldek-0.20/Makefile.am	2005-11-05 18:47:55.000000000 +0100
++++ poldek-0.20/Makefile.am	2006-07-26 20:25:54.155323250 +0200
 @@ -1,4 +1,4 @@
 -# $Id$
 +# $Id$
@@ -6020,7 +5971,7 @@ diff -urN poldek-0.20.org/Makefile.am poldek-0.20/Makefile.am
  dist-hook: 
 diff -urN poldek-0.20.org/make.sh poldek-0.20/make.sh
 --- poldek-0.20.org/make.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/make.sh	2004-07-14 20:46:21.000000000 +0200
++++ poldek-0.20/make.sh	2006-07-26 20:25:54.155323250 +0200
 @@ -0,0 +1,4 @@
 +#!/bin/sh
 +
@@ -6028,7 +5979,7 @@ diff -urN poldek-0.20.org/make.sh poldek-0.20/make.sh
 +make CFLAGS="-fno-builtin-log -O0 -g -Wall -W -pipe -std=gnu99" $@
 diff -urN poldek-0.20.org/misc.c poldek-0.20/misc.c
 --- poldek-0.20.org/misc.c	2005-07-21 20:06:41.000000000 +0200
-+++ poldek-0.20/misc.c	2005-11-06 20:28:39.000000000 +0100
++++ poldek-0.20/misc.c	2006-07-26 20:25:54.163323750 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -6151,7 +6102,7 @@ diff -urN poldek-0.20.org/misc.c poldek-0.20/misc.c
  {
 diff -urN poldek-0.20.org/misc.h poldek-0.20/misc.h
 --- poldek-0.20.org/misc.h	2005-05-18 21:43:08.000000000 +0200
-+++ poldek-0.20/misc.h	2005-11-05 18:47:55.000000000 +0100
++++ poldek-0.20/misc.h	2006-07-26 20:25:54.163323750 +0200
 @@ -1,4 +1,4 @@
 -/* $Id$ */
 +/* $Id$ */
@@ -6168,7 +6119,7 @@ diff -urN poldek-0.20.org/misc.h poldek-0.20/misc.h
  
 diff -urN poldek-0.20.org/mkpackagedir poldek-0.20/mkpackagedir
 --- poldek-0.20.org/mkpackagedir	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/mkpackagedir	2002-02-25 00:41:30.000000000 +0100
++++ poldek-0.20/mkpackagedir	2006-07-26 20:25:54.167324000 +0200
 @@ -0,0 +1,41 @@
 +#!/bin/sh
 +# $Id$
@@ -6213,7 +6164,7 @@ diff -urN poldek-0.20.org/mkpackagedir poldek-0.20/mkpackagedir
 +done    
 diff -urN poldek-0.20.org/pkg.c poldek-0.20/pkg.c
 --- poldek-0.20.org/pkg.c	2005-10-13 20:24:49.000000000 +0200
-+++ poldek-0.20/pkg.c	2006-04-02 21:10:36.000000000 +0200
++++ poldek-0.20/pkg.c	2006-07-26 20:25:54.175324500 +0200
 @@ -1,5 +1,5 @@
  /*
 -  Copyright (C) 2000 - 2004 Pawel A. Gajda <mis@k2.net.pl>
@@ -6310,165 +6261,9 @@ diff -urN poldek-0.20.org/pkg.c poldek-0.20/pkg.c
      }
      
      return 0;
-diff -urN poldek-0.20.org/pkgdir/.cvsignore poldek-0.20/pkgdir/.cvsignore
---- poldek-0.20.org/pkgdir/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pkgdir/.cvsignore	2003-01-18 15:39:43.000000000 +0100
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
-diff -urN poldek-0.20.org/pkgdir/dir/.cvsignore poldek-0.20/pkgdir/dir/.cvsignore
---- poldek-0.20.org/pkgdir/dir/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pkgdir/dir/.cvsignore	2003-01-18 15:39:48.000000000 +0100
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
-diff -urN poldek-0.20.org/pkgdir/hdrl/.cvsignore poldek-0.20/pkgdir/hdrl/.cvsignore
---- poldek-0.20.org/pkgdir/hdrl/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pkgdir/hdrl/.cvsignore	2003-01-18 15:39:49.000000000 +0100
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
-diff -urN poldek-0.20.org/pkgdir/metadata/.cvsignore poldek-0.20/pkgdir/metadata/.cvsignore
---- poldek-0.20.org/pkgdir/metadata/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pkgdir/metadata/.cvsignore	2005-07-15 18:17:26.000000000 +0200
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/pkgdir/metadata/load.c poldek-0.20/pkgdir/metadata/load.c
 --- poldek-0.20.org/pkgdir/metadata/load.c	2005-10-18 20:01:35.000000000 +0200
-+++ poldek-0.20/pkgdir/metadata/load.c	2005-11-01 20:01:33.000000000 +0100
++++ poldek-0.20/pkgdir/metadata/load.c	2006-07-26 20:25:54.183325000 +0200
 @@ -1,4 +1,4 @@
 -/* $Id$ */
 +/* $Id$ */
@@ -6505,48 +6300,9 @@ diff -urN poldek-0.20.org/pkgdir/metadata/load.c poldek-0.20/pkgdir/metadata/loa
                      if (pkg.caps == NULL)
                          pkg.caps = capreq_arr_new(0);
                      n_array_push(pkg.caps, cr);
-diff -urN poldek-0.20.org/pkgdir/pdir/.cvsignore poldek-0.20/pkgdir/pdir/.cvsignore
---- poldek-0.20.org/pkgdir/pdir/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pkgdir/pdir/.cvsignore	2003-01-18 15:39:50.000000000 +0100
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/pkgdir/pdir/pdir_pkg_store.c poldek-0.20/pkgdir/pdir/pdir_pkg_store.c
 --- poldek-0.20.org/pkgdir/pdir/pdir_pkg_store.c	2005-10-13 20:24:50.000000000 +0200
-+++ poldek-0.20/pkgdir/pdir/pdir_pkg_store.c	2006-05-12 01:47:38.000000000 +0200
++++ poldek-0.20/pkgdir/pdir/pdir_pkg_store.c	2006-07-26 20:25:54.183325000 +0200
 @@ -7,7 +7,7 @@
  */
  
@@ -6565,48 +6321,9 @@ diff -urN poldek-0.20.org/pkgdir/pdir/pdir_pkg_store.c poldek-0.20/pkgdir/pdir/p
          n_buf_printf(nbuf, "t: %u\n", pkg->fmtime);
      
      n_buf_printf(nbuf, "F:\n");
-diff -urN poldek-0.20.org/pkgdir/pndir/.cvsignore poldek-0.20/pkgdir/pndir/.cvsignore
---- poldek-0.20.org/pkgdir/pndir/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pkgdir/pndir/.cvsignore	2003-01-18 15:39:53.000000000 +0100
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/pkgdir/pndir/pndir.c poldek-0.20/pkgdir/pndir/pndir.c
 --- poldek-0.20.org/pkgdir/pndir/pndir.c	2005-10-21 17:38:28.000000000 +0200
-+++ poldek-0.20/pkgdir/pndir/pndir.c	2006-03-18 19:11:34.000000000 +0100
++++ poldek-0.20/pkgdir/pndir/pndir.c	2006-07-26 20:25:54.191325500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -6720,48 +6437,9 @@ diff -urN poldek-0.20.org/pkgdir/pndir/pndir.c poldek-0.20/pkgdir/pndir/pndir.c
                      nerr++;
              }
          }
-diff -urN poldek-0.20.org/pkgdir/rpmdb/.cvsignore poldek-0.20/pkgdir/rpmdb/.cvsignore
---- poldek-0.20.org/pkgdir/rpmdb/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pkgdir/rpmdb/.cvsignore	2003-01-18 15:39:54.000000000 +0100
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/pkgdir/source.c poldek-0.20/pkgdir/source.c
 --- poldek-0.20.org/pkgdir/source.c	2005-10-27 00:59:33.000000000 +0200
-+++ poldek-0.20/pkgdir/source.c	2006-05-12 01:47:38.000000000 +0200
++++ poldek-0.20/pkgdir/source.c	2006-07-26 20:25:54.199326000 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -6784,7 +6462,7 @@ diff -urN poldek-0.20.org/pkgdir/source.c poldek-0.20/pkgdir/source.c
      
 diff -urN poldek-0.20.org/pkgdir/source.h poldek-0.20/pkgdir/source.h
 --- poldek-0.20.org/pkgdir/source.h	2005-05-05 20:54:32.000000000 +0200
-+++ poldek-0.20/pkgdir/source.h	2006-05-12 01:47:38.000000000 +0200
++++ poldek-0.20/pkgdir/source.h	2006-07-26 20:25:54.199326000 +0200
 @@ -1,4 +1,4 @@
 -/* $Id$ */
 +/* $Id$ */
@@ -6803,48 +6481,9 @@ diff -urN poldek-0.20.org/pkgdir/source.h poldek-0.20/pkgdir/source.h
  int source_make_idx(struct source *src, const char *stype, 
                      const char *dtype, const char *idxpath,
                      unsigned flags, tn_hash *kw);
-diff -urN poldek-0.20.org/pkgdir/yum/.cvsignore poldek-0.20/pkgdir/yum/.cvsignore
---- poldek-0.20.org/pkgdir/yum/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pkgdir/yum/.cvsignore	2004-03-03 01:11:08.000000000 +0100
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/pkgfl.c poldek-0.20/pkgfl.c
 --- poldek-0.20.org/pkgfl.c	2005-10-12 21:28:02.000000000 +0200
-+++ poldek-0.20/pkgfl.c	2006-07-10 00:16:44.000000000 +0200
++++ poldek-0.20/pkgfl.c	2006-07-26 20:25:54.207326500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -6922,7 +6561,7 @@ diff -urN poldek-0.20.org/pkgfl.c poldek-0.20/pkgfl.c
                               
 diff -urN poldek-0.20.org/pkgset.c poldek-0.20/pkgset.c
 --- poldek-0.20.org/pkgset.c	2005-06-17 00:15:19.000000000 +0200
-+++ poldek-0.20/pkgset.c	2006-07-09 23:24:56.000000000 +0200
++++ poldek-0.20/pkgset.c	2006-07-26 20:25:54.211326750 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -6950,7 +6589,7 @@ diff -urN poldek-0.20.org/pkgset.c poldek-0.20/pkgset.c
                               (tn_fn_cmp)capreq_cmp_name);
 diff -urN poldek-0.20.org/pkgset-install.c poldek-0.20/pkgset-install.c
 --- poldek-0.20.org/pkgset-install.c	2005-10-24 17:30:40.000000000 +0200
-+++ poldek-0.20/pkgset-install.c	2005-11-03 01:21:00.000000000 +0100
++++ poldek-0.20/pkgset-install.c	2006-07-26 20:25:54.211326750 +0200
 @@ -11,7 +11,13 @@
  */
  
@@ -7189,7 +6828,7 @@ diff -urN poldek-0.20.org/pkgset-install.c poldek-0.20/pkgset-install.c
          return 1;
 diff -urN poldek-0.20.org/pkgset-req.c poldek-0.20/pkgset-req.c
 --- poldek-0.20.org/pkgset-req.c	2005-10-20 19:27:27.000000000 +0200
-+++ poldek-0.20/pkgset-req.c	2006-07-09 23:24:56.000000000 +0200
++++ poldek-0.20/pkgset-req.c	2006-07-26 20:25:54.219327250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -7267,7 +6906,7 @@ diff -urN poldek-0.20.org/pkgset-req.c poldek-0.20/pkgset-req.c
  
 diff -urN poldek-0.20.org/pkgu.c poldek-0.20/pkgu.c
 --- poldek-0.20.org/pkgu.c	2005-10-18 20:01:34.000000000 +0200
-+++ poldek-0.20/pkgu.c	2006-01-07 02:11:58.000000000 +0100
++++ poldek-0.20/pkgu.c	2006-07-26 20:25:54.219327250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -7295,48 +6934,9 @@ diff -urN poldek-0.20.org/pkgu.c poldek-0.20/pkgu.c
      
      if (pkgu->url)
          headerAddEntry(hdr, RPMTAG_URL, RPM_STRING_TYPE, pkgu->url, 1);
-diff -urN poldek-0.20.org/pm/.cvsignore poldek-0.20/pm/.cvsignore
---- poldek-0.20.org/pm/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pm/.cvsignore	2004-08-09 01:03:54.000000000 +0200
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/pm/mod.h poldek-0.20/pm/mod.h
 --- poldek-0.20.org/pm/mod.h	2005-10-24 11:37:32.000000000 +0200
-+++ poldek-0.20/pm/mod.h	2006-04-02 20:46:21.000000000 +0200
++++ poldek-0.20/pm/mod.h	2006-07-26 20:25:54.227327750 +0200
 @@ -22,6 +22,7 @@
      void *(*init)(void);
      void (*destroy)(void *modh);
@@ -7347,7 +6947,7 @@ diff -urN poldek-0.20.org/pm/mod.h poldek-0.20/pm/mod.h
      char *(*dbpath)(void *modh, char *path, size_t size);
 diff -urN poldek-0.20.org/pm/pkgdb.c poldek-0.20/pm/pkgdb.c
 --- poldek-0.20.org/pm/pkgdb.c	2005-10-24 17:25:58.000000000 +0200
-+++ poldek-0.20/pm/pkgdb.c	2006-03-18 16:18:04.000000000 +0100
++++ poldek-0.20/pm/pkgdb.c	2006-07-26 20:25:54.235328250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -7369,7 +6969,7 @@ diff -urN poldek-0.20.org/pm/pkgdb.c poldek-0.20/pm/pkgdb.c
      return dbpkgs;
 diff -urN poldek-0.20.org/pm/pm.c poldek-0.20/pm/pm.c
 --- poldek-0.20.org/pm/pm.c	2005-05-15 17:48:46.000000000 +0200
-+++ poldek-0.20/pm/pm.c	2006-04-02 20:46:21.000000000 +0200
++++ poldek-0.20/pm/pm.c	2006-07-26 20:25:54.235328250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -7395,7 +6995,7 @@ diff -urN poldek-0.20.org/pm/pm.c poldek-0.20/pm/pm.c
  
 diff -urN poldek-0.20.org/pm/pm.h poldek-0.20/pm/pm.h
 --- poldek-0.20.org/pm/pm.h	2005-10-24 17:12:32.000000000 +0200
-+++ poldek-0.20/pm/pm.h	2006-04-02 20:46:21.000000000 +0200
++++ poldek-0.20/pm/pm.h	2006-07-26 20:25:54.235328250 +0200
 @@ -21,6 +21,8 @@
  void pm_free(struct pm_ctx *ctx);
  
@@ -7405,48 +7005,9 @@ diff -urN poldek-0.20.org/pm/pm.h poldek-0.20/pm/pm.h
  const char *pm_get_name(struct pm_ctx *ctx);
  
  
-diff -urN poldek-0.20.org/pm/pset/.cvsignore poldek-0.20/pm/pset/.cvsignore
---- poldek-0.20.org/pm/pset/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pm/pset/.cvsignore	2004-08-09 01:03:54.000000000 +0200
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/pm/pset/mod.c poldek-0.20/pm/pset/mod.c
 --- poldek-0.20.org/pm/pset/mod.c	2005-10-24 11:49:07.000000000 +0200
-+++ poldek-0.20/pm/pset/mod.c	2006-04-02 20:46:21.000000000 +0200
++++ poldek-0.20/pm/pset/mod.c	2006-07-26 20:25:54.243328750 +0200
 @@ -6,7 +6,7 @@
      0, "pset",
      pm_pset_init, pm_pset_destroy,
@@ -7456,48 +7017,9 @@ diff -urN poldek-0.20.org/pm/pset/mod.c poldek-0.20/pm/pset/mod.c
      NULL,
  
  //    pm_pset_dbpath, 
-diff -urN poldek-0.20.org/pm/rpm/.cvsignore poldek-0.20/pm/rpm/.cvsignore
---- poldek-0.20.org/pm/rpm/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/pm/rpm/.cvsignore	2004-08-09 01:03:54.000000000 +0200
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/pm/rpm/misc.c poldek-0.20/pm/rpm/misc.c
 --- poldek-0.20.org/pm/rpm/misc.c	2005-05-13 20:15:53.000000000 +0200
-+++ poldek-0.20/pm/rpm/misc.c	2006-07-09 23:24:56.000000000 +0200
++++ poldek-0.20/pm/rpm/misc.c	2006-07-26 20:25:54.247329000 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -7666,7 +7188,7 @@ diff -urN poldek-0.20.org/pm/rpm/misc.c poldek-0.20/pm/rpm/misc.c
      pm_rpm = pm_rpm;
 diff -urN poldek-0.20.org/pm/rpm/mod.c poldek-0.20/pm/rpm/mod.c
 --- poldek-0.20.org/pm/rpm/mod.c	2004-10-10 17:31:22.000000000 +0200
-+++ poldek-0.20/pm/rpm/mod.c	2006-04-02 20:46:21.000000000 +0200
++++ poldek-0.20/pm/rpm/mod.c	2006-07-26 20:25:54.255329500 +0200
 @@ -6,8 +6,9 @@
      0, "rpm",
      (void *(*)(void))pm_rpm_init, pm_rpm_destroy,
@@ -7681,7 +7203,7 @@ diff -urN poldek-0.20.org/pm/rpm/mod.c poldek-0.20/pm/rpm/mod.c
      pm_rpm_dbdepdirs,
 diff -urN poldek-0.20.org/pm/rpm/pm_rpm.h poldek-0.20/pm/rpm/pm_rpm.h
 --- poldek-0.20.org/pm/rpm/pm_rpm.h	2005-10-24 11:39:29.000000000 +0200
-+++ poldek-0.20/pm/rpm/pm_rpm.h	2006-04-02 20:46:21.000000000 +0200
++++ poldek-0.20/pm/rpm/pm_rpm.h	2006-07-26 20:25:54.255329500 +0200
 @@ -10,6 +10,14 @@
  # include <rpm/rpmts.h>
  #endif
@@ -7708,7 +7230,7 @@ diff -urN poldek-0.20.org/pm/rpm/pm_rpm.h poldek-0.20/pm/rpm/pm_rpm.h
  
 diff -urN poldek-0.20.org/pm/rpm/rpm.c poldek-0.20/pm/rpm/rpm.c
 --- poldek-0.20.org/pm/rpm/rpm.c	2005-10-08 02:05:46.000000000 +0200
-+++ poldek-0.20/pm/rpm/rpm.c	2006-04-02 20:46:21.000000000 +0200
++++ poldek-0.20/pm/rpm/rpm.c	2006-07-26 20:25:54.263330000 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -7747,7 +7269,7 @@ diff -urN poldek-0.20.org/pm/rpm/rpm.c poldek-0.20/pm/rpm/rpm.c
  static int db_exists(void *pm_rpm, const char *rootdir, const char *dbpath)
 diff -urN poldek-0.20.org/po/POTFILES.in poldek-0.20/po/POTFILES.in
 --- poldek-0.20.org/po/POTFILES.in	2005-10-23 15:45:26.000000000 +0200
-+++ poldek-0.20/po/POTFILES.in	2006-04-02 21:10:07.000000000 +0200
++++ poldek-0.20/po/POTFILES.in	2006-07-26 20:25:54.263330000 +0200
 @@ -118,11 +118,9 @@
  vfile/p_open.c
  vfile/sample.c
@@ -7762,7 +7284,7 @@ diff -urN poldek-0.20.org/po/POTFILES.in poldek-0.20/po/POTFILES.in
  vfile/vfff/ftp.c
 diff -urN poldek-0.20.org/poldek_intern.h poldek-0.20/poldek_intern.h
 --- poldek-0.20.org/poldek_intern.h	2005-10-21 01:01:10.000000000 +0200
-+++ poldek-0.20/poldek_intern.h	2006-04-02 21:10:36.000000000 +0200
++++ poldek-0.20/poldek_intern.h	2006-07-26 20:25:54.263330000 +0200
 @@ -27,7 +27,7 @@
      unsigned         ps_setup_flags;
      struct pkgset    *ps;
@@ -7774,7 +7296,7 @@ diff -urN poldek-0.20.org/poldek_intern.h poldek-0.20/poldek_intern.h
      
 diff -urN poldek-0.20.org/poldek_ts.c poldek-0.20/poldek_ts.c
 --- poldek-0.20.org/poldek_ts.c	2005-10-26 16:41:05.000000000 +0200
-+++ poldek-0.20/poldek_ts.c	2006-04-02 21:10:36.000000000 +0200
++++ poldek-0.20/poldek_ts.c	2006-07-26 20:25:54.271330500 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -7794,7 +7316,7 @@ diff -urN poldek-0.20.org/poldek_ts.c poldek-0.20/poldek_ts.c
      return rc;
 diff -urN poldek-0.20.org/poldek_ts.h poldek-0.20/poldek_ts.h
 --- poldek-0.20.org/poldek_ts.h	2005-07-10 14:38:13.000000000 +0200
-+++ poldek-0.20/poldek_ts.h	2005-11-06 20:27:17.000000000 +0100
++++ poldek-0.20/poldek_ts.h	2006-07-26 20:25:54.271330500 +0200
 @@ -1,4 +1,4 @@
 -/* $Id$ */
 +/* $Id$ */
@@ -7815,7 +7337,7 @@ diff -urN poldek-0.20.org/poldek_ts.h poldek-0.20/poldek_ts.h
  struct poldek_ts *poldek_ts_new(struct poldek_ctx *ctx, unsigned flags);
 diff -urN poldek-0.20.org/poldek_util.h poldek-0.20/poldek_util.h
 --- poldek-0.20.org/poldek_util.h	2004-10-09 16:41:42.000000000 +0200
-+++ poldek-0.20/poldek_util.h	2006-07-10 00:18:21.000000000 +0200
++++ poldek-0.20/poldek_util.h	2006-07-26 20:25:54.279331000 +0200
 @@ -1,9 +1,27 @@
  #ifndef POLDEK_UTIL_H
  
@@ -7846,13 +7368,13 @@ diff -urN poldek-0.20.org/poldek_util.h poldek-0.20/poldek_util.h
  #endif
 diff -urN poldek-0.20.org/python/local_stdint.c poldek-0.20/python/local_stdint.c
 --- poldek-0.20.org/python/local_stdint.c	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/python/local_stdint.c	2004-02-24 00:20:21.000000000 +0100
++++ poldek-0.20/python/local_stdint.c	2006-07-26 20:25:54.279331000 +0200
 @@ -0,0 +1,2 @@
 +#define __extension__           /* prevent swig warning */
 +#include <stdint.h>
 diff -urN poldek-0.20.org/python/qrowser/mainWindow.ui poldek-0.20/python/qrowser/mainWindow.ui
 --- poldek-0.20.org/python/qrowser/mainWindow.ui	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/python/qrowser/mainWindow.ui	2005-10-23 23:23:07.000000000 +0200
++++ poldek-0.20/python/qrowser/mainWindow.ui	2006-07-26 20:25:54.335334500 +0200
 @@ -0,0 +1,556 @@
 +<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 +<class>mainWindow</class>
@@ -8412,7 +7934,7 @@ diff -urN poldek-0.20.org/python/qrowser/mainWindow.ui poldek-0.20/python/qrowse
 +</UI>
 diff -urN poldek-0.20.org/python/qrowser/qrowser.py poldek-0.20/python/qrowser/qrowser.py
 --- poldek-0.20.org/python/qrowser/qrowser.py	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/python/qrowser/qrowser.py	2005-10-23 23:23:07.000000000 +0200
++++ poldek-0.20/python/qrowser/qrowser.py	2006-07-26 20:25:54.335334500 +0200
 @@ -0,0 +1,137 @@
 +# $Id$
 +# Package browser app to try and train poldek python module
@@ -8553,21 +8075,21 @@ diff -urN poldek-0.20.org/python/qrowser/qrowser.py poldek-0.20/python/qrowser/q
 +sys.exit(a.exec_loop())
 diff -urN poldek-0.20.org/python/qrowser/qrowser.sh poldek-0.20/python/qrowser/qrowser.sh
 --- poldek-0.20.org/python/qrowser/qrowser.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/python/qrowser/qrowser.sh	2005-10-23 23:23:07.000000000 +0200
++++ poldek-0.20/python/qrowser/qrowser.sh	2006-07-26 20:25:54.335334500 +0200
 @@ -0,0 +1,3 @@
 +#!/bin/sh
 +
 +PYTHONPATH=../:../.libs python qrowser.py $@
 diff -urN poldek-0.20.org/python/run.sh poldek-0.20/python/run.sh
 --- poldek-0.20.org/python/run.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/python/run.sh	2004-10-01 19:48:42.000000000 +0200
++++ poldek-0.20/python/run.sh	2006-07-26 20:25:54.335334500 +0200
 @@ -0,0 +1,3 @@
 +#!/bin/sh
 +
 +PYTHONPATH=.libs python $@
 diff -urN poldek-0.20.org/python/test.py poldek-0.20/python/test.py
 --- poldek-0.20.org/python/test.py	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/python/test.py	2005-10-23 23:23:27.000000000 +0200
++++ poldek-0.20/python/test.py	2006-07-26 20:25:54.335334500 +0200
 @@ -0,0 +1,108 @@
 +#!/usr/bin/python
 +import os
@@ -8679,7 +8201,7 @@ diff -urN poldek-0.20.org/python/test.py poldek-0.20/python/test.py
 +
 diff -urN poldek-0.20.org/README poldek-0.20/README
 --- poldek-0.20.org/README	2002-04-03 17:43:39.000000000 +0200
-+++ poldek-0.20/README	2005-11-01 20:22:43.000000000 +0100
++++ poldek-0.20/README	2006-07-26 20:25:54.335334500 +0200
 @@ -1,6 +1,6 @@
 -# $Id$ 
 +# $Id$ 
@@ -8700,7 +8222,7 @@ diff -urN poldek-0.20.org/README poldek-0.20/README
  published by the Free Software Foundation (see file COPYING for details).
 diff -urN poldek-0.20.org/README.package-sets poldek-0.20/README.package-sets
 --- poldek-0.20.org/README.package-sets	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/README.package-sets	2001-06-15 15:45:01.000000000 +0200
++++ poldek-0.20/README.package-sets	2006-07-26 20:25:54.335334500 +0200
 @@ -0,0 +1,29 @@
 +# $Id$
 +
@@ -8733,7 +8255,7 @@ diff -urN poldek-0.20.org/README.package-sets poldek-0.20/README.package-sets
 +$ poldek -s YOUR_SOURCE -V --pkgset=PKGSETFILE 
 diff -urN poldek-0.20.org/scparchive.sh poldek-0.20/scparchive.sh
 --- poldek-0.20.org/scparchive.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/scparchive.sh	2002-09-20 18:25:30.000000000 +0200
++++ poldek-0.20/scparchive.sh	2006-07-26 20:25:54.335334500 +0200
 @@ -0,0 +1,26 @@
 +#! /bin/sh
 +# $Id$ 
@@ -8761,78 +8283,9 @@ diff -urN poldek-0.20.org/scparchive.sh poldek-0.20/scparchive.sh
 +ssh $HOST \
 +"(cd $DESTDIR && find . -type f | xargs md5sum > md5sums && \
 +    \$HOME/mkindexpage.pl *.* > index.html && find . -type f | xargs chmod 644 && ls -l)"
-diff -urN poldek-0.20.org/shell/.cvsignore poldek-0.20/shell/.cvsignore
---- poldek-0.20.org/shell/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/shell/.cvsignore	2003-01-18 15:40:04.000000000 +0100
-@@ -0,0 +1,26 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+*.lo
-+.libs
-+*.la
-diff -urN poldek-0.20.org/sigint/.cvsignore poldek-0.20/sigint/.cvsignore
---- poldek-0.20.org/sigint/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/sigint/.cvsignore	2003-01-18 15:40:08.000000000 +0100
-@@ -0,0 +1,35 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+stamp-h1
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+test_match
-+*.html
-+homepage.sgml
-+intl
-+m4
-+ABOUT-NLS
-+config.rpath
-+autom4te.cache
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/swigs.h poldek-0.20/swigs.h
 --- poldek-0.20.org/swigs.h	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/swigs.h	2004-02-23 00:24:55.000000000 +0100
++++ poldek-0.20/swigs.h	2006-07-26 20:25:54.335334500 +0200
 @@ -0,0 +1,19 @@
 +#ifndef SWIGMACRO_H
 +#define SWIGMACRO_H
@@ -8855,7 +8308,7 @@ diff -urN poldek-0.20.org/swigs.h poldek-0.20/swigs.h
 +#endif
 diff -urN poldek-0.20.org/test_patch.sh poldek-0.20/test_patch.sh
 --- poldek-0.20.org/test_patch.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/test_patch.sh	2005-10-11 17:50:31.000000000 +0200
++++ poldek-0.20/test_patch.sh	2006-07-26 20:25:54.335334500 +0200
 @@ -0,0 +1,149 @@
 +#! /bin/sh
 +
@@ -9008,7 +8461,7 @@ diff -urN poldek-0.20.org/test_patch.sh poldek-0.20/test_patch.sh
 +
 diff -urN poldek-0.20.org/tests/build-test-rpm.sh poldek-0.20/tests/build-test-rpm.sh
 --- poldek-0.20.org/tests/build-test-rpm.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/tests/build-test-rpm.sh	2006-07-09 23:20:06.000000000 +0200
++++ poldek-0.20/tests/build-test-rpm.sh	2006-07-26 20:25:54.339334750 +0200
 @@ -0,0 +1,83 @@
 +#!/bin/sh
 +# $Id$
@@ -9093,20 +8546,9 @@ diff -urN poldek-0.20.org/tests/build-test-rpm.sh poldek-0.20/tests/build-test-r
 +
 +echo -e "%clean\nrm -rf \$RPM_BUILD_ROOT" >> $SPEC
 +rpmbuild -bb $SPEC
-diff -urN poldek-0.20.org/tests/.cvsignore poldek-0.20/tests/.cvsignore
---- poldek-0.20.org/tests/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/tests/.cvsignore	2005-11-01 20:20:07.000000000 +0100
-@@ -0,0 +1,7 @@
-+Makefile.in
-+Makefile
-+.deps
-+.libs
-+test_poldek
-+*.tmp
-+poldek_test_conf.conf
 diff -urN poldek-0.20.org/tests/httpd.py poldek-0.20/tests/httpd.py
 --- poldek-0.20.org/tests/httpd.py	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/tests/httpd.py	2005-10-27 00:34:11.000000000 +0200
++++ poldek-0.20/tests/httpd.py	2006-07-26 20:25:54.339334750 +0200
 @@ -0,0 +1,12 @@
 +#!/usr/bin/python
 +
@@ -9122,7 +8564,7 @@ diff -urN poldek-0.20.org/tests/httpd.py poldek-0.20/tests/httpd.py
 +httpd.serve_forever()
 diff -urN poldek-0.20.org/tests/Makefile.am poldek-0.20/tests/Makefile.am
 --- poldek-0.20.org/tests/Makefile.am	2005-10-27 00:52:42.000000000 +0200
-+++ poldek-0.20/tests/Makefile.am	2005-11-01 20:20:07.000000000 +0100
++++ poldek-0.20/tests/Makefile.am	2006-07-26 20:25:54.339334750 +0200
 @@ -3,12 +3,37 @@
  TESTS = test_poldek
  noinst_PROGRAMS = test_poldek
@@ -9163,11 +8605,9 @@ diff -urN poldek-0.20.org/tests/Makefile.am poldek-0.20/tests/Makefile.am
 +   echo "$$n tests passed / $$nfails failed";    \
 +   echo "====================================="
 +
-Pliki poldek-0.20.org/tests/repo/foo-1.0-1.i686.rpm i poldek-0.20/tests/repo/foo-1.0-1.i686.rpm rÃ³Å¼niÄ… siÄ™
-Pliki poldek-0.20.org/tests/repo/foo-lib-1.0-1.i686.rpm i poldek-0.20/tests/repo/foo-lib-1.0-1.i686.rpm rÃ³Å¼niÄ… siÄ™
 diff -urN poldek-0.20.org/tests/repo/foo.spec poldek-0.20/tests/repo/foo.spec
 --- poldek-0.20.org/tests/repo/foo.spec	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/tests/repo/foo.spec	2005-10-27 00:43:24.000000000 +0200
++++ poldek-0.20/tests/repo/foo.spec	2006-07-26 20:25:54.339334750 +0200
 @@ -0,0 +1,40 @@
 +# $Revision$, $Date$
 +Summary:	foo
@@ -9211,7 +8651,7 @@ diff -urN poldek-0.20.org/tests/repo/foo.spec poldek-0.20/tests/repo/foo.spec
 +
 diff -urN poldek-0.20.org/tests/repo/poldek.conf poldek-0.20/tests/repo/poldek.conf
 --- poldek-0.20.org/tests/repo/poldek.conf	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/tests/repo/poldek.conf	2005-10-27 00:33:27.000000000 +0200
++++ poldek-0.20/tests/repo/poldek.conf	2006-07-26 20:25:54.339334750 +0200
 @@ -0,0 +1,12 @@
 +vfile retries = 1
 +
@@ -9227,7 +8667,7 @@ diff -urN poldek-0.20.org/tests/repo/poldek.conf poldek-0.20/tests/repo/poldek.c
 +
 diff -urN poldek-0.20.org/tests/test_config.c poldek-0.20/tests/test_config.c
 --- poldek-0.20.org/tests/test_config.c	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/tests/test_config.c	2005-11-05 18:47:55.000000000 +0100
++++ poldek-0.20/tests/test_config.c	2006-07-26 20:25:54.339334750 +0200
 @@ -0,0 +1,241 @@
 +#include "test.h"
 +#include "conf_intern.h"
@@ -9472,7 +8912,7 @@ diff -urN poldek-0.20.org/tests/test_config.c poldek-0.20/tests/test_config.c
 +        
 diff -urN poldek-0.20.org/tests/test_env.c poldek-0.20/tests/test_env.c
 --- poldek-0.20.org/tests/test_env.c	2005-10-23 10:12:45.000000000 +0200
-+++ poldek-0.20/tests/test_env.c	2005-11-05 18:47:55.000000000 +0100
++++ poldek-0.20/tests/test_env.c	2006-07-26 20:25:54.339334750 +0200
 @@ -1,19 +1,68 @@
  #include "test.h"
  START_TEST (test_env) {
@@ -9549,7 +8989,7 @@ diff -urN poldek-0.20.org/tests/test_env.c poldek-0.20/tests/test_env.c
  };
 diff -urN poldek-0.20.org/tests/test.h poldek-0.20/tests/test.h
 --- poldek-0.20.org/tests/test.h	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/tests/test.h	2005-10-22 13:09:44.000000000 +0200
++++ poldek-0.20/tests/test.h	2006-07-26 20:25:54.339334750 +0200
 @@ -0,0 +1,37 @@
 +#ifndef POLDEK_TEST_H
 +#define POLDEK_TEST_H
@@ -9590,7 +9030,7 @@ diff -urN poldek-0.20.org/tests/test.h poldek-0.20/tests/test.h
 +#endif
 diff -urN poldek-0.20.org/tests/test_op.c poldek-0.20/tests/test_op.c
 --- poldek-0.20.org/tests/test_op.c	2005-10-23 10:12:45.000000000 +0200
-+++ poldek-0.20/tests/test_op.c	2005-11-01 20:20:07.000000000 +0100
++++ poldek-0.20/tests/test_op.c	2006-07-26 20:25:54.339334750 +0200
 @@ -30,6 +30,8 @@
  
      fail_unless(is_op(ts, op, !defaultv),
@@ -9602,7 +9042,7 @@ diff -urN poldek-0.20.org/tests/test_op.c poldek-0.20/tests/test_op.c
  START_TEST (test_op_ts_postconf) {
 diff -urN poldek-0.20.org/tests/test_poldek.c poldek-0.20/tests/test_poldek.c
 --- poldek-0.20.org/tests/test_poldek.c	2005-10-23 10:12:45.000000000 +0200
-+++ poldek-0.20/tests/test_poldek.c	2005-11-05 18:47:55.000000000 +0100
++++ poldek-0.20/tests/test_poldek.c	2006-07-26 20:25:54.339334750 +0200
 @@ -1,24 +1,28 @@
  /*
 -  $Id$
@@ -9668,9 +9108,1091 @@ diff -urN poldek-0.20.org/tests/test_poldek.c poldek-0.20/tests/test_poldek.c
  
      return (nerr == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
  }
+diff -urN poldek-0.20.org/trurlib/autogen.sh poldek-0.20/trurlib/autogen.sh
+--- poldek-0.20.org/trurlib/autogen.sh	1970-01-01 01:00:00.000000000 +0100
++++ poldek-0.20/trurlib/autogen.sh	2003-01-18 15:39:25.000000000 +0100
+@@ -0,0 +1,30 @@
++#!/bin/sh
++# $Id$
++
++FILE=n_array_new.c
++PKG=trurlib
++ 
++if [ ! -f $FILE ]; then
++    cd `dirname $0`;
++    if [ ! -f $FILE ]; then
++	echo "`pwd`: not a $PKG directory"
++	exit 1
++    fi 	
++fi
++
++runcmd () {
++    echo "$@"
++    $@
++    test $? -eq 0 || exit 1
++}
++
++runcmd libtoolize --force --automake
++runcmd aclocal
++runcmd autoheader
++runcmd automake --add-missing --no-force
++runcmd autoconf
++
++if [ -z "$1" -o "$1" != "--no-configure" ]; then
++	CONFOPTS="--enable-maintainer-mode --enable-compile-warnings $@"
++	runcmd ./configure $CONFOPTS
++fi
+diff -urN poldek-0.20.org/trurlib/ChangeLog poldek-0.20/trurlib/ChangeLog
+--- poldek-0.20.org/trurlib/ChangeLog	2005-10-17 23:37:27.000000000 +0200
++++ poldek-0.20/trurlib/ChangeLog	2005-11-06 21:01:23.000000000 +0100
+@@ -0,0 +1,699 @@
++2005-11-06  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nbuf.c: - be paranoid
++
++	* include/trurl/narray.h:
++	- new n_array_ctl_get_freefn(), to be consitent
++
++2005-10-17  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nstream.h, nstream.c:
++	- prefixed nstream members to avoid conflicts with stdio macros (thanks to Olivier Thauvin (olivier.thauvin att aerov jussieu fr)
++
++	* include/trurl/narray.h: - more comments
++
++2005-06-13  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nstream.h: - comments
++
++	* configure.in, nmalloc.c:
++	- do not make unalign obstack on sparc, alpha, etc
++
++2005-05-13  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* lib/obstack.c: - missing include
++
++	* libtrurl.sym: - missing symbols
++
++	* libtrurl.sym: - symtab
++
++	* configure.in, lib/.cvsignore, lib/Makefile.am, lib/obstack.c, lib/obstack.h, nmalloc.c, Makefile.am:
++	- be more portable (obstack)
++
++2005-05-12  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nstream.c:
++	- disabled usage of stdio cookies, too much troubles with them
++
++	* configure.in:
++	- disaled usage of stdio cookies, too much troubles with them
++
++	* ndie.c: - horrible bug
++
++2005-04-21  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/narray.h, n_array_new.c: - new n_array_cfree()
++
++2005-04-16  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nstream.c:
++	- cookie's gzfseek() fix: set offset to proper value (qboosh at pld-linux org)
++
++	* nbuf.c, test_common.c: - bugfix
++
++2005-04-11  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* configure.in, nstream.c:
++	- tolerate missing gzungetc() (not used in fact)
++
++2004-11-16  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/narray.h, n_array_sorts.c, test_array.c:
++	- +n_array_reverse()
++
++2004-11-03  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/n_obj_ref.h, include/trurl/trurl.h, include/trurl/nbuf.h:
++	- be c++ friendly
++
++2004-10-23  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am, include/trurl/nstr.h, nstr.c, test_nstr.c:
++	- n_str_strip_ws()
++
++2004-10-15  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nassert.h, nassert.c, ndie.c:
++	- set_hook() schema for both die and assert; die() cosmetics
++
++2004-10-14  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nstream.h, nstream.c, test_stream.c:
++	- +n_stream_getline()
++
++2004-10-07  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* n_hash_dup.c: - dup()ed hash could not inherit NOCPKEY
++
++2004-10-05  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/narray.h, n_array_new.c: - cleanup
++
++2004-10-04  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nstr_tokl.c: - do not assume that WHITE is after quoted string
++
++	* nstr_tokl.c: - normal characters are not escapeable
++
++	* include/trurl/nstr.h, nstr_tokl.c: - no default escape char
++
++2004-10-02  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/narray.h, n_array_new.c: - +n_array_ctl_get_cmpfn()
++
++	* configure.in: - missing check
++
++	* n_array_sorts.c: - trace
++
++2004-09-30  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/narray.h: - SWIGing
++
++2004-09-27  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* test_stream.c: - more tests
++
++2004-09-26  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/trurl.h: - missing inc
++
++	* test_array.c: - more tests
++
++2004-09-21  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nstr.h, nstr_tok.c, nstr_tokl.c: - delim is const char
++
++2004-09-12  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/Attic/nobstack.h, Attic/test_obstack.c, Makefile.am, nmalloc.c:
++	- obsoleted obstack.h
++
++2004-09-01  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am: - 'symlink' is useless
++
++	* include/trurl/narray.h: - missing include
++
++2004-08-06  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/n_array_dup.c, include/trurl/narray.h, n_array_new.c:
++	- +n_array_ctl_set*fn
++
++	* nmalloc.c: - smaller min. chunks
++
++2004-07-23  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* n_hash_keys.c: - fix
++
++	* include/trurl/nhash.h, n_hash_keys.c: - +n_hash_values()
++
++2004-07-14  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nhash.h, n_hash_free.c, n_hash_int.h, n_hash_new.c, n_hash_put.c:
++	- tn_alloc support
++
++	* nbuf.c, include/trurl/nbuf.h: - n_ref() aware
++
++2004-07-13  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nmalloc.c: - refcount-able
++
++2004-07-12  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* n_hash_new.c, n_hash_put.c, trurl_internal.h, Attic/hash-string.h, Makefile.am, n_hash_int.h:
++	- cleanups
++
++	* nmalloc.c: - bugfix
++
++2004-07-11  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* .cvsignore, Makefile.am, include/trurl/ntuple.h, n_array_sorts.c, ntuple.c:
++	- +ntuple - python-like, semi-array
++
++	* include/trurl/narray.h: - bugfix
++
++2004-07-09  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/n_array_free.c, Makefile.am, include/trurl/narray.h, include/trurl/nmalloc.h, n_array_new.c, nmalloc.c:
++	- +tn_alloc
++
++	* n_hash_map.c: - dump()
++
++2004-06-24  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nbuf.c: - improved restore()
++
++2004-06-23  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nhash.h, n_hash_free.c, n_hash_get.c, n_hash_int.h, n_hash_new.c, n_hash_put.c, nbuf.c:
++	- fixes && improvements
++
++2004-06-22  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/n_hash_exists.c, Makefile.am, include/trurl/nbuf.h, n_hash_int.h, nbuf.c:
++	- improvements
++
++	* n_hash_dup.c, n_hash_free.c, n_hash_get.c, n_hash_map.c, n_hash_new.c, n_hash_put.c, n_hash_remove.c, n_hash_stats.c, test_hash.c, trurl_internal.h:
++	- hash table improvements
++
++2004-05-06  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* n_array_dump_stats.c, n_hash_stats.c, nstr_tokl.c:
++	- type fixes, incl. SEGV on 64-bit archs (qboosh)
++
++2004-03-22  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/narray.h, include/trurl/trurl.h, n_array_push.c:
++	- n_array_concat()
++
++2004-02-23  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/narray.h, n_array_nth.c: - SWIG'ed
++
++2004-02-22  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/Attic/nobstack.h, Attic/test_obstack.c, Makefile.am:
++	- glibc's obstack wrapper
++
++2004-02-17  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am: - 'make distcheck' fixes (wiget at pld-linux org)
++
++	* n_array_clone.c, include/trurl/narray.h:
++	- merged _dup() and _clone() funcs
++
++2004-01-05  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nstr.h, nstr_basenam.c:
++	- + n_dirname() alias for n_basedirnam()
++
++	* nstr_tokl.c: - commented out debug message
++
++	* include/trurl/nbuf.h: - new n_buf_it_read()
++	- bugfixes
++	- n_buf_it_read_*int*() aliases to n_buf_it_get_int*
++
++	* include/trurl/nstr.h: - new n_str_[eq,ne] macros
++
++2003-12-31  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nbuf.h: - replaced macros with inline funcs
++
++2003-12-30  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nmalloc.h, n_hash_free.c, n_hash_remove.c, nbuf.c, nstr_concat.c, nstr_len.c, nstring.c, test_nstr.c:
++	- nothing shocking
++
++	* Makefile.am: - fixed *.h list
++
++	* nstream.c: - bugfix (added gzseek stdio-like wrapper)
++
++2003-04-30  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nstr.h, nstr_tokl.c: - + n_str_etokl() (line tokenizer)
++
++2003-04-23  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nstr.h, nstr_tokl.c: + n_str_tokl_n()
++
++2003-04-14  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nmalloc.h: + n_strdupap()
++
++2003-02-07  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nbuf.h: - missing inclusion
++
++	* n_hash_put.c: - do not free NULL pointers...
++
++2003-01-18  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* autogen.sh: - added --no-configure option
++
++	* include/trurl/narray.h, n_array_new.c: - +n_array_init()
++
++	* configure.in: - missing zlib
++
++2003-01-14  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nmalloc.h, nmalloc.c:
++	 +n_cfree() (frees and sets to NULL a pointer)
++
++2003-01-06  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* n_hash_dup.c: - bugfix
++
++2002-12-13  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nmalloc.h, include/trurl/narray.h, n_array_ctl.c, n_array_int.h, n_array_new.c, n_array_nth.c, n_array_push.c, n_array_set_nth.c, n_array_sorts.c, n_array_unshift.c, n_hash_new.c, nbuf.c, nmalloc.c, test_array.c:
++	- + n_memdup()
++	- few n_array's improvements
++
++2002-12-12  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/n_obj_ref.h, include/trurl/narray.h, include/trurl/nhash.h, include/trurl/nlist.h, Attic/n_array_dup.c, Attic/n_array_free.c, n_array_clone.c, n_array_int.h, n_array_new.c, n_hash_free.c, n_hash_int.h, n_hash_new.c, n_list_free.c, n_list_int.h, n_list_new.c, nstr_tok.c, nstr_tokl.c, test_nstr.c:
++	- + n_(array|hash|list)_ref()
++	- cleanups
++
++2002-12-10  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nhash.h, Makefile.am, n_hash_dup.c: + n_hash_dup()
++
++2002-12-02  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nbuf.h: - n_buf_it_get* fixes
++
++	* nbuf.c: - buffer with constant data may be cleaned too
++
++2002-11-13  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nmalloc.c, nstream.c: - cosmetics
++
++	* include/trurl/nhash.h, n_hash_keys.c: - improved n_hash_keys()
++
++	* include/trurl/nbuf.h, nbuf.c: - n_buf_gets() and co
++
++2002-11-07  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* ndie.c: - missing include
++
++	* include/trurl/nhash.h, Makefile.am, configure.in, n_hash_keys.c, n_hash_new.c:
++	- new fn n_hash_keys()
++	- released as 0.44.0
++
++2002-11-04  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/n2h.h, include/trurl/nbuf.h, include/trurl/nstream.h, nmalloc.c, nstream.c, test_common.c, test_stream.c, Makefile.am, Makefile.extra, configure.in, n_array_remove_ex.c, n_hash_int.h, n_hash_new.c, nbuf.c, ndie.c:
++	- improved tn_buf: moved add_intXX() from poldek, stdio like interface
++	  is added
++	- tn_stream fixes
++	- moved n2h from poldek
++	- killed gcc's warnings
++
++2002-10-29  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nbuf.h, include/trurl/nstore.h, include/trurl/nstream.h, Makefile.extra, configure.in, nbuf.c, nstore.c, nstream.c, test_array.c, test_stream.c, Makefile.am:
++	- new tn_steam module with support for transparent access to compressed
++	  files and stdio-like interface.
++	- new n_buf_(re)store*() functions
++
++	* Makefile.am: - updated library version info
++
++2002-10-18  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* configure.in:
++	- ,,automake requires 'AM_CONFIG_HEADER', not 'AC_CONFIG_HEADER' ''
++
++2002-10-18  Artur Frysiak  <wiget@pld.org.pl>
++
++	* .cvsignore: more ignores
++
++	* Attic/acconfig.h, configure.in, Makefile.am: - make distcheck passed
++
++2002-10-17  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am, autogen.sh, configure.in:
++	- adaptation to include/trurl headers location
++
++2002-10-16  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/narray.h: - +n_array_has_free_fn()
++
++2002-06-03  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nbuf.c: - minor bugfix
++
++2002-05-06  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am, NEWS, configure.in, include/trurl/narray.h, n_array_int.h, n_array_nth.c:
++	- make n_array_nth() inline (speed!)
++
++	* Attic/trurl_die.c, include/trurl/ndie.h, ndie.c:
++	- make n_die() public
++
++	* include/trurl/nbuf.h, nbuf.c: - new n_buf_*printf()
++
++	* Makefile.am, nmalloc.c, xmalloc.c:
++	- fixed static link: moved xmalloc*()s to separate module
++
++	* Makefile.am: - released as 0.43.7
++
++2002-04-26  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* NEWS, README: - updated && merged with PL versions
++
++	* Attic/CHANGES.PL, Attic/README.PL: - obsoleted
++
++2002-04-25  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nmalloc.h, nmalloc.c, test_common.c: - nicer fn name
++
++	* Attic/xmalloc.h, include/trurl/trurl.h, nstr_tok.c, nstr_tokl.c, nstring.c, test_array.c, test_common.c, test_list.c, xmalloc.c, include/trurl/nmalloc.h, n_array_grow_priv.c, n_array_int.h, n_array_new.c, n_hash_int.h, n_hash_new.c, n_hash_put.c, n_list_int.h, n_list_new.c, n_list_push.c, n_list_unshift.c, nbuf.c, nmalloc.c, nstr_basenam.c, nstr_concat.c, nstr_cpy.c, nstr_len.c, configure.in, n_array_clone.c, Makefile.am:
++	- xmalloc()s -> n_malloc()s
++
++2002-04-21  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am: - released as 0.43.6
++
++2002-04-05  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/n_snprintf.h: - bugfix
++
++	* include/trurl/trurl.h: - +#include <trurl/n_snprintf.h>
++
++	* NEWS, configure.in, include/trurl/n_snprintf.h, Makefile.am:
++	- n_snprintf.h with [v]snprintf wrappers which always returns
++	  the number of characters printed
++	- released as 0.43.6
++
++2002-03-15  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am, NEWS, configure.in: - released as 0.43.5
++
++	* nbuf.c: - be 0.43.3 compatibile and provide n_buf_add symbol too
++
++2002-03-13  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* NEWS: - released as 0.43.4
++
++2002-03-12  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nstr.h, nstr_concat.c, nstr_len.c:
++	- copy va_list via __va_copy() macro (to be portable to PPC)
++
++2002-02-19  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* .cvsignore, Makefile.am, configure.in, include/trurl/nbuf.h, nbuf.c:
++	- added n_buff_addz(); pre 0.43.4
++
++	* Attic/ndbhash.c, Attic/ndbhash.h, Attic/test_dbhash.c:
++	- removed dead code
++
++2002-02-08  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* test_array.c: - one more test
++
++2002-02-07  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* n_array_remove_ex.c, test_array.c: - bugfix
++
++	* include/trurl/nhash.h, n_hash_new.c: - added n_hash_size
++
++2001-09-06  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am, configure.in, n_array_sorts.c: - fixed AUTOSORTED
++	- simplified sort code
++
++2001-06-09  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* configure.in, NEWS: - 0.43.2
++
++	* n_array_clone.c: - fixed buggy func
++
++	* include/trurl/narray.h, nbuf.c: - bugfix
++
++2001-04-24  Tomasz K³oczko  <kloczek@pld.org.pl>
++
++	* Makefile.am: - removed VERSION from EXTRA_DIST.
++
++	* Attic/VERSION, configure.in: - changed version to 0.43.1,
++	- removed usinf VERSION file.
++
++2001-04-23  Rafa³ Kleger-Rudomin  <klakier@pld.org.pl>
++
++	* configure.in: - AC_PROG_LIBTOOL -> AM_PROG_LIBTOOL
++
++2001-02-10  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am, include/trurl/narray.h, n_array_clone.c: - new function
++
++2001-02-08  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/ChangeLog: - don't like ChangeLog from whole installer
++
++	* Makefile.am, configure.in: - cosmetics (up to new automake)
++
++	* n_array_map.c, n_array_map_arg.c, n_array_remove_nth.c: - bugfix
++
++	* include/trurl/narray.h, n_array_remove_ex.c: - new function
++
++2001-02-02  Nobody  <nobody@pld.org.pl>
++
++	* Attic/ChangeLog: - ChangeLog update by changelog.sh
++	  (by Arkadiusz Miskiewicz <misiek@pld.org.pl>)
++
++2000-11-28  Nobody  <nobody@pld.org.pl>
++
++	* Attic/ChangeLog: - ChangeLog update by changelog.sh
++	  (by Arkadiusz Miskiewicz <misiek@pld.org.pl>)
++
++2000-11-24  Nobody  <nobody@pld.org.pl>
++
++	* Attic/ChangeLog: - ChangeLog update by changelog.sh
++	  (by Arkadiusz Miskiewicz <misiek@pld.org.pl>)
++
++2000-11-24  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/VERSION: - marked as 0.431
++
++	* .cvsignore, Makefile.am: - added spec to EXTRA_DIST
++
++2000-11-12  Nobody  <nobody@pld.org.pl>
++
++	* Attic/ChangeLog: - ChangeLog update by changelog.sh
++	  (by Arkadiusz Miskiewicz <misiek@pld.org.pl>)
++
++2000-11-10  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/mkmake.sh, autogen.sh: - be more traditional
++
++2000-11-09  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Makefile.am, Makefile.extra: - make trurl -> . symlink
++	- am's *CLEAN variables are used instead of removals in mclean goal
++
++2000-11-08  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nbuf.c: - fixed some bugs
++
++2000-10-31  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* configure.in: - check for db*.h headers instead of library
++
++	* Makefile.am: - use libtool version-info
++
++2000-10-29  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/narray.c, Attic/nhash.c, Attic/nlist.c, Attic/trurlib.spec, n_list_nth.c, n_list_pop.c, n_list_push.c, n_list_remove_ex.c, n_list_remove_nth.c, n_list_shift.c, n_list_size.c, n_list_unshift.c, nstr_cpy.c, nstring.c, trurlib.spec.in, Attic/VERSION, Attic/acconfig.h, Attic/mkmake.sh, Attic/n_array_dup.c, Attic/n_array_free.c, Attic/n_hash_exists.c, Makefile.am, Makefile.extra, NEWS, README, configure.in, mkarch.sh, n_array_bsearch_ex.c, n_array_clean.c, n_array_ctl.c, n_array_dump_stats.c, n_array_eq_ex.c, n_array_grow_priv.c, n_array_int.h, n_array_map.c, n_array_map_arg.c, n_array_new.c, n_array_nth.c, n_array_pop.c, n_array_push.c, n_array_remove_nth.c, n_array_set_nth.c, n_array_shift.c, n_array_sorts.c, n_array_uniq_ex.c, n_array_unshift.c, n_hash_clean.c, n_hash_ctl.c, n_hash_free.c, n_hash_get.c, n_hash_int.h, n_hash_map.c, n_hash_map_arg.c, n_hash_new.c, n_hash_put.c, n_hash_remove.c, n_hash_stats.c, n_list_contains_ex.c, n_list_free.c, n_list_int.h, n_list_iterator.c, n_list_lookup_ex.c, n_list_map_arg.c, n_list_new.c, .cvsignore, AUTHORS, Attic/ChangeLog, Attic/Makefile, COPYING, INSTALL:
++	- automake/autoconf support
++
++2000-10-25  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* xmalloc.c: - allow NULL as xrealloc() arg
++
++2000-10-17  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nbuf.h, nbuf.c: - nbuf redesign
++
++2000-10-01  Tomasz K³oczko  <kloczek@pld.org.pl>
++
++	* configure.in: - generated by autoscan.
++
++2000-09-20  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/Makefile, include/trurl/nstr.h, nstr_basenam.c:
++	- basename() functions added
++
++	* Attic/trurlib.spec:
++	- %{tmpdir} -> /tmp, distribution spec shouldn't be PLD dependent
++
++	* Attic/Makefile, Attic/VERSION, Attic/trurlib.spec:
++	- current working version is v0.42
++
++	* Attic/Makefile: - bugfix
++
++	* include/trurl/nstr.h, nstr_cpy.c: - n_strncpy() added
++
++2000-09-07  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nstr_tok.c: - bugfix
++
++	* Attic/Makefile: - misarch goal added
++
++	* Attic/nhash.c, include/trurl/nhash.h, test_hash.c:
++	- added hash function from D. J. Bernstein's cdb
++	- n_hash_stats() added
++
++	* Attic/narray.c, include/trurl/narray.h, test_array.c:
++	- removed growth control (nobody needs it)
++	- autosort option added
++	- cosmetics
++
++2000-08-07  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/tfn_types.h: - typedefs tn_fn_map{1,2,3} added
++
++2000-08-03  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* include/trurl/nhash.h, Attic/Makefile, Attic/nhash.c:
++	- added n_hash_clean()
++
++2000-08-02  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nstr_tokl.c: - yet another bug is killed
++
++	* nstr_tokl.c: - another horrible bug is fixed
++
++2000-07-28  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* nbuf.c: - fixed horrible bug
++
++2000-07-27  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/nhash.c: - do not remalloc buckets during rehashing
++
++	* Attic/Makefile, Attic/nhash.c: - bugfix: n_hash_ctl.o is compiled now
++
++2000-07-20  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/VERSION, Attic/trurlib.spec: - version 0.41
++
++	* Attic/Makefile:
++	- added fid-arch goal, which creates subset of library for fix-info-dir
++
++	* include/trurl/trurl.h: - nbuf header added
++
++	* include/trurl/nbuf.h, nbuf.c: - initial version
++
++	* Attic/narray.c, include/trurl/narray.h:
++	- added n_array_bsearch_idx() (returns index of finded item)
++
++	* Attic/nhash.c, include/trurl/nhash.h, test_hash.c:
++	- more flexible hash table: grow with rehashing and do not always copy keys,
++	  n_hash_ctl() added
++
++	* Attic/ndbhash.c, Attic/ndbhash.h, Attic/nlist.c, Attic/trurl_die.c, include/trurl/nassert.h, include/trurl/nlist.h, include/trurl/nstr.h, include/trurl/tfn_types.h, nassert.c, nstr_concat.c, nstr_len.c, nstr_tokl.c, trurl_cmpf.c, trurl_internal.h, xmalloc.c:
++	- cosmetics
++
++2000-07-15  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/Makefile, Attic/narray.c, Attic/nhash.c, Attic/nlist.c, Attic/trurlib.spec, trurl_internal.h:
++	- modularized narray, nhash and nlist modules
++
++2000-06-09  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/Makefile, Attic/trurlib.spec: - spec
++
++	* Attic/test_dbhash.c, nstr_tokl.c, test_array.c, test_common.c, test_hash.c, test_list.c, test_nstr.c, xmalloc.c:
++	- minor #include fixes
++
++2000-05-22  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/nlist.c, include/trurl/nlist.h, test_list.c:
++	- fixed list iterator
++
++	* Attic/nlist.c: - bugfix
++
++2000-05-19  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* .cvsignore: *** empty log message ***
++
++	* Attic/Makefile, Attic/README.PL, Attic/VERSION, Attic/hash-string.h, Attic/narray.c, Attic/nhash.c, Attic/nlist.c, include/trurl/narray.h, include/trurl/nhash.h, include/trurl/nlist.h, include/trurl/tfn_types.h, include/trurl/trurl.h, test_array.c, test_list.c:
++	- allowed interlaced iterations on list (new tn_list_iterator type)
++	- removed libc's qsort() i bsearch() functions from array
++	- removed useless dup_fn member from list and array
++	- reduced args list of n_array_new() (narray_ctl_growth() added)
++
++2000-05-04  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/xmalloc.h: - undef glibc's strdup macro
++
++	* Attic/VERSION: *** empty log message ***
++
++	* include/trurl/narray.h: - comment
++
++	* Attic/Makefile: - allow override CFLAGS
++	- allow compilation without ndbhash
++
++2000-03-25  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/Makefile, Attic/narray.c, Attic/nhash.c, Attic/nlist.c, include/trurl/narray.h, include/trurl/nlist.h, include/trurl/nstr.h, trurl_cmpf.c, trurl_internal.h:
++	- added n_list_map_arg()
++	- added default compare function for array and list
++	- bugfix in n_array_bsearch()
++
++2000-03-20  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/Makefile, Attic/xmalloc.h: - works with rpmlib.h
++	- install: target
++
++2000-03-17  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/nlist.c: - fix bug in n_list_remove_ex()
++
++2000-01-18  Pawe³ Ko³odziej  <pawelk@pld.org.pl>
++
++	* Attic/narray.c: Bug in qsort? Uses isort
++
++1999-11-06  Artur Frysiak  <wiget@pld.org.pl>
++
++	* .cvsignore, Makefile.am: New file.
++
++1999-10-17  Pawe³ Gajda  <mis@pld.org.pl>
++
++	* Attic/Makefile, Attic/README.PL, Attic/ndbhash.c, Attic/xmalloc.h:
++	Detekcja wersji glibc na podstawie __GLIBC_MINOR__
++
++1999-09-17  Jarek Wo³oszyn  <yossa@pld.org.pl>
++
++	* Attic/Makefile: gentocf - moje ostatnie zmiany
++	main - przenioslem win.* i scrmsgs.* do newt-addon
++	trurlib - glibc 2.1
++
++1999-07-22  Artur Frysiak  <wiget@pld.org.pl>
++
++	* Attic/CHANGES.PL, Attic/Makefile, Attic/README.PL, Attic/VERSION, Attic/hash-string.h, Attic/narray.c, Attic/ndbhash.c, Attic/ndbhash.h, Attic/nhash.c, Attic/nlist.c, Attic/test_dbhash.c, Attic/trurl_die.c, Attic/xmalloc.h, include/trurl/narray.h, include/trurl/nassert.h, include/trurl/nhash.h, include/trurl/nlist.h, include/trurl/nstr.h, include/trurl/tfn_types.h, include/trurl/trurl.h, nassert.c, nstr_concat.c, nstr_len.c, nstr_tok.c, nstr_tokl.c, nstring.c, test_array.c, test_common.c, test_hash.c, test_list.c, test_nstr.c, xmalloc.c:
++	New file.
++
++	* TODO.PL, nstring.h: pozbierane z diony
++
+diff -urN poldek-0.20.org/trurlib/include/trurl/narray.h poldek-0.20/trurlib/include/trurl/narray.h
+--- poldek-0.20.org/trurlib/include/trurl/narray.h	2005-10-17 23:19:39.000000000 +0200
++++ poldek-0.20/trurlib/include/trurl/narray.h	2005-11-06 20:29:52.000000000 +0100
+@@ -1,7 +1,7 @@
+ /* 
+   TRURLib
+   Dynamic array of void*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifndef TRURL_ARRAY_H
+@@ -57,9 +57,11 @@
+ }
+ #endif
+ #define n_array_ctl_growth(arr, inctype)  ((void) 0) /* backward API compat */
+-#define n_array_has_free_fn(arr) (arr)->free_fn
++#define n_array_has_free_fn(arr) (arr)->free_fn /* -"- */
+ 
++#define n_array_ctl_get_freefn(arr) (arr)->free_fn
+ tn_fn_free n_array_ctl_set_freefn(tn_array *arr, tn_fn_free free_fn);
++
+ tn_fn_cmp n_array_ctl_set_cmpfn(tn_array *arr, tn_fn_cmp cmp_fn);
+ tn_fn_cmp n_array_ctl_get_cmpfn(tn_array *arr);
+ 
+diff -urN poldek-0.20.org/trurlib/mkarch.sh poldek-0.20/trurlib/mkarch.sh
+--- poldek-0.20.org/trurlib/mkarch.sh	1970-01-01 01:00:00.000000000 +0100
++++ poldek-0.20/trurlib/mkarch.sh	2000-10-29 22:12:21.000000000 +0100
+@@ -0,0 +1,9 @@
++#! /bin/sh
++CPDIR=/z
++make -f Makefile.extra mclean
++
++if [ -w $CPDIR ]; then
++    make -f Makefile.extra backup cparch=1 backupdir=$CPDIR
++else 
++    make -f Makefile.extra backup
++fi
+diff -urN poldek-0.20.org/trurlib/nbuf.c poldek-0.20/trurlib/nbuf.c
+--- poldek-0.20.org/trurlib/nbuf.c	2005-10-26 10:11:00.000000000 +0200
++++ poldek-0.20/trurlib/nbuf.c	2005-11-06 20:32:22.000000000 +0100
+@@ -20,7 +20,7 @@
+  */
+ 
+ /*
+-   $Id$
++   $Id$
+  */
+ 
+ #include <stdlib.h>
+diff -urN poldek-0.20.org/trurlib/nstring.c poldek-0.20/trurlib/nstring.c
+--- poldek-0.20.org/trurlib/nstring.c	1970-01-01 01:00:00.000000000 +0100
++++ poldek-0.20/trurlib/nstring.c	2003-12-30 19:07:57.000000000 +0100
+@@ -0,0 +1,234 @@
++/*
++   Not finished 
++ */
++#include <stdarg.h>
++#include <stdlib.h>
++#include <string.h>
++
++#ifdef USE_N_ASSERT
++#include "nassert.h"
++#else
++#include <assert.h>
++#define n_assert(expr) assert(expr)
++#endif
++
++#include "nstring.h"
++
++static char *vconcat(const char *s, va_list * ap);
++static char *concat(const char *s,...);
++
++struct trurl_string {
++    int16_t   _refcnt;
++    int16_t   len;
++    char      s[0];
++};
++
++
++tn_string n_string_construct(char *s)
++{
++    int len;
++    tn_string str;
++
++    len = strlen(s);
++    if (len > 0) {
++	str.s = n_strdup(s);
++	str.len = len;
++	str.size = len + 1;
++    }
++    return str;
++}
++
++
++static tn_string *n_string_generic_new(char *s)
++{
++    int len;
++    tn_string *str;
++
++    if ((str = n_malloc(sizeof(*str))) == NULL)
++	return NULL;
++
++    len = strlen(s);
++    if (len > 0) {
++	str->s = s;
++	str->len = len;
++	str->size = len + 1;
++    } else {
++	str->s = NULL;
++	str->len = 0;
++	str->size = 0;
++
++    }
++
++    return str;
++}
++
++
++tn_string *n_string_new(char *s)
++{
++    return n_string_generic_new(n_strdup(s));
++}
++
++
++tn_string *n_string_vnew(const char *s,...)
++{
++    register char *t;
++    va_list ap;
++
++    va_start(ap, s);
++    t = vconcat(s, ap);
++    va_end(ap);
++
++    return n_string_generic_new(t);
++}
++
++
++/* str = '' */
++tn_string *n_string_clean(tn_string * str)
++{
++    if (str->s != NULL)
++	free(str->s);
++    str->size = str->len = 0;
++
++    return str;
++}
++
++
++void n_string_free(tn_string * str)
++{
++    n_string_clean(str);
++    free(str);
++}
++
++
++static tn_string *n_string_grow(tn_string * str, size_t size)
++{
++
++    if (str->len + size >= str->size) {
++	char *s;
++	if ((s = n_realloc(str->s, str->size + size)) == NULL)
++	    return NULL;
++
++	str->s = s;
++	str->size += size;
++    }
++    return str;
++}
++
++
++const char *n_string_ptr(const tn_string * str)
++{
++    return str->s;
++}
++
++
++tn_string *n_string_dup(const tn_string * str)
++{
++    return n_string_new(str->s);
++}
++
++
++/* s += "aaaaa" + "bbbbbbb" + "ccccccc"  */
++tn_string *n_string_append_ptr(tn_string * str, const char *src)
++{
++    register int len;
++    register char *p;
++
++    if (str->s == src) {	/* self */
++	len = str->len;
++	strcpy(p, src);
++
++    } else {
++	len = strlen(src);
++	p = (char *) src;
++    }
++
++    n_string_grow(str, len);
++    strncpy(str->s + str->len, p, len);
++    str->len += len;
++
++    return str;
++}
++
++/* s += s2 */
++tn_string *n_string_append(tn_string * str, const tn_string * src)
++{
++    return n_string_append_ptr(str, n_string_ptr(src));
++}
++
++/* s = "a" + s */
++tn_string *n_string_prepend_ptr(tn_string * str, const char *src)
++{
++    int len;
++
++    len = strlen(src);
++    n_string_grow(str, len);
++
++    memmove(str->s + str->len, src, len);
++    str->len += len;
++    return str;
++}
++
++
++/* s = s1 + s2 */
++tn_string *n_string_add(const tn_string * str1, const tn_string * str2)
++{
++    char *s;
++    s = concat(n_string_ptr(str1), n_string_ptr(str2), NULL);
++
++    return n_string_generic_new(s);
++}
++
++
++int n_string_cmp(const tn_string * str1, const tn_string * str2)
++{
++    return strcmp(str1->s, str2->s);
++}
++
++int n_string_eq(const tn_string * str1, const tn_string * str2)
++{
++    return strcmp(str1->s, str2->s) == 0;
++}
++
++
++
++
++static char *concat(const char *s,...)
++{
++    char *t;
++    va_list ap;
++
++    va_start(ap, s);
++    t = vconcat(s, ap);
++    va_end(ap);
++
++    return t;
++}
++
++
++static char *vconcat(const char *s, va_list * ap)
++{
++    int len;
++    char *p, *rstr;
++    va_list *tmp_ap;
++
++    len = strlen(s);
++
++    tmp_ap = ap;
++
++    while ((p = va_arg(ap, char *)) != NULL) {	/* calculate length of args */
++	len += strlen(p);
++    }
++
++    if ((rstr = n_malloc(len + 1)) == NULL)
++	return NULL;
++
++    strcpy(rstr, s);
++
++    ap = tmp_ap;
++
++    while ((p = va_arg(ap, char *)) != NULL) {
++	strcat(rstr, p);
++    }
++
++    return rstr;
++}
+diff -urN poldek-0.20.org/trurlib/nstring.h poldek-0.20/trurlib/nstring.h
+--- poldek-0.20.org/trurlib/nstring.h	1970-01-01 01:00:00.000000000 +0100
++++ poldek-0.20/trurlib/nstring.h	1999-07-22 17:29:29.000000000 +0200
+@@ -0,0 +1,42 @@
++/* 
++  TRURLib
++
++  $Id$
++*/
++#ifndef __TN_STRING_H
++#define __TN_STRING_H
++
++typedef struct string tn_string;
++
++tn_string n_string_construct(char *s);
++tn_string *n_string_new(char *s);
++tn_string *n_string_newv(const char *s, ...);
++void n_string_free(tn_string *str);
++
++/* str = '' */
++tn_string *n_string_clean(tn_string *str);
++const char *n_string_ptr(const tn_string *str);
++
++/* s = new String(s2) */
++tn_string *n_string_dup(const tn_string *str);
++
++/* s += "aaaaa" */
++tn_string *n_string_append_ptr(tn_string *str, const char *src);
++
++/* s = "a" + s */
++tn_string *n_string_prepend_ptr(tn_string *str, const char *src);
++
++
++/* s += s2 */
++tn_string *n_string_append(tn_string *str, const tn_string *src);
++
++
++/* s = s1 + s2 */
++tn_string *n_string_add(const tn_string *str1, const tn_string *str2);
++
++
++int n_string_cmp(const tn_string *str1, const tn_string *str2);
++int n_string_eq(const tn_string *str1, const tn_string *str2);
++
++
++#endif
+diff -urN poldek-0.20.org/trurlib/TODO.PL poldek-0.20/trurlib/TODO.PL
+--- poldek-0.20.org/trurlib/TODO.PL	1970-01-01 01:00:00.000000000 +0100
++++ poldek-0.20/trurlib/TODO.PL	1999-07-22 17:29:29.000000000 +0200
+@@ -0,0 +1,7 @@
++* nlist 
++   - obs³uga listy posortowanej
++   - lista 2-kierunkowa, jako opcja 
++
++* nstring 
++   - dokoñczenie (odpowiedniki str* z libc)  
++
 diff -urN poldek-0.20.org/uninstall.c poldek-0.20/uninstall.c
 --- poldek-0.20.org/uninstall.c	2005-10-12 21:28:02.000000000 +0200
-+++ poldek-0.20/uninstall.c	2006-04-02 21:10:36.000000000 +0200
++++ poldek-0.20/uninstall.c	2006-07-26 20:25:54.343335000 +0200
 @@ -1,5 +1,5 @@
  /*
 -  Copyright (C) 2000 - 2005 Pawel A. Gajda <mis@k2.net.pl>
@@ -9910,7 +10432,7 @@ diff -urN poldek-0.20.org/uninstall.c poldek-0.20/uninstall.c
      
 diff -urN poldek-0.20.org/vfcompr poldek-0.20/vfcompr
 --- poldek-0.20.org/vfcompr	2004-09-21 01:47:00.000000000 +0200
-+++ poldek-0.20/vfcompr	2005-11-02 21:25:37.000000000 +0100
++++ poldek-0.20/vfcompr	2006-07-26 20:25:54.343335000 +0200
 @@ -1,5 +1,8 @@
  #! /bin/sh
 -# $Id$
@@ -9930,43 +10452,9 @@ diff -urN poldek-0.20.org/vfcompr poldek-0.20/vfcompr
      #echo "$md5file"
      if [ -f $dest -a -f "$md5file" ]; then
          #echo md5sum --check "$md5file"
-diff -urN poldek-0.20.org/vfile/.cvsignore poldek-0.20/vfile/.cvsignore
---- poldek-0.20.org/vfile/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/.cvsignore	2004-09-24 20:55:50.000000000 +0200
-@@ -0,0 +1,30 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+sample
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+ttest
-+*.lo
-+.libs
-+*.la
-+vfget
-+test_[a-z]*
 diff -urN poldek-0.20.org/vfile/extcompr.c poldek-0.20/vfile/extcompr.c
 --- poldek-0.20.org/vfile/extcompr.c	2005-05-15 17:46:59.000000000 +0200
-+++ poldek-0.20/vfile/extcompr.c	2005-11-02 21:10:36.000000000 +0100
++++ poldek-0.20/vfile/extcompr.c	2006-07-26 20:25:54.343335000 +0200
 @@ -10,7 +10,7 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -9987,7 +10475,7 @@ diff -urN poldek-0.20.org/vfile/extcompr.c poldek-0.20/vfile/extcompr.c
  }
 diff -urN poldek-0.20.org/vfile/fetch.c poldek-0.20/vfile/fetch.c
 --- poldek-0.20.org/vfile/fetch.c	2005-07-16 13:56:12.000000000 +0200
-+++ poldek-0.20/vfile/fetch.c	2005-11-02 21:40:26.000000000 +0100
++++ poldek-0.20/vfile/fetch.c	2006-07-26 20:25:54.351335500 +0200
 @@ -10,7 +10,7 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -10016,7 +10504,7 @@ diff -urN poldek-0.20.org/vfile/fetch.c poldek-0.20/vfile/fetch.c
      p_st_init(&pst);
 diff -urN poldek-0.20.org/vfile/foo.sh poldek-0.20/vfile/foo.sh
 --- poldek-0.20.org/vfile/foo.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/foo.sh	2004-06-12 17:26:36.000000000 +0200
++++ poldek-0.20/vfile/foo.sh	2006-07-26 20:25:54.351335500 +0200
 @@ -0,0 +1,7 @@
 +#!/bin/sh 
 +
@@ -10027,7 +10515,7 @@ diff -urN poldek-0.20.org/vfile/foo.sh poldek-0.20/vfile/foo.sh
 +echo "foo: exit!"
 diff -urN poldek-0.20.org/vfile/Makefile.am poldek-0.20/vfile/Makefile.am
 --- poldek-0.20.org/vfile/Makefile.am	2005-05-15 17:16:13.000000000 +0200
-+++ poldek-0.20/vfile/Makefile.am	2005-11-02 21:07:00.000000000 +0100
++++ poldek-0.20/vfile/Makefile.am	2006-07-26 20:25:54.351335500 +0200
 @@ -1,14 +1,9 @@
 -# $Id$
 +# $Id$
@@ -10080,7 +10568,7 @@ diff -urN poldek-0.20.org/vfile/Makefile.am poldek-0.20/vfile/Makefile.am
  	rm -rf $(distdir)/.deps
 diff -urN poldek-0.20.org/vfile/misc.c poldek-0.20/vfile/misc.c
 --- poldek-0.20.org/vfile/misc.c	2005-07-17 19:07:40.000000000 +0200
-+++ poldek-0.20/vfile/misc.c	2005-11-02 20:45:40.000000000 +0100
++++ poldek-0.20/vfile/misc.c	2006-07-26 20:25:54.359336000 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -10116,7 +10604,7 @@ diff -urN poldek-0.20.org/vfile/misc.c poldek-0.20/vfile/misc.c
                      vf_logerr("%s:%c non alphanumeric characters not allowed\n",
 diff -urN poldek-0.20.org/vfile/sample.c poldek-0.20/vfile/sample.c
 --- poldek-0.20.org/vfile/sample.c	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/sample.c	2005-11-02 21:40:26.000000000 +0100
++++ poldek-0.20/vfile/sample.c	2006-07-26 20:25:54.359336000 +0200
 @@ -0,0 +1,72 @@
 +#include <stdio.h>
 +#include <stdlib.h>
@@ -10192,7 +10680,7 @@ diff -urN poldek-0.20.org/vfile/sample.c poldek-0.20/vfile/sample.c
 +}
 diff -urN poldek-0.20.org/vfile/test_retr.sh poldek-0.20/vfile/test_retr.sh
 --- poldek-0.20.org/vfile/test_retr.sh	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/test_retr.sh	2003-01-27 00:02:15.000000000 +0100
++++ poldek-0.20/vfile/test_retr.sh	2006-07-26 20:25:54.359336000 +0200
 @@ -0,0 +1,61 @@
 +#! /bin/sh
 +
@@ -10255,23 +10743,9 @@ diff -urN poldek-0.20.org/vfile/test_retr.sh poldek-0.20/vfile/test_retr.sh
 +
 +run_test "01" "do_test" $HTTP_DIR $file http://localhost/tmp
 +#run_test "02" "do_test" $FTP_DIR $file ftp://localhost/incoming/tmp
-diff -urN poldek-0.20.org/vfile/tests/.cvsignore poldek-0.20/vfile/tests/.cvsignore
---- poldek-0.20.org/vfile/tests/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/tests/.cvsignore	2005-11-02 20:49:06.000000000 +0100
-@@ -0,0 +1,10 @@
-+Cellar
-+aclocal.m4
-+Makefile.in
-+Makefile
-+*.lo
-+.libs
-+*.la
-+tmp.*
-+.deps
-+test_vfile
 diff -urN poldek-0.20.org/vfile/tests/httpd.py poldek-0.20/vfile/tests/httpd.py
 --- poldek-0.20.org/vfile/tests/httpd.py	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/tests/httpd.py	2005-11-02 20:49:06.000000000 +0100
++++ poldek-0.20/vfile/tests/httpd.py	2006-07-26 20:25:54.367336500 +0200
 @@ -0,0 +1,12 @@
 +#!/usr/bin/python
 +
@@ -10287,7 +10761,7 @@ diff -urN poldek-0.20.org/vfile/tests/httpd.py poldek-0.20/vfile/tests/httpd.py
 +httpd.serve_forever()
 diff -urN poldek-0.20.org/vfile/tests/Makefile.am poldek-0.20/vfile/tests/Makefile.am
 --- poldek-0.20.org/vfile/tests/Makefile.am	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/tests/Makefile.am	2005-11-02 20:49:06.000000000 +0100
++++ poldek-0.20/vfile/tests/Makefile.am	2006-07-26 20:25:54.367336500 +0200
 @@ -0,0 +1,35 @@
 +
 +
@@ -10326,7 +10800,7 @@ diff -urN poldek-0.20.org/vfile/tests/Makefile.am poldek-0.20/vfile/tests/Makefi
 +
 diff -urN poldek-0.20.org/vfile/tests/test_file.c poldek-0.20/vfile/tests/test_file.c
 --- poldek-0.20.org/vfile/tests/test_file.c	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/tests/test_file.c	2005-11-02 20:49:06.000000000 +0100
++++ poldek-0.20/vfile/tests/test_file.c	2006-07-26 20:25:54.367336500 +0200
 @@ -0,0 +1,38 @@
 +#include "test.h"
 +
@@ -10368,7 +10842,7 @@ diff -urN poldek-0.20.org/vfile/tests/test_file.c poldek-0.20/vfile/tests/test_f
 +};
 diff -urN poldek-0.20.org/vfile/tests/test.h poldek-0.20/vfile/tests/test.h
 --- poldek-0.20.org/vfile/tests/test.h	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/tests/test.h	2005-11-02 20:49:06.000000000 +0100
++++ poldek-0.20/vfile/tests/test.h	2006-07-26 20:25:54.367336500 +0200
 @@ -0,0 +1,29 @@
 +#ifndef VFILE_TEST_H
 +#define VFILE_TEST_H
@@ -10401,7 +10875,7 @@ diff -urN poldek-0.20.org/vfile/tests/test.h poldek-0.20/vfile/tests/test.h
 +#endif
 diff -urN poldek-0.20.org/vfile/tests/test_misc.c poldek-0.20/vfile/tests/test_misc.c
 --- poldek-0.20.org/vfile/tests/test_misc.c	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/tests/test_misc.c	2005-11-06 20:33:39.000000000 +0100
++++ poldek-0.20/vfile/tests/test_misc.c	2006-07-26 20:25:54.371336750 +0200
 @@ -0,0 +1,39 @@
 +#include "test.h"
 +
@@ -10444,7 +10918,7 @@ diff -urN poldek-0.20.org/vfile/tests/test_misc.c poldek-0.20/vfile/tests/test_m
 +};
 diff -urN poldek-0.20.org/vfile/tests/test_vfile.c poldek-0.20/vfile/tests/test_vfile.c
 --- poldek-0.20.org/vfile/tests/test_vfile.c	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/tests/test_vfile.c	2005-11-02 20:49:06.000000000 +0100
++++ poldek-0.20/vfile/tests/test_vfile.c	2006-07-26 20:25:54.379337250 +0200
 @@ -0,0 +1,90 @@
 +/*
 +  $Id$
@@ -10538,7 +11012,7 @@ diff -urN poldek-0.20.org/vfile/tests/test_vfile.c poldek-0.20/vfile/tests/test_
 +
 diff -urN poldek-0.20.org/vfile/ttest.c poldek-0.20/vfile/ttest.c
 --- poldek-0.20.org/vfile/ttest.c	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/ttest.c	2003-01-28 01:00:57.000000000 +0100
++++ poldek-0.20/vfile/ttest.c	2006-07-26 20:25:54.379337250 +0200
 @@ -0,0 +1,40 @@
 +#include <stdio.h>
 +#include <stdlib.h>
@@ -10582,7 +11056,7 @@ diff -urN poldek-0.20.org/vfile/ttest.c poldek-0.20/vfile/ttest.c
 +}
 diff -urN poldek-0.20.org/vfile/vfetch.c poldek-0.20/vfile/vfetch.c
 --- poldek-0.20.org/vfile/vfetch.c	2005-09-11 15:07:07.000000000 +0200
-+++ poldek-0.20/vfile/vfetch.c	2006-07-09 16:46:45.000000000 +0200
++++ poldek-0.20/vfile/vfetch.c	2006-07-26 20:25:54.379337250 +0200
 @@ -11,7 +11,7 @@
  */
  
@@ -10612,41 +11086,9 @@ diff -urN poldek-0.20.org/vfile/vfetch.c poldek-0.20/vfile/vfetch.c
          }
      }
      if (req)
-diff -urN poldek-0.20.org/vfile/vfff/.cvsignore poldek-0.20/vfile/vfff/.cvsignore
---- poldek-0.20.org/vfile/vfff/.cvsignore	1970-01-01 01:00:00.000000000 +0100
-+++ poldek-0.20/vfile/vfff/.cvsignore	2003-01-27 00:02:17.000000000 +0100
-@@ -0,0 +1,28 @@
-+Cellar
-+trurlib
-+aclocal.m4
-+Makefile.in
-+Makefile
-+configure
-+config.log
-+config.cache
-+config.status
-+stamp-h.in
-+config.h
-+config.h.in
-+stamp-h
-+missing
-+mkinstalldirs
-+install-sh
-+stamp-h
-+stamp-h.in
-+sample
-+.deps
-+poldek*
-+rpmvercmp
-+ccmalloc-log
-+depcomp
-+ttest
-+*.lo
-+.libs
-+*.la
 diff -urN poldek-0.20.org/vfile/vfff/vfff.c poldek-0.20/vfile/vfff/vfff.c
 --- poldek-0.20.org/vfile/vfff/vfff.c	2005-05-15 14:50:30.000000000 +0200
-+++ poldek-0.20/vfile/vfff/vfff.c	2005-11-08 20:36:38.000000000 +0100
++++ poldek-0.20/vfile/vfff/vfff.c	2006-07-26 20:25:54.387337750 +0200
 @@ -1,5 +1,5 @@
  /* 
 -  Copyright (C) 2002 Pawel A. Gajda <mis@k2.net.pl>
@@ -10733,7 +11175,7 @@ diff -urN poldek-0.20.org/vfile/vfff/vfff.c poldek-0.20/vfile/vfff/vfff.c
  
 diff -urN poldek-0.20.org/vfile/vfff/vfff.h poldek-0.20/vfile/vfff/vfff.h
 --- poldek-0.20.org/vfile/vfff/vfff.h	2005-05-15 17:47:05.000000000 +0200
-+++ poldek-0.20/vfile/vfff/vfff.h	2005-11-08 20:16:25.000000000 +0100
++++ poldek-0.20/vfile/vfff/vfff.h	2006-07-26 20:25:54.387337750 +0200
 @@ -1,4 +1,4 @@
 -/* $Id$ */
 +/* $Id$ */
@@ -10751,7 +11193,7 @@ diff -urN poldek-0.20.org/vfile/vfff/vfff.h poldek-0.20/vfile/vfff/vfff.h
  struct vcn *vcn_new(int proto, const char *host, int port,
 diff -urN poldek-0.20.org/vfile/vfile.c poldek-0.20/vfile/vfile.c
 --- poldek-0.20.org/vfile/vfile.c	2005-10-07 21:00:19.000000000 +0200
-+++ poldek-0.20/vfile/vfile.c	2006-07-09 16:46:45.000000000 +0200
++++ poldek-0.20/vfile/vfile.c	2006-07-26 20:25:54.387337750 +0200
 @@ -11,7 +11,7 @@
  */
  
