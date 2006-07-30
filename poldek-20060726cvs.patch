@@ -11230,3 +11230,14 @@ diff -urN poldek-0.20.org/vfile/vfile.c poldek-0.20/vfile/vfile.c
              break;
              
          case VFILE_CONF_SIGINT_REACHED:
+--- poldek.org/vfile//Makefile.am.org	2006-07-30 12:30:57.073506000 +0000
++++ poldek/vfile//Makefile.am	2006-07-30 12:29:25.715796500 +0000
+@@ -2,7 +2,7 @@
+ 
+ SUBDIRS   = vfff
+ 
+-LIBS = -ltrurl -lz @INTLLIBS@
++LIBS = -ltrurl -lz -lutil @INTLLIBS@
+ 
+ INCLUDES = @TRURL_INCLUDE@ -I$(top_srcdir)
+ AM_CFLAGS = @AM_CFLAGS@
