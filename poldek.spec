@@ -46,6 +46,7 @@ BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
+BuildRequires:	sed >= 4.0
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
@@ -163,6 +164,7 @@ Modu³y jêzyka Python dla poldka.
 %ifarch %{x8664}
 %patch10 -p1
 %endif
+sed '/libvfile_la_LIBADD/s/$/ -lutil/' -i vfile/Makefile.am
 
 %build
 %{__autopoint}
