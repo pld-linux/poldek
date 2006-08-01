@@ -30,6 +30,7 @@ Patch7:		%{name}-bug-5774.patch
 Patch8:		%{name}-cli-hist.patch
 Patch9:		%{name}-vserver-packages.patch
 Patch10:	%{name}-multilib.patch
+Patch11:	%{name}-as_needed-fix.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -164,7 +165,7 @@ Modu³y jêzyka Python dla poldka.
 %ifarch %{x8664}
 %patch10 -p1
 %endif
-sed '/libvfile_la_LIBADD/s/$/ -lutil/' -i vfile/Makefile.am
+%patch11 -p1
 
 %build
 %{__autopoint}
