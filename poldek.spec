@@ -168,11 +168,22 @@ Modu³y jêzyka Python dla poldka.
 %patch11 -p1
 
 %build
+%{__libtoolize}
 %{__autopoint}
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
-cp -f config.sub trurlib
+cd trurlib
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
+cd ../tndb
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
+cd ..
 
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
