@@ -11,7 +11,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	9.3
+Release:	9.4
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -153,7 +153,9 @@ Modu³y jêzyka Python dla poldka.
 %patch2 -p0
 %patch5 -p1
 %patch6 -p1
+%ifarch %{x8664}
 %patch7 -p1
+%endif
 
 %build
 %{__autopoint}
