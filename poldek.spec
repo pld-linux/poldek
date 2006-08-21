@@ -12,7 +12,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20.1
-Release:	0.%{snap}
+Release:	0.%{snap}.1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -27,6 +27,7 @@ Source3:	%{name}-aliases.conf
 Patch5:		%{name}-vserver-packages.patch
 Patch6:		%{name}-config.patch
 Patch7:		%{name}-multilib.patch
+Patch8:		%{name}-build.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -151,6 +152,7 @@ Modu³y jêzyka Python dla poldka.
 %ifarch %{x8664}
 %patch7 -p1
 %endif
+%patch8 -p1
 
 %build
 %{__autopoint}
