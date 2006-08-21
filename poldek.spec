@@ -7,15 +7,16 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.3
+%define snap 20060821.13
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.20
-Release:	9.4
+Version:	0.20.1
+Release:	0.%{snap}
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
-# Source0-md5:	61c0c03ee4a9de36339fc943b6901266
+Source0:	http://poldek.pld-linux.org/download/%{?snap:snapshots/}%{name}-%{version}%{?snap:-cvs%{snap}}.tar.bz2
+# Source0-md5:	6b8da9d201e5b1a688a3f699f5b0c879
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
@@ -23,10 +24,6 @@ Source3:	%{name}-aliases.conf
 #PatchX:	%{name}-etc_dir.patch
 # drop?
 #PatchX:	%{name}-retr_term.patch
-# is still needed?
-#Patch2:	%{name}-simplestatic.patch
-Patch0:		%{name}-20060726cvs.patch
-Patch2:		%{name}-obsoletes.patch
 Patch5:		%{name}-vserver-packages.patch
 Patch6:		%{name}-config.patch
 Patch7:		%{name}-multilib.patch
@@ -148,9 +145,7 @@ Python modules for poldek.
 Modu³y jêzyka Python dla poldka.
 
 %prep
-%setup -q
-%patch0 -p1
-%patch2 -p0
+%setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
 %patch5 -p1
 %patch6 -p1
 %ifarch %{x8664}
