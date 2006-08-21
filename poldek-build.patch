@@ -1,0 +1,12 @@
+diff -urN poldek-0.20.1-cvs20060821.13.org/vfile/Makefile.am poldek-0.20.1-cvs20060821.13/vfile/Makefile.am
+--- poldek-0.20.1-cvs20060821.13.org/vfile/Makefile.am	2006-08-21 11:17:39.000000000 +0000
++++ poldek-0.20.1-cvs20060821.13/vfile/Makefile.am	2006-08-21 12:22:20.495964000 +0000
+@@ -3,7 +3,7 @@
+ SUBDIRS   = vfff
+ DIST_SUBDIRS = $(SUBDIRS) tests
+ 
+-LIBS = -ltrurl -lz @INTLLIBS@
++LIBS = -ltrurl -lz -lutil @INTLLIBS@
+ 
+ INCLUDES = @TRURL_INCLUDE@ -I$(top_srcdir)
+ AM_CFLAGS = @AM_CFLAGS@
