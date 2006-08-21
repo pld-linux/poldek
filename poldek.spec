@@ -16,7 +16,7 @@ Release:	0.%{snap}.1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	59459a30aebf833b65f731c6b0f76782
+# Source0-md5:	09cc0e2eeb807c0bdcd8c1024576b9a5
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
