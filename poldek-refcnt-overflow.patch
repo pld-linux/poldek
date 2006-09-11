@@ -1,0 +1,65 @@
+Index: pkgmark.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkgmark.c,v
+retrieving revision 1.7
+diff -u -r1.7 pkgmark.c
+--- pkgmark.c	12 Jun 2005 20:17:13 -0000	1.7
++++ pkgmark.c	11 Sep 2006 21:35:51 -0000
+@@ -145,6 +145,7 @@
+     const char *id;
+     
+     id = package_id(idbuf, sizeof(idbuf), pmark, pkg);
++    n_assert(id);
+ 
+     if ((pkg_mark = n_hash_get(pmark->ht, id)))
+         return pkg_mark->flags & flag;
+Index: pkg.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkg.c,v
+retrieving revision 1.111
+diff -u -r1.111 pkg.c
+--- pkg.c	20 Aug 2006 21:13:19 -0000	1.111
++++ pkg.c	11 Sep 2006 21:35:53 -0000
+@@ -1380,7 +1380,8 @@
+              pkg->na ? pkg->na->_refcnt : -1,
+              pkg->_refcnt, &pkg->_refcnt);
+     }
+-#endif    
++#endif
++    n_assert(pkg->_refcnt < INT16_MAX - 1);
+     pkg->_refcnt++;
+     return pkg;
+ }
+Index: pkgset-req.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkgset-req.c,v
+retrieving revision 1.45
+diff -u -r1.45 pkgset-req.c
+--- pkgset-req.c	20 Aug 2006 21:13:19 -0000	1.45
++++ pkgset-req.c	11 Sep 2006 21:35:54 -0000
+@@ -332,13 +332,24 @@
+         } else {                /* n is 0 */
+             tn_array *pkgs;
+             if ((pkgs = pkgset_search_reqdir(ps, NULL, reqname))) {
++                int i;
+                 n = 0;
++
++                for (i=0; i < n_array_size(pkgs); i++) {
++                    pkgsbuf[n++] = n_array_nth(pkgs, i);
++                    if (n == pkgsbuf_size)
++                        break;
++                }
++
++/* XXX: TOFIX: pkgsbuf is not free()d by caller, so pkg _refcnts must
++   be decreased here */
++#if 0  
+                 while (n_array_size(pkgs)) {
+                     pkgsbuf[n++] = n_array_shift(pkgs);
+                     if (n == pkgsbuf_size)
+                         break;
+                 }
+-                
++#endif                
+                 *npkgs = n;
+                 if (n) {
+                     matched = 1;
