@@ -6,7 +6,7 @@
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.3.27-1
-%define	ver_rpm	4.4.3
+%define	ver_rpm	4.4.7
 %define snap 20060823.21
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
