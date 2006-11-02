@@ -28,6 +28,7 @@ Patch1: 	%{name}-refcnt-overflow.patch
 Patch5:		%{name}-vserver-packages.patch
 Patch6:		%{name}-config.patch
 Patch7:		%{name}-multilib.patch
+Patch8:		%{name}-deprecated.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -153,6 +154,7 @@ Modu³y jêzyka Python dla poldka.
 %ifarch %{x8664}
 %patch7 -p1
 %endif
+%patch8 -p1
 
 %build
 %{__autopoint}
