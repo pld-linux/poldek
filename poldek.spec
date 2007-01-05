@@ -12,7 +12,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20.1
-Release:	0.%{snap}.6
+Release:	0.20070105.1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -20,14 +20,10 @@ Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
-Patch1: 	%{name}-refcnt-overflow.patch
-# drop?
-#PatchX:	%{name}-etc_dir.patch
-# drop?
-#PatchX:	%{name}-retr_term.patch
-Patch5:		%{name}-vserver-packages.patch
-Patch6:		%{name}-config.patch
-Patch7:		%{name}-multilib.patch
+Patch1:		%{name}-vserver-packages.patch
+Patch2:		%{name}-config.patch
+Patch3:		%{name}-multilib.patch
+Patch4:		%{name}-cvs20070105.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -147,12 +143,12 @@ Modu³y jêzyka Python dla poldka.
 
 %prep
 %setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
-%patch1 -p0
-%patch5 -p1
-%patch6 -p1
+%patch1 -p1
+%patch2 -p1
 %ifarch %{x8664}
-%patch7 -p1
+%patch3 -p1
 %endif
+%patch4 -p0
 
 %build
 %{__autopoint}
