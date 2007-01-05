@@ -1,0 +1,1023 @@
+Index: configure.in
+===================================================================
+RCS file: /cvsroot/poldek/poldek/configure.in,v
+retrieving revision 1.125
+retrieving revision 1.126
+diff -u -u -r1.125 -r1.126
+--- configure.in	21 Aug 2006 11:20:12 -0000	1.125
++++ configure.in	17 Dec 2006 22:37:05 -0000	1.126
+@@ -1,5 +1,5 @@
+ dnl Process this file with autoconf to produce a configure script.
+-dnl $Id$
++dnl $Id$
+ 
+ AC_INIT(poldek,0.20.1)
+ AC_CONFIG_SRCDIR([capreq.c])
+@@ -273,7 +273,6 @@
+ 		[$DBLIB -lrpmdb]),
+ 	    [$DBLIB])
+ 
+-AC_CHECK_FUNCS(rpmMachineScore,,[ AC_MSG_ERROR(["rpmlib not found"])])
+ AC_CHECK_FUNCS(rpmlog rpmCheckSig rpmVerifySignature)
+ 
+ dnl rpm 4.2?
+@@ -297,11 +296,18 @@
+                [ AC_CHECK_FUNCS(rpmGetRpmlibProvides,,
+           	 [AC_MSG_WARN(["poldek will not work fine with rpmlib\(...\) capabilities"])],
+           	 [$CONF_IN_LDFLAGS])], [$CONF_IN_LDFLAGS])
+-
++dnl rpm 4.4.6
+ AC_CHECK_FUNCS(rpmdsUname)
+ AC_CHECK_FUNCS(rpmdsSysinfo)
+ AC_CHECK_FUNCS(rpmdsGetconf)
+ AC_CHECK_FUNCS(rpmdsCpuinfo)
++
++dnl rpm 4.4.7
++dnl  - killed rpmMachineScore and rpmGetVar
++AC_CHECK_FUNCS(rpmMachineScore)
++AC_CHECK_FUNCS(rpmGetVar)
++dnl  - new _rpmvercmp()
++AC_CHECK_FUNCS(_rpmvercmp)
+ 
+ 
+ 
+Index: pkg.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkg.c,v
+retrieving revision 1.111
+retrieving revision 1.112
+diff -u -u -r1.111 -r1.112
+--- pkg.c	20 Aug 2006 21:13:19 -0000	1.111
++++ pkg.c	11 Sep 2006 21:47:45 -0000	1.112
+@@ -15,7 +15,7 @@
+  */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -1380,7 +1380,8 @@
+              pkg->na ? pkg->na->_refcnt : -1,
+              pkg->_refcnt, &pkg->_refcnt);
+     }
+-#endif    
++#endif
++    n_assert(pkg->_refcnt < INT16_MAX - 1);
+     pkg->_refcnt++;
+     return pkg;
+ }
+Index: pkgmark.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkgmark.c,v
+retrieving revision 1.7
+retrieving revision 1.8
+diff -u -u -r1.7 -r1.8
+--- pkgmark.c	12 Jun 2005 20:17:13 -0000	1.7
++++ pkgmark.c	11 Sep 2006 21:47:45 -0000	1.8
+@@ -12,7 +12,7 @@
+ 
+ /*
+   
+-  $Id$
++  $Id$
+ */
+ 
+ #include <ctype.h>
+@@ -145,6 +145,7 @@
+     const char *id;
+     
+     id = package_id(idbuf, sizeof(idbuf), pmark, pkg);
++    n_assert(id);
+ 
+     if ((pkg_mark = n_hash_get(pmark->ht, id)))
+         return pkg_mark->flags & flag;
+Index: pkgset-order.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkgset-order.c,v
+retrieving revision 1.31
+retrieving revision 1.32
+diff -u -u -r1.31 -r1.32
+--- pkgset-order.c	20 Aug 2006 18:14:58 -0000	1.31
++++ pkgset-order.c	17 Dec 2006 17:33:25 -0000	1.32
+@@ -1,5 +1,5 @@
+ /* 
+-  Copyright (C) 2000 Pawel A. Gajda (mis@k2.net.pl)
++  Copyright (C) 2000-2007 Pawel A. Gajda (mis@pld-linux.org)
+  
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License published by
+@@ -7,7 +7,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <limits.h>
+@@ -27,13 +27,6 @@
+ #include "misc.h"
+ #include "pkgset-req.h"
+ 
+-
+-static void mapfn_clean_pkg_color(struct pkg *pkg) 
+-{
+-    pkg_set_color(pkg, PKG_COLOR_WHITE);
+-    pkg_clr_prereqed(pkg);
+-}
+-
+ /*
+  * Ordering: sort packages topologically
+  */
+@@ -41,6 +34,7 @@
+     tn_array *ordered_pkgs;
+     tn_array *stack;
+     int nerrors;
++    int verbose_level;
+ };
+ 
+ 
+@@ -49,42 +43,40 @@
+                         unsigned reqpkg_flag, int deep) 
+ {
+     int i, last_stack_i = -1;
+-
++    int verb = vs->verbose_level;
++    
+     deep += 2;
+     
+     pkg_set_color(pkg, PKG_COLOR_GRAY);
+     if (pkg->reqpkgs == NULL || n_array_size(pkg->reqpkgs) == 0) {
+-        msg(4, "_\n");
+-        msg_i(4, deep, "_ visit %s -> (NO REQS)", pkg->name);
++        msg(verb, "_\n");
++        msg_i(verb, deep, "_ visit %s  (NO REQS)", pkg->name);
+         goto l_end;
+     }
+ 
+     n_array_push(vs->stack, pkg);
+     last_stack_i = n_array_size(vs->stack) - 1;
+     
+-    if (poldek_VERBOSE > 2) {
+-        msg(4, "_\n");
+-        msg_i(4, deep, "_ visit %s -> (", pkg->name);
+-        for (i=0; i < n_array_size(pkg->reqpkgs); i++) {
+-            struct reqpkg *rp;	
+-            
+-            rp = n_array_nth(pkg->reqpkgs, i);
+-            msg(4, "_%s%s, ", (rp->flags & reqpkg_flag) ? "*" : "",
+-                rp->pkg->name);
++    msg(verb, "_\n");
++    msg_i(verb, deep, "_ visit %s -> (", pkg->name);
++    for (i=0; i < n_array_size(pkg->reqpkgs); i++) {
++        struct reqpkg *rp;	
++        
++        rp = n_array_nth(pkg->reqpkgs, i);
++        msg(verb, "_%s%s, ", (rp->flags & reqpkg_flag) ? "*" : "",
++            rp->pkg->name);
+             
+-            if (rp->flags & REQPKG_MULTI) {
+-                int n = 0;
+-                while (rp->adds[n]) {
+-                    msg(4, "_%s%s, ",
+-                        (rp->adds[n]->flags & reqpkg_flag) ? "*" : "",
+-                        rp->adds[n]->pkg->name);
+-                    n++;
+-                }
++        if (rp->flags & REQPKG_MULTI) {
++            int n = 0;
++            while (rp->adds[n]) {
++                msg(verb, "_%s%s, ",
++                    (rp->adds[n]->flags & reqpkg_flag) ? "*" : "",
++                    rp->adds[n]->pkg->name);
++                n++;
+             }
+         }
+-        msg(4, "_)\n");
+-        msg_i(4, deep, "_ {");
+     }
++    msg(verb, "_) {");
+     
+     for (i=0; i < n_array_size(pkg->reqpkgs); i++) {
+         struct reqpkg *rpkg, *rp;
+@@ -104,8 +96,8 @@
+                     visit_install_order(vs, rp->pkg, reqpkg_flag, deep);
+             
+             } else if (pkg_is_color(rp->pkg, PKG_COLOR_BLACK)) {
+-                msg(4, "_\n");
+-                msg_i(4, deep, "_   visited %s", rp->pkg->name);
++                msg(verb, "_\n");
++                msg_i(verb, deep, "_   visited %s", rp->pkg->name);
+                 
+             } else if (pkg_is_color(rp->pkg, PKG_COLOR_GRAY)) { /* cycle  */
+                 int is_loop = 0;
+@@ -120,7 +112,6 @@
+                             break;
+ 
+                         n++;
+-
+                         if (!pkg_is_prereqed(p))
+                             break;
+ 
+@@ -134,9 +125,9 @@
+                 if (is_loop) {
+                     vs->nerrors++;
+                     
+-                    if (poldek_VERBOSE > 2) {
+-                        msg(4, "\n");
+-                        msg_i(4, deep, "   cycle   %s -> %s", pkg->name,
++                    if (verb > 2) {
++                        msg(verb, "\n");
++                        msg_i(verb, deep, "   cycle   %s -> %s", pkg->name,
+                               rp->pkg->name);
+ 
+                     } else {
+@@ -147,7 +138,7 @@
+                         error = alloca(size);
+ 
+                         n = 0;
+-                        n += n_snprintf(error, size, _("PreReq loop: "));
++                        n += n_snprintf(error, size, _("Requires(pre) loop: "));
+                         n += n_snprintf(&error[n], size - n, "%s", rp->pkg->name);
+                         for (i=n_array_size(vs->stack)-1; i >= 0; i--) {
+                             struct pkg *p = n_array_nth(vs->stack, i);
+@@ -157,8 +148,8 @@
+                     }
+                     
+                 } else {
+-                    msg(4, "\n");
+-                    msg_i(4, deep, "   fakecycle   %s -> %s", pkg->name,
++                    msg(verb, "\n");
++                    msg_i(verb, deep, "   fakecycle   %s -> %s", pkg->name,
+                           rp->pkg->name);
+                 }
+                 
+@@ -172,22 +163,20 @@
+         }
+     }
+     
+-    if (poldek_VERBOSE > 3) {
+-        msg(4, "\n");
+-        msg_i(4, deep, "_ } ");
+-        msg(4, "_%s",  pkg->name);
+-        for (i=n_array_size(vs->stack)-2; i >= 0; i--) {
+-            struct pkg *p = n_array_nth(vs->stack, i);
+-            if (p != pkg)
+-                msg(4, "_ <- %s", p->name);
+-        }
++    msg(verb, "\n");
++    msg_i(verb, deep, "_ } ");
++    msg(verb, "_%s",  pkg->name);
++    for (i=n_array_size(vs->stack)-2; i >= 0; i--) {
++        struct pkg *p = n_array_nth(vs->stack, i);
++        if (p != pkg)
++            msg(verb, "_ <- %s", p->name);
+     }
+-    msg(4, "_\n");
++    msg(verb, "_\n");
+ 
+  l_end:
+     pkg_set_color(pkg, PKG_COLOR_BLACK);
+     pkg_clr_prereqed(pkg);
+-    msgn(4, "push %s", pkg_snprintf_s(pkg));
++    msgn(verb, "push %s", pkg_snprintf_s(pkg));
+     n_array_push(vs->ordered_pkgs, pkg);
+     if (last_stack_i != -1) 
+         for (i=last_stack_i; i < n_array_size(vs->stack); i++) {
+@@ -198,8 +187,14 @@
+     return 0;
+ }
+ 
++static void mapfn_clean_pkg_color(struct pkg *pkg) 
++{
++    pkg_set_color(pkg, PKG_COLOR_WHITE);
++    pkg_clr_prereqed(pkg);
++}
++
+ static int do_order(tn_array *pkgs, tn_array **ordered_pkgs,
+-                    unsigned reqpkg_flag)
++                    unsigned reqpkg_flag, int verbose_level)
+ {
+     struct pkg *pkg;
+     struct visit_install_order_s vs;
+@@ -209,6 +204,7 @@
+ //                                  (tn_fn_free)pkg_free, NULL);
+     vs.nerrors = 0;
+     vs.stack = n_array_new(128, NULL, NULL);
++    vs.verbose_level = verbose_level;
+     
+     n_array_map(pkgs, (tn_fn_map1)mapfn_clean_pkg_color);
+ 
+@@ -230,20 +226,21 @@
+ 
+ 
+ /* RET: number of detected loops  */
+-int packages_order(tn_array *pkgs, tn_array **ordered_pkgs, int ordertype)
++static int do_packages_order(tn_array *pkgs, tn_array **ordered_pkgs, int ordertype,
++                             int verbose_level)
+ {
+-    tn_array *ordered = NULL;
+-    int nloops, verbose;
++    tn_array *preordered = NULL;
+     unsigned reqpkg_flag = 0;
++    int nloops;
+     
+     n_assert(n_array_ctl_get_cmpfn(pkgs) == (tn_fn_cmp)pkg_cmp_name_evr_rev);
+-    /* insertion sort - assuming pkgs are already sorted
++    /* insertion sort - assuming pkgs is already sorted
+        by pkg_cmp_pri_name_evr_rev() */
+     n_array_isort_ex(pkgs, (tn_fn_cmp)pkg_cmp_pri_name_evr_rev);
+-    
+-    verbose = poldek_set_verbose(-10);
+-    do_order(pkgs, &ordered, 0);
+-    poldek_set_verbose(verbose);
++
++    /* Preordering packages using Requires: */
++    msgn(verbose_level + 2, "Preordering packages...");
++    do_order(pkgs, &preordered, 0, verbose_level + 2);
+     
+     switch (ordertype) {
+         case PKGORDER_INSTALL:
+@@ -257,14 +254,45 @@
+         default:
+             n_assert(0);
+     }
++    msgn(verbose_level + 2, "Ordering packages...");
+     *ordered_pkgs = NULL;
+-    nloops = do_order(ordered, ordered_pkgs, reqpkg_flag);
++    nloops = do_order(preordered, ordered_pkgs, reqpkg_flag, verbose_level + 1);
+     
+-    n_array_free(ordered);
++    n_array_free(preordered);
+     n_array_isort(pkgs);
+     
+     return nloops;
+ }
+ 
++int packages_order(tn_array *pkgs, tn_array **ordered, int ordertype)
++{
++    return do_packages_order(pkgs, ordered, ordertype, 3);
++}
++
++int packages_order_and_verify(tn_array *pkgs, tn_array **ordered, int ordertype,
++                              int verbose_level)
++{
++    int nloops, i;
+ 
++    msgn(verbose_level, _("Verifying packages ordering..."));
+ 
++    nloops = do_packages_order(pkgs, ordered, ordertype, verbose_level);
++    
++    if (nloops) {
++		logn(LOGERR, ngettext("%d prerequirement loop detected",
++                              "%d prerequirement loops detected",
++                              nloops), nloops);
++		
++    } else {
++        msgn(verbose_level, _("No loops -- OK"));
++    }
++    
++            
++    msgn(verbose_level, "Installation order:");
++    for (i=0; i < n_array_size(*ordered); i++) {
++        struct pkg *pkg = n_array_nth(*ordered, i);
++        msgn(verbose_level, "%d. %s", i, pkg_id(pkg));
++    }
++    msg(verbose_level, "\n");
++    return nloops == 0;
++}
+Index: pkgset-req.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkgset-req.c,v
+retrieving revision 1.45
+retrieving revision 1.46
+diff -u -u -r1.45 -r1.46
+--- pkgset-req.c	20 Aug 2006 21:13:19 -0000	1.45
++++ pkgset-req.c	11 Sep 2006 21:47:45 -0000	1.46
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <limits.h>
+@@ -332,13 +332,24 @@
+         } else {                /* n is 0 */
+             tn_array *pkgs;
+             if ((pkgs = pkgset_search_reqdir(ps, NULL, reqname))) {
++                int i;
+                 n = 0;
++
++                for (i=0; i < n_array_size(pkgs); i++) {
++                    pkgsbuf[n++] = n_array_nth(pkgs, i);
++                    if (n == pkgsbuf_size)
++                        break;
++                }
++
++/* XXX: TOFIX: pkgsbuf is not free()d by caller, so pkg _refcnts must
++   be decreased here */
++#if 0  
+                 while (n_array_size(pkgs)) {
+                     pkgsbuf[n++] = n_array_shift(pkgs);
+                     if (n == pkgsbuf_size)
+                         break;
+                 }
+-                
++#endif                
+                 *npkgs = n;
+                 if (n) {
+                     matched = 1;
+Index: pkgset.h
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkgset.h,v
+retrieving revision 1.59
+retrieving revision 1.60
+diff -u -u -r1.59 -r1.60
+--- pkgset.h	20 Aug 2006 18:14:58 -0000	1.59
++++ pkgset.h	17 Dec 2006 17:33:25 -0000	1.60
+@@ -1,4 +1,4 @@
+-/* $Id$ */
++/* $Id$ */
+ #ifndef  POLDEK_PKGSET_H
+ #define  POLDEK_PKGSET_H
+ 
+@@ -38,14 +38,12 @@
+ #define PKGORDER_INSTALL     1
+ #define PKGORDER_UNINSTALL   2
+ int packages_order(tn_array *pkgs, tn_array **ordered_pkgs, int ordertype);
+-//int packages_order(tn_array *pkgs, tn_array **ordered_pkgs);
++
++int packages_order_and_verify(tn_array *pkgs, tn_array **ordered_pkgs,
++                              int ordertype, int verbose_level);
++
+ int pkgset_order(struct pkgset *ps, int verbose);
+ 
+-/* if set then:
+- * - requirements matched even if requirement has version
+- *   while capability hasn't (RPM style)
+- * - files with different modes only are not assumed as conflicts
+- */
+ 
+ struct pm_ctx;
+ struct pkgset *pkgset_new(struct pm_ctx *ctx);
+@@ -54,6 +52,12 @@
+ int pkgset_load(struct pkgset *ps, int ldflags, tn_array *sources);
+ int pkgset_add_pkgdir(struct pkgset *ps, struct pkgdir *pkgdir);
+ 
++
++/* VRFY_MERCY - if set then:
++ * - requirements matched even if requirement has version
++ *   while capability hasn't (RPM style)
++ * - files with different modes only are not assumed as conflicts
++ */
+ #define PSET_VRFY_MERCY          (1 << 0)
+ #define PSET_VRFY_PROMOTEPOCH    (1 << 1)
+ 
+Index: poldek_ts.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/poldek_ts.c,v
+retrieving revision 1.58
+retrieving revision 1.59
+diff -u -u -r1.58 -r1.59
+--- poldek_ts.c	22 Aug 2006 22:46:32 -0000	1.58
++++ poldek_ts.c	17 Dec 2006 17:33:25 -0000	1.59
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <stdarg.h>
+@@ -1116,6 +1116,12 @@
+     if (ts->getop(ts, POLDEK_OP_VRFY_DEPS)) {
+         msgn(0, _("Verifying dependencies..."));
+         if (!packages_verify_dependecies(pkgs, ts->ctx->ps))
++            nerr++;
++    }
++
++    if (ts->getop(ts, POLDEK_OP_VRFY_ORDER)) {
++        tn_array *ordered = NULL;
++        if (!packages_order_and_verify(pkgs, &ordered, PKGORDER_INSTALL, 1))
+             nerr++;
+     }
+ 
+Index: poldek_ts.h
+===================================================================
+RCS file: /cvsroot/poldek/poldek/poldek_ts.h,v
+retrieving revision 1.35
+retrieving revision 1.36
+diff -u -u -r1.35 -r1.36
+--- poldek_ts.h	21 Aug 2006 14:17:44 -0000	1.35
++++ poldek_ts.h	17 Dec 2006 21:53:37 -0000	1.36
+@@ -1,4 +1,4 @@
+-/* $Id$ */
++/* $Id$ */
+ #ifndef  POLDEK_LIB_TX_H
+ #define  POLDEK_LIB_TX_H
+ 
+@@ -27,8 +27,9 @@
+ enum poldek_ts_opt {
+     POLDEK_OP_NULL = 0,
+ 
+-    POLDEK_OP_UNIQN,            /* --uniqn */
+-    POLDEK_OP_VRFY_DEPS,        /* -V */
++    POLDEK_OP_UNIQN,             /* --uniqn */
++    POLDEK_OP_VRFY_DEPS,         /* -V */
++    POLDEK_OP_VRFY_ORDER,        /* --verify=order */
+     POLDEK_OP_VRFY_CNFLS,        /* --verify=conflicts */
+     POLDEK_OP_VRFY_FILECNFLS,    /* --verify=file-conflicts */
+     POLDEK_OP_VRFY_FILEORPHANS,  /* --verify=file-orphans */
+Index: cli/install.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/cli/install.c,v
+retrieving revision 1.40
+retrieving revision 1.41
+diff -u -u -r1.40 -r1.41
+--- cli/install.c	6 Nov 2005 19:26:27 -0000	1.40
++++ cli/install.c	31 Aug 2006 18:59:27 -0000	1.41
+@@ -7,7 +7,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <limits.h>
+@@ -501,9 +501,26 @@
+             break;
+ 
+         case OPT_PM: {
+-            char opt[256];
+-            n_snprintf(opt, sizeof(opt), "--%s", arg);
+-            poldek_ts_configure(ts, POLDEK_CONF_RPMOPTS, opt);
++            tn_array *tl = NULL;
++            int i;
++            
++            if ((tl = n_str_etokl_ext(arg, "\t ", "", "\"'", '\\')) == NULL) {
++                logn(LOGERR, _("%s: parse error"), arg);
++                return ARGP_ERR_UNKNOWN;
++            }
++
++            for (i=0; i < n_array_size(tl); i++) {
++                char *a, opt[256], *dash = "--";
++
++                a = n_array_nth(tl, i);
++                if (*a == '-')
++                    dash = "";
++            
++                n_snprintf(opt, sizeof(opt), "%s%s", dash, a);
++                poldek_ts_configure(ts, POLDEK_CONF_RPMOPTS, opt);
++            }
++
++            n_array_cfree(&tl);
+         }
+             break;
+             
+Index: cli/op_verify.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/cli/op_verify.c,v
+retrieving revision 1.14
+retrieving revision 1.15
+diff -u -u -r1.14 -r1.15
+--- cli/op_verify.c	10 Jul 2005 13:30:17 -0000	1.14
++++ cli/op_verify.c	17 Dec 2006 17:33:25 -0000	1.15
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -47,7 +47,7 @@
+ static struct argp_option options[] = {
+ {0,0,0,0, N_("Package set verification:"), OPT_GID},
+ {"verify",  OPT_DEPS, "REPORT-TYPE...", OPTION_ARG_OPTIONAL,
+-     N_("Verify package set, available reports are: 'deps', 'conflicts', "
++     N_("Verify package set, available reports are: 'deps', 'order', 'conflicts', "
+         "'file-conflicts', 'file-orphans' and 'file-missing-deps'. "
+         "Default is 'deps'."), OPT_GID },
+ {"verify-conflicts",  OPT_CNFLS, 0, OPTION_HIDDEN, N_("Verify conflicts"), OPT_GID },
+@@ -71,6 +71,7 @@
+     int op;
+ } verify_options[] = {
+     { "deps", POLDEK_OP_VRFY_DEPS },
++    { "order", POLDEK_OP_VRFY_ORDER },
+     { "conflicts", POLDEK_OP_VRFY_CNFLS }, 
+     { "file-conflicts", POLDEK_OP_VRFY_FILECNFLS },
+     { "file-orphans", POLDEK_OP_VRFY_FILEORPHANS },
+Index: doc/poldek.1.xml
+===================================================================
+RCS file: /cvsroot/poldek/poldek/doc/poldek.1.xml,v
+retrieving revision 1.4
+retrieving revision 1.5
+diff -u -u -r1.4 -r1.5
+--- doc/poldek.1.xml	1 Nov 2005 19:08:20 -0000	1.4
++++ doc/poldek.1.xml	17 Dec 2006 23:14:43 -0000	1.5
+@@ -63,7 +63,7 @@
+ 
+ <refsect1><title>AUTHOR</title>
+ <para>
+-Pawel A. Gajda &lt;mis at pld.org.pl&gt;
++Pawel A. Gajda &lt;mis at pld-linux.org&gt;
+ </para>
+ <para>
+ See CREDITS file for a list of contributors.
+Index: install/misc.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/install/misc.c,v
+retrieving revision 1.5
+retrieving revision 1.6
+diff -u -u -r1.5 -r1.6
+--- install/misc.c	3 Nov 2005 00:18:36 -0000	1.5
++++ install/misc.c	17 Dec 2006 17:34:48 -0000	1.6
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include "ictx.h"
+@@ -298,7 +298,7 @@
+ 
+     n_array_sort(pkgs);
+     i = n_array_bsearch_idx_ex(pkgs, &tmpkg, (tn_fn_cmp)pkg_cmp_name);
+-    DBGF("%s -> %d\n", name, i);
++    DBGF("%s -> %d\n", tmpkg.name, i);
+     if (i < 0)
+         return NULL;
+ 
+Index: pm/pm.h
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pm/pm.h,v
+retrieving revision 1.16
+retrieving revision 1.17
+diff -u -u -r1.16 -r1.17
+--- pm/pm.h	20 Aug 2006 18:14:58 -0000	1.16
++++ pm/pm.h	17 Dec 2006 22:37:05 -0000	1.17
+@@ -201,7 +201,7 @@
+     PMMSTAG_ARCH = 1,
+     PMMSTAG_OS = 2
+ };
+-
++/* RET 0 - different arch/os */
+ int pm_machine_score(struct pm_ctx *ctx,
+                      enum pm_machine_score_tag tag, const char *val);
+ 
+Index: pm/rpm/install.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pm/rpm/install.c,v
+retrieving revision 1.5
+retrieving revision 1.6
+diff -u -u -r1.5 -r1.6
+--- pm/rpm/install.c	22 Aug 2006 15:05:40 -0000	1.5
++++ pm/rpm/install.c	17 Dec 2006 22:37:05 -0000	1.6
+@@ -1,5 +1,5 @@
+ /*
+-  Copyright (C) 2000 - 2002 Pawel A. Gajda <mis@k2.net.pl>
++  Copyright (C) 2000 - 2007 Pawel A. Gajda <mis@pld-linux.org>
+ 
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License, version 2 as
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -87,6 +87,7 @@
+ }
+ 
+ #ifdef HAVE_RPM_4_1
++
+ static void *install_cb(const void *h __attribute__((unused)),
+                         const rpmCallbackType op, 
+                         const unsigned long amount, 
+@@ -96,9 +97,12 @@
+ {
+     void *r = NULL;
+     static FD_t fd = NULL;
+- 
++
+     switch (op) {
+         case RPMCALLBACK_INST_OPEN_FILE:
++            if (pkgpath == NULL || *(char*)pkgpath == '\0')
++                return NULL;
++            
+             fd = Fopen(pkgpath, "r.ufdio");
+             if (fd == NULL || Ferror(fd)) {
+                 logn(LOGERR, "%s: %s", (const char*)pkgpath, Fstrerror(fd));
+@@ -126,7 +130,6 @@
+             break;
+ 
+         case RPMCALLBACK_INST_START:
+-            msgn(0, _("Installing %s"), n_basenam(pkgpath));
+             progress(amount, total);
+             break;
+ 
+@@ -160,7 +163,6 @@
+             break;
+ 
+         case RPMCALLBACK_INST_START:
+-            msgn(0, _("Installing %s"), n_basenam(pkgpath));
+             progress(amount, total);
+             break;
+ 
+@@ -306,16 +308,22 @@
+             goto l_err;
+         }
+     }
+-
++    
++    msgn(0, _("Installing %s..."), n_basenam(path));
+ #ifdef HAVE_RPM_4_1
+     rpmtsSetFlags(ts, transflags);
++#   ifdef HAVE_RPMDSUNAME /* seems rpm >= 4.4.6 rely on rpmShowProgress(!?) */
++    rpmtsSetNotifyCallback(ts, rpmShowProgress, NULL);
++#   else
+     rpmtsSetNotifyCallback(ts, install_cb, NULL);
++#   endif  /* HAVE_RPMDSUNAME (since rpm 4.4.6) */
++    
+ 	rc = rpmtsRun(ts, NULL, (rpmprobFilterFlags) filterflags);
+-#else
++#else  /* rpm < 4.1 */
+ 	rc = rpmRunTransactions(ts, install_cb,
+                             (void *) ((long)instflags), 
+                             NULL, &probs, transflags, filterflags);
+-#endif
++#endif  /* HAVE_RPM_4_1 */
+ 
+     if (rc != 0) {
+         if (rc > 0) {
+@@ -330,7 +338,7 @@
+             goto l_err;
+             
+         } else {
+-            logn(LOGERR, _("%s: installation failed (hgw why)"), path);
++            logn(LOGERR, _("%s: installation failed (retcode=%d)"), path, rc);
+         }
+     }
+     
+Index: pm/rpm/misc.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pm/rpm/misc.c,v
+retrieving revision 1.7
+retrieving revision 1.8
+diff -u -u -r1.7 -r1.8
+--- pm/rpm/misc.c	9 Jul 2006 21:24:56 -0000	1.7
++++ pm/rpm/misc.c	17 Dec 2006 22:37:05 -0000	1.8
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -35,6 +35,7 @@
+ #include "misc.h"
+ #include "log.h"
+ #include "pm/pm.h"
++#include "pm_rpm.h"
+ 
+ #if HAVE_RPMDSRPMLIB            /* rpmdsRpmlib() => rpm >= 4.4.3 */
+ 
+@@ -137,11 +138,12 @@
+ }
+ #endif
+ 
+-tn_array *pm_rpm_rpmlib_caps(void) 
++tn_array *pm_rpm_rpmlib_caps(void *pm_rpm) 
+ {
+     tn_array *caps;
+     int rc = 0;
+-    
++
++    pm_rpm = pm_rpm;
+     caps = capreq_arr_new(0);
+     
+ #if HAVE_RPMDSRPMLIB            /* rpm >= 4.4.3 */
+@@ -162,18 +164,11 @@
+     return caps;
+ }
+ 
+-
+-const char *pm_rpm_get_arch(void *pm_rpm) 
++#ifdef HAVE_RPMMACHINESCORE
++static int machine_score(int tag, const char *val)
+ {
+-    pm_rpm = pm_rpm;
+-    return rpmGetVar(RPM_MACHTABLE_INSTARCH);
+-}
+-
+-int pm_rpm_machine_score(void *pm_rpm, int tag, const char *val)
+-{
+-    int rpmtag = 0;
++    int rpmtag = 0, rc;
+     
+-    pm_rpm = pm_rpm;
+     switch (tag) {
+         case PMMSTAG_ARCH:
+             rpmtag = RPM_MACHTABLE_INSTARCH;
+@@ -187,16 +182,71 @@
+             n_assert(0);
+             break;
+     }
+-    
++
++    n_assert(rpmtag);
+     return rpmMachineScore(rpmtag, val);
+ }
++#else  /* killed rpmMachineScore() (since 4.4.7) */
++static int machine_score(int tag, const char *val)
++{
++    int rc = 0;
++    
++    switch (tag) {
++        case PMMSTAG_ARCH:
++            rc = pm_rpm_arch_score(val);
++            break;
++            
++        case PMMSTAG_OS: {
++            char *host_val = rpmExpand("%{_host_os}", NULL);
+ 
++            rc = 9;
++            if (host_val) {
++                if (strcasecmp(host_val, val) == 0)
++                    rc = 1;                 /* exact fit */
++                free(host_val);
++            }
++            break;
+ 
++        default:
++            n_assert(0);
++            break;
++        }
++    }
++    return rc;
++}
++#endif  /* HAVE_RPMMACHINESCORE */
++
++int pm_rpm_machine_score(void *pm_rpm, int tag, const char *val)
++{
++    pm_rpm = pm_rpm;
++    return machine_score(tag, val);
++}
++
++/* XXX: function used directly in pkg.c */
+ int pm_rpm_arch_score(const char *arch)
+ {
++    char *host_arch;
++    int rc;
++    
+     if (arch == NULL)
+         return 0;
+     
+-    return rpmMachineScore(RPM_MACHTABLE_INSTARCH, arch);
+-}
++#ifdef HAVE_RPMMACHINESCORE    
++    rc = rpmMachineScore(RPM_MACHTABLE_INSTARCH, arch);
++#else
++    rc = 9;
++    if (strcasecmp(arch, "noarch") == 0) {
++        rc = 1;
++        
++    } else {
++        host_arch = rpmExpand("%{_host_cpu}", NULL);
++        if (host_arch) {
++            if (strcasecmp(host_arch, arch) == 0)
++                rc = 1;                 /* exact fit */
++            free(host_arch);
++        }
++    }
++#endif
+ 
++    return rc;
++}
+Index: pm/rpm/pm_rpm.h
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pm/rpm/pm_rpm.h,v
+retrieving revision 1.14
+retrieving revision 1.15
+diff -u -u -r1.14 -r1.15
+--- pm/rpm/pm_rpm.h	20 Aug 2006 18:14:58 -0000	1.14
++++ pm/rpm/pm_rpm.h	17 Dec 2006 22:37:05 -0000	1.15
+@@ -36,7 +36,6 @@
+ int pm_rpm_conf_get(void *pm_rpm, const char *key, char *value, int vsize);
+ 
+ tn_array *pm_rpm_rpmlib_caps(void *pm_rpm);
+-const char *pm_rpm_get_arch(void *pm_rpm);
+ 
+ char *pm_rpm_dbpath(void *pm_rpm, char *path, size_t size);
+ time_t pm_rpm_dbmtime(void *pm_rpm, const char *dbfull_path);
+Index: pm/rpm/rpm.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pm/rpm/rpm.c,v
+retrieving revision 1.15
+retrieving revision 1.16
+diff -u -u -r1.15 -r1.16
+--- pm/rpm/rpm.c	20 Aug 2006 18:14:58 -0000	1.15
++++ pm/rpm/rpm.c	17 Dec 2006 22:37:05 -0000	1.16
+@@ -1,5 +1,5 @@
+ /*
+-  Copyright (C) 2000 - 2005 Pawel A. Gajda <mis@k2.net.pl>
++  Copyright (C) 2000 - 2007 Pawel A. Gajda <mis@pld-linux.org>
+ 
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License, version 2 as
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -328,7 +328,7 @@
+ 
+ 
+ #if defined HAVE_RPMLOG && !defined ENABLE_STATIC
+-/* hack: rpmlib dumps messges to stdout only... (AFAIK)  */
++/* XXX hack: rpmlib dumps messges to stdout only... (AFAIK)  */
+ void rpmlog(int prii, const char *fmt, ...) 
+ {
+     va_list args;
+@@ -401,8 +401,11 @@
+ 
+ #endif /* HAVE_RPMLOG */
+     
+-        
++
++#ifndef HAVE__RPMVERCMP /* _rpmvercmp - new in rpm 4.4.7 */       
+ extern int rpmvercmp(const char *one, const char *two);
++#endif
++
+ int pm_rpm_vercmp(const char *one, const char *two)
+ {
+     return rpmvercmp(one, two);
+Index: pm/rpm/rpminstall.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pm/rpm/rpminstall.c,v
+retrieving revision 1.18
+retrieving revision 1.19
+diff -u -u -r1.18 -r1.19
+--- pm/rpm/rpminstall.c	22 Aug 2006 22:53:01 -0000	1.18
++++ pm/rpm/rpminstall.c	17 Dec 2006 22:37:05 -0000	1.19
+@@ -1,5 +1,5 @@
+ /*
+-  Copyright (C) 2000 - 2005 Pawel A. Gajda <mis@k2.net.pl>
++  Copyright (C) 2000 - 2007 Pawel A. Gajda <mis@pld-linux.org>
+ 
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License, version 2 as
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #ifdef HAVE_CONFIG_H
+Index: pm/rpm/rpmvercmp.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pm/rpm/rpmvercmp.c,v
+retrieving revision 1.1
+retrieving revision 1.2
+diff -u -u -r1.1 -r1.2
+--- pm/rpm/rpmvercmp.c	8 Aug 2004 23:03:54 -0000	1.1
++++ pm/rpm/rpmvercmp.c	17 Dec 2006 22:37:05 -0000	1.2
+@@ -1,3 +1,7 @@
++#ifdef HAVE_CONFIG_H
++# include "config.h"
++#endif 
++
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -5,7 +9,9 @@
+ 
+ #include "i18n.h"
+ 
+-extern int rpmvercmp(const char * one, const char * two);
++#ifndef HAVE__RPMVERCMP /* _rpmvercmp - new in rpm 4.4.7 */
++extern int rpmvercmp(const char *one,  const char *two);
++#endif 
+ 
+ 
+ int main(int argc, char *argv[])
