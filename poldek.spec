@@ -7,23 +7,22 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.7
-%define snap 20060823.21
+%define snap 20070108.22
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20.1
-Release:	0.20070105.1.1
+Release:	0.20070108.1.1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	71e595d47ccfd239180117ffc07c59c2
+# Source0-md5:	47025233d8ebb7082567cbf1392cf16f
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
-Patch4:		%{name}-cvs20070105.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -148,7 +147,6 @@ Modu³y jêzyka Python dla poldka.
 %ifarch %{x8664}
 %patch3 -p1
 %endif
-%patch4 -p0
 
 %build
 %{__autopoint}
