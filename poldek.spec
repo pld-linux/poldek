@@ -9,7 +9,7 @@
 %define	ver_rpm	4.4.7
 %define snap 20070108.22
 Summary:	RPM packages management helper tool
-Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
+Summary(pl.UTF-8):   Pomocnicze narzÄ™dzie do zarzÄ…dzania pakietami RPM
 Name:		poldek
 Version:	0.20.1
 Release:	0.20070108.1.3
@@ -78,15 +78,15 @@ shell mode of Perl's CPAN.
 %{!?with_imode:This version hasn't got interactive mode.}
 #'vim
 
-%description -l pl
-poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
-instalacji (w³±czaj±c instalacjê systemu od zera), aktualizacji i
-usuwania pakietów.
+%description -l pl.UTF-8
+poldek jest narzÄ™dziem linii poleceÅ„ sÅ‚uÅ¼Ä…cym do weryfikacji,
+instalacji (wÅ‚Ä…czajÄ…c instalacjÄ™ systemu od zera), aktualizacji i
+usuwania pakietÃ³w.
 
-Program mo¿e byæ u¿ywany w trybie wsadowym (jak debianowy apt-get) lub
+Program moÅ¼e byÄ‡ uÅ¼ywany w trybie wsadowym (jak debianowy apt-get) lub
 interaktywnym. Tryb interaktywny posiada interfejs readline z
-dope³nianiem komend i histori±, podobny do trybu shell perlowego
-modu³u CPAN.
+dopeÅ‚nianiem komend i historiÄ…, podobny do trybu shell perlowego
+moduÅ‚u CPAN.
 
 %{?with_static:Ta wersja jest konsolidowana statycznie.}
 
@@ -94,42 +94,42 @@ modu³u CPAN.
 
 %package libs
 Summary:	poldek libraries
-Summary(pl):	Biblioteki poldka
+Summary(pl.UTF-8):   Biblioteki poldka
 Group:		Libraries
 
 %description libs
 poldek libraries.
 
-%description libs -l pl
+%description libs -l pl.UTF-8
 Biblioteki poldka.
 
 %package devel
 Summary:	Header files for poldek libraries
-Summary(pl):	Pliki nag³ówkowe bibliotek poldka
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe bibliotek poldka
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 Header files for poldek libraries.
 
-%description devel -l pl
-Pliki nag³ówkowe bibliotek poldka.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe bibliotek poldka.
 
 %package static
 Summary:	poldek static libraries
-Summary(pl):	Biblioteki statyczne poldka
+Summary(pl.UTF-8):   Biblioteki statyczne poldka
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 poldek static libraries.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Biblioteki statyczne poldka.
 
 %package -n python-poldek
 Summary:	Python modules for poldek
-Summary(pl):	Modu³y jêzyka Python dla poldka
+Summary(pl.UTF-8):   ModuÅ‚y jÄ™zyka Python dla poldka
 Group:		Libraries/Python
 Requires:	%{name}-libs = %{version}-%{release}
 %pyrequires_eq	python-libs
@@ -137,8 +137,8 @@ Requires:	%{name}-libs = %{version}-%{release}
 %description -n python-poldek
 Python modules for poldek.
 
-%description -n python-poldek -l pl
-Modu³y jêzyka Python dla poldka.
+%description -n python-poldek -l pl.UTF-8
+ModuÅ‚y jÄ™zyka Python dla poldka.
 
 %prep
 %setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
