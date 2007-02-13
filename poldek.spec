@@ -9,7 +9,7 @@
 %define	ver_rpm	4.4.7
 %define snap 20070108.22
 Summary:	RPM packages management helper tool
-Summary(pl.UTF-8):   Pomocnicze narzędzie do zarządzania pakietami RPM
+Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
 Version:	0.20.1
 Release:	0.20070108.1.3
@@ -94,7 +94,7 @@ modułu CPAN.
 
 %package libs
 Summary:	poldek libraries
-Summary(pl.UTF-8):   Biblioteki poldka
+Summary(pl.UTF-8):	Biblioteki poldka
 Group:		Libraries
 
 %description libs
@@ -105,7 +105,7 @@ Biblioteki poldka.
 
 %package devel
 Summary:	Header files for poldek libraries
-Summary(pl.UTF-8):   Pliki nagłówkowe bibliotek poldka
+Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek poldka
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 
@@ -117,7 +117,7 @@ Pliki nagłówkowe bibliotek poldka.
 
 %package static
 Summary:	poldek static libraries
-Summary(pl.UTF-8):   Biblioteki statyczne poldka
+Summary(pl.UTF-8):	Biblioteki statyczne poldka
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -129,7 +129,7 @@ Biblioteki statyczne poldka.
 
 %package -n python-poldek
 Summary:	Python modules for poldek
-Summary(pl.UTF-8):   Moduły języka Python dla poldka
+Summary(pl.UTF-8):	Moduły języka Python dla poldka
 Group:		Libraries/Python
 Requires:	%{name}-libs = %{version}-%{release}
 %pyrequires_eq	python-libs
