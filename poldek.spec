@@ -23,6 +23,7 @@ Source3:	%{name}-aliases.conf
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
+Patch4:		%{name}-configure_in.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -147,6 +148,7 @@ Moduły języka Python dla poldka.
 %ifarch %{x8664}
 %patch3 -p1
 %endif
+%patch4 -p1
 
 %build
 %{__autopoint}
