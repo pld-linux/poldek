@@ -1,0 +1,10 @@
+--- poldek-0.20.1-cvs20070108.22/configure.in.orig	2007-04-15 19:39:56.000000000 +0200
++++ poldek-0.20.1-cvs20070108.22/configure.in	2007-04-15 19:40:04.000000000 +0200
+@@ -58,6 +58,7 @@
+ AM_CFLAGS="-Wall -W"
+ AC_SUBST(AM_CFLAGS)
+ 
++m4_pattern_allow([^AM_PATH_CHECK$])
+ AM_PATH_CHECK(,[have_check="yes"],
+                [AC_MSG_WARN([check library not found; cannot run unit tests]) 
+ 	       have_check="no"])
