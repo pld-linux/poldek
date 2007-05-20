@@ -20,7 +20,7 @@ diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs200701
 +// XXX: better test welcome
 +#define RPM_VERSION(a,b,c) ((a)*65536+(b)*256+(c))
 +#if RPM_VERSION(RPM_FORMAT_VERSION,RPM_MAJOR_VERSION,RPM_MINOR_VERSION) >= RPM_VERSION(4,4,8)
-+	static rpmPRCO PRCO = rpmdsNewPRCO(NULL);
++	rpmPRCO PRCO = rpmdsNewPRCO(NULL);
 +	PRCO->Pdsp = dsp;
 +	ret = rpmdsSysinfo(PRCO, fn);
 +	rpmdsFreePRCO(PRCO);
