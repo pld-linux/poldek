@@ -41,6 +41,7 @@ BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
+%{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
