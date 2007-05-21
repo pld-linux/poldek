@@ -23,7 +23,7 @@ diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs200701
 +	rpmPRCO PRCO = rpmdsNewPRCO(NULL);
 +	PRCO->Pdsp = dsp;
 +	ret = rpmdsSysinfo(PRCO, fn);
-+	rpmdsFreePRCO(PRCO);
++	PRCO->Pdsp = NULL; rpmdsFreePRCO(PRCO);
 +#else
 +	ret = rpmdsSysinfo(dsp, fn);
 +#endif
