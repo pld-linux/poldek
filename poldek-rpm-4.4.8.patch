@@ -1,16 +1,15 @@
 diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c
 --- poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c	2007-01-08 22:14:18.000000000 +0100
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-05-21 01:33:15.000000000 +0200
-@@ -22,6 +22,8 @@
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-05-21 08:01:00.385663226 +0200
+@@ -22,6 +22,7 @@
  #include <stdint.h>
  #include <string.h>
  
 +#define	_RPMPRCO_INTERNAL 1
-+#define	_RPMDS_INTERNAL 1
  #include <rpm/rpmlib.h>
  #if HAVE_RPMDSRPMLIB
  # include <rpm/rpmds.h>
-@@ -73,6 +75,23 @@
+@@ -73,6 +74,24 @@
  
  typedef int (*rpmcap_fn)(rpmds *ds, void *);
  
@@ -23,7 +22,8 @@ diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs200701
 +	rpmPRCO PRCO = rpmdsNewPRCO(NULL);
 +	PRCO->Pdsp = dsp;
 +	ret = rpmdsSysinfo(PRCO, fn);
-+	PRCO->Pdsp = NULL; rpmdsFreePRCO(PRCO);
++	PRCO->Pdsp = NULL;
++	rpmdsFreePRCO(PRCO);
 +#else
 +	ret = rpmdsSysinfo(dsp, fn);
 +#endif
