@@ -1,0 +1,21 @@
+--- poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c~	2006-12-18 09:53:02.000000000 +0100
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c	2007-05-23 17:16:25.562776091 +0200
+@@ -403,7 +403,7 @@
+     
+ 
+ #ifndef HAVE__RPMVERCMP /* _rpmvercmp - new in rpm 4.4.7 */       
+-extern int rpmvercmp(const char *one, const char *two);
++extern int (*rpmvercmp)(const char *one, const char *two);
+ #endif
+ 
+ int pm_rpm_vercmp(const char *one, const char *two)
+--- poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h~	2007-01-08 15:59:16.000000000 +0100
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h	2007-05-23 16:58:49.155380566 +0200
+@@ -2,6 +2,7 @@
+ #define POLDEK_PM_RPM_MODULE_H
+ 
+ #include <rpm/rpmlib.h>
++#include <rpm/rpmevr.h>
+ #ifdef HAVE_RPM_4_0_4
+ # include <rpm/rpmcli.h>
+ #endif
