@@ -19,3 +19,14 @@
  #ifdef HAVE_RPM_4_0_4
  # include <rpm/rpmcli.h>
  #endif
+diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c
+--- poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c	2007-01-08 22:14:18.000000000 +0100
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-05-27 11:49:22.088655311 +0200
+@@ -183,7 +183,6 @@
+             break;
+     }
+ 
+-    n_assert(rpmtag);
+     return rpmMachineScore(rpmtag, val);
+ }
+ #else  /* !HAVE_RPMMACHINESCORE; killed rpmMachineScore() (since 4.4.7) */
