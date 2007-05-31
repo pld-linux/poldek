@@ -12,7 +12,7 @@ Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
 Version:	0.20.1
-Release:	0.20070108.1.6
+Release:	0.20070108.1.7
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -26,6 +26,7 @@ Patch3:		%{name}-multilib.patch
 Patch4:		%{name}-configure_in.patch
 Patch5:		%{name}-rpm-4.4.8.patch
 Patch6:		%{name}-rpm-4.4.9.patch
+Patch7:		%{name}-desc_in_utf8.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -154,6 +155,7 @@ Moduły języka Python dla poldka.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 %{__autopoint}
