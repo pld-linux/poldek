@@ -19,14 +19,42 @@
  #ifdef HAVE_RPM_4_0_4
  # include <rpm/rpmcli.h>
  #endif
-diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c
---- poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c	2007-01-08 22:14:18.000000000 +0100
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-05-27 11:49:22.088655311 +0200
-@@ -183,7 +183,6 @@
-             break;
-     }
- 
--    n_assert(rpmtag);
-     return rpmMachineScore(rpmtag, val);
+--- poldek-0.20.1-cvs20070108.22/configure.in	2007-05-27 20:05:24.702600301 +0200
++++ poldek-0.20.1-cvs20070108.22-new/configure.in	2007-05-27 20:05:03.038233602 +0200
+@@ -302,6 +302,7 @@
+ dnl rpm 4.4.7
+ dnl  - killed rpmMachineScore and rpmGetVar
+ AC_CHECK_FUNCS(rpmMachineScore)
++AC_CHECK_FUNCS(rpmPlatformScore)
+ AC_CHECK_FUNCS(rpmGetVar)
+ AC_CHECK_FUNCS(rpmioAccess)
+ dnl  - new _rpmvercmp()
+--- poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-05-27 20:05:24.705933794 +0200
++++ poldek-0.20.1-cvs20070108.22-new/pm/rpm/misc.c	2007-05-27 20:04:43.153951811 +0200
+@@ -182,8 +182,11 @@
+     return caps;
  }
- #else  /* !HAVE_RPMMACHINESCORE; killed rpmMachineScore() (since 4.4.7) */
+ 
+-
+-#ifdef HAVE_RPMMACHINESCORE
++#ifdef HAVE_RPMPLATOFMSCORE
++static int machine_score(int tag, const char *val) {
++    return rpmPlatformScore(val, platpat, nplatpat);
++}
++#elif defined(HAVE_RPMMACHINESCORE)
+ static int machine_score(int tag, const char *val)
+ {
+     int rpmtag = 0, rc;
+@@ -249,8 +252,10 @@
+     
+     if (arch == NULL)
+         return 0;
+-    
+-#ifdef HAVE_RPMMACHINESCORE    
++
++#ifdef HAVE_RPMPLATOFMSCORE
++    rc = rpmPlatformScore(val, platpat, nplatpat);
++#elif defined(HAVE_RPMMACHINESCORE)
+     rc = rpmMachineScore(RPM_MACHTABLE_INSTARCH, arch);
+ #else
+     rc = 9;
