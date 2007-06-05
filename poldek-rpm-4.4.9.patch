@@ -1,27 +1,7 @@
---- poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c~	2006-12-18 09:53:02.000000000 +0100
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c	2007-05-23 17:16:25.562776091 +0200
-@@ -403,7 +403,7 @@
-     
- 
- #ifndef HAVE__RPMVERCMP /* _rpmvercmp - new in rpm 4.4.7 */       
--extern int rpmvercmp(const char *one, const char *two);
-+extern int (*rpmvercmp)(const char *one, const char *two);
- #endif
- 
- int pm_rpm_vercmp(const char *one, const char *two)
---- poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h~	2007-01-08 15:59:16.000000000 +0100
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h	2007-05-23 16:58:49.155380566 +0200
-@@ -2,6 +2,7 @@
- #define POLDEK_PM_RPM_MODULE_H
- 
- #include <rpm/rpmlib.h>
-+#include <rpm/rpmevr.h>
- #ifdef HAVE_RPM_4_0_4
- # include <rpm/rpmcli.h>
- #endif
---- poldek-0.20.1-cvs20070108.22/configure.in	2007-05-27 20:05:24.702600301 +0200
-+++ poldek-0.20.1-cvs20070108.22-new/configure.in	2007-05-27 20:05:03.038233602 +0200
-@@ -302,6 +302,7 @@
+diff -ur poldek-0.20.1-cvs20070108.22.org/configure.in poldek-0.20.1-cvs20070108.22/configure.in
+--- poldek-0.20.1-cvs20070108.22.org/configure.in	2007-01-08 22:14:18.000000000 +0100
++++ poldek-0.20.1-cvs20070108.22/configure.in	2007-06-05 20:32:56.716966945 +0200
+@@ -305,6 +305,7 @@
  dnl rpm 4.4.7
  dnl  - killed rpmMachineScore and rpmGetVar
  AC_CHECK_FUNCS(rpmMachineScore)
@@ -29,9 +9,19 @@
  AC_CHECK_FUNCS(rpmGetVar)
  AC_CHECK_FUNCS(rpmioAccess)
  dnl  - new _rpmvercmp()
---- poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-05-27 20:05:24.705933794 +0200
-+++ poldek-0.20.1-cvs20070108.22-new/pm/rpm/misc.c	2007-05-27 20:04:43.153951811 +0200
-@@ -182,8 +182,11 @@
+diff -ur poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c
+--- poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c	2007-01-08 22:14:18.000000000 +0100
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-06-05 20:33:44.656034816 +0200
+@@ -47,7 +47,7 @@
+         struct capreq *cr;
+         uint32_t flags, crflags;
+ 
+-        name = rpmdsN(ds);
++        name = rpmdsDNEVR(ds)+2;
+         evr = rpmdsEVR(ds);
+         flags = rpmdsFlags(ds);
+         
+@@ -163,8 +163,11 @@
      return caps;
  }
  
@@ -45,7 +35,7 @@
  static int machine_score(int tag, const char *val)
  {
      int rpmtag = 0, rc;
-@@ -249,8 +252,10 @@
+@@ -231,8 +234,10 @@
      
      if (arch == NULL)
          return 0;
@@ -58,3 +48,26 @@
      rc = rpmMachineScore(RPM_MACHTABLE_INSTARCH, arch);
  #else
      rc = 9;
+diff -ur poldek-0.20.1-cvs20070108.22.org/pm/rpm/pm_rpm.h poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h
+--- poldek-0.20.1-cvs20070108.22.org/pm/rpm/pm_rpm.h	2007-01-08 15:59:16.000000000 +0100
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h	2007-06-05 20:32:56.696965944 +0200
+@@ -2,6 +2,7 @@
+ #define POLDEK_PM_RPM_MODULE_H
+ 
+ #include <rpm/rpmlib.h>
++#include <rpm/rpmevr.h>
+ #ifdef HAVE_RPM_4_0_4
+ # include <rpm/rpmcli.h>
+ #endif
+diff -ur poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpm.c poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c
+--- poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpm.c	2006-12-18 09:53:02.000000000 +0100
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c	2007-06-05 20:32:56.696965944 +0200
+@@ -403,7 +403,7 @@
+     
+ 
+ #ifndef HAVE__RPMVERCMP /* _rpmvercmp - new in rpm 4.4.7 */       
+-extern int rpmvercmp(const char *one, const char *two);
++extern int (*rpmvercmp)(const char *one, const char *two);
+ #endif
+ 
+ int pm_rpm_vercmp(const char *one, const char *two)
