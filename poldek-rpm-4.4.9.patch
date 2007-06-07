@@ -43,7 +43,7 @@ diff -ur poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs2007010
 -#ifdef HAVE_RPMMACHINESCORE    
 +
 +#ifdef HAVE_RPMPLATFORMSCORE
-+    rc = rpmPlatformScore(val, platpat, nplatpat);
++    rc = rpmPlatformScore(arch, platpat, nplatpat);
 +#elif defined(HAVE_RPMMACHINESCORE)
      rc = rpmMachineScore(RPM_MACHTABLE_INSTARCH, arch);
  #else
