@@ -1,8 +1,14 @@
+# TODO
+# - python bindings need some patch :)
 #
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
+#
+%ifarch %{x8664} alpha
+%undefine	with_python
+%endif
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
