@@ -6,7 +6,7 @@
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
 #
-%ifarch %{x8664} alpha
+%ifarch %{x8664} alpha ppc
 %undefine	with_python
 %endif
 #
