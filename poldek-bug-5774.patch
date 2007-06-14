@@ -1,0 +1,25 @@
+===================================================================
+RCS file: /cvsroot/poldek/poldek/vfile/vfetch.c,v
+retrieving revision 1.13
+retrieving revision 1.14
+diff -u -r1.13 -r1.14
+--- poldek/poldek/vfile/vfetch.c	2005/05/15 15:47:00	1.13
++++ poldek/poldek/vfile/vfetch.c	2006/04/02 19:49:12	1.14
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ #ifdef HAVE_CONFIG_H
+ # include "config.h"
+@@ -299,7 +299,7 @@
+             snprintf(url, sizeof(url), req->url);
+             vf_request_free(req);
+             req = NULL;
+-            rc = vf_fetch(req->url, destdir, flags, NULL);
++            rc = vf_fetch(url, destdir, flags, NULL);
+         }
+     }
+     if (req)
