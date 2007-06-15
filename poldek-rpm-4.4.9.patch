@@ -1,6 +1,6 @@
-diff -ur poldek-0.20.1-cvs20070108.22.org/configure.in poldek-0.20.1-cvs20070108.22/configure.in
---- poldek-0.20.1-cvs20070108.22.org/configure.in	2007-06-07 19:36:08.476143000 +0200
-+++ poldek-0.20.1-cvs20070108.22/configure.in	2007-06-07 19:36:48.148088637 +0200
+diff -urN poldek-0.20.1-cvs20070108.22.org/configure.in poldek-0.20.1-cvs20070108.22/configure.in
+--- poldek-0.20.1-cvs20070108.22.org/configure.in	2007-06-15 12:19:20.142101000 +0200
++++ poldek-0.20.1-cvs20070108.22/configure.in	2007-06-15 12:19:59.130685430 +0200
 @@ -302,6 +302,7 @@
  dnl rpm 4.4.7
  dnl  - killed rpmMachineScore and rpmGetVar
@@ -9,9 +9,9 @@ diff -ur poldek-0.20.1-cvs20070108.22.org/configure.in poldek-0.20.1-cvs20070108
  AC_CHECK_FUNCS(rpmGetVar)
  AC_CHECK_FUNCS(rpmioAccess)
  dnl  - new _rpmvercmp()
-diff -ur poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c
---- poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c	2007-06-07 19:36:08.476143000 +0200
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-06-07 19:40:33.000000000 +0200
+diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c
+--- poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c	2007-06-15 12:19:20.145434000 +0200
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-06-15 12:19:59.130685430 +0200
 @@ -48,7 +48,7 @@
          struct capreq *cr;
          uint32_t flags, crflags;
@@ -75,9 +75,9 @@ diff -ur poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs2007010
      rc = rpmMachineScore(RPM_MACHTABLE_INSTARCH, arch);
  #else
      rc = 9;
-diff -ur poldek-0.20.1-cvs20070108.22.org/pm/rpm/pm_rpm.h poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h
+diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/pm_rpm.h poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h
 --- poldek-0.20.1-cvs20070108.22.org/pm/rpm/pm_rpm.h	2007-01-08 15:59:16.000000000 +0100
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h	2007-06-07 19:36:48.148088637 +0200
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h	2007-06-15 12:19:59.130685430 +0200
 @@ -2,6 +2,7 @@
  #define POLDEK_PM_RPM_MODULE_H
  
@@ -86,15 +86,32 @@ diff -ur poldek-0.20.1-cvs20070108.22.org/pm/rpm/pm_rpm.h poldek-0.20.1-cvs20070
  #ifdef HAVE_RPM_4_0_4
  # include <rpm/rpmcli.h>
  #endif
-diff -ur poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpm.c poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c
+diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpm.c poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c
 --- poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpm.c	2006-12-18 09:53:02.000000000 +0100
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c	2007-06-07 19:36:48.148088637 +0200
-@@ -403,7 +403,7 @@
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c	2007-06-15 12:20:46.012982003 +0200
+@@ -402,10 +402,6 @@
+ #endif /* HAVE_RPMLOG */
      
  
- #ifndef HAVE__RPMVERCMP /* _rpmvercmp - new in rpm 4.4.7 */       
+-#ifndef HAVE__RPMVERCMP /* _rpmvercmp - new in rpm 4.4.7 */       
 -extern int rpmvercmp(const char *one, const char *two);
-+extern int (*rpmvercmp)(const char *one, const char *two);
- #endif
- 
+-#endif
+-
  int pm_rpm_vercmp(const char *one, const char *two)
+ {
+     return rpmvercmp(one, two);
+diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpmvercmp.c poldek-0.20.1-cvs20070108.22/pm/rpm/rpmvercmp.c
+--- poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpmvercmp.c	2006-12-18 09:52:40.000000000 +0100
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpmvercmp.c	2007-06-15 12:20:13.718066669 +0200
+@@ -9,11 +9,6 @@
+ 
+ #include "i18n.h"
+ 
+-#ifndef HAVE__RPMVERCMP /* _rpmvercmp - new in rpm 4.4.7 */
+-extern int rpmvercmp(const char *one,  const char *two);
+-#endif 
+-
+-
+ int main(int argc, char *argv[])
+ {
+     int cmprc, is_test = 0;
