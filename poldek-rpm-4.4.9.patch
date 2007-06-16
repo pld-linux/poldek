@@ -1,6 +1,6 @@
 diff -urN poldek-0.20.1-cvs20070108.22.org/configure.in poldek-0.20.1-cvs20070108.22/configure.in
---- poldek-0.20.1-cvs20070108.22.org/configure.in	2007-06-15 12:19:20.142101000 +0200
-+++ poldek-0.20.1-cvs20070108.22/configure.in	2007-06-15 12:19:59.130685430 +0200
+--- poldek-0.20.1-cvs20070108.22.org/configure.in	2007-06-16 20:02:10.545517000 +0200
++++ poldek-0.20.1-cvs20070108.22/configure.in	2007-06-16 20:02:53.024324896 +0200
 @@ -302,6 +302,7 @@
  dnl rpm 4.4.7
  dnl  - killed rpmMachineScore and rpmGetVar
@@ -10,8 +10,8 @@ diff -urN poldek-0.20.1-cvs20070108.22.org/configure.in poldek-0.20.1-cvs2007010
  AC_CHECK_FUNCS(rpmioAccess)
  dnl  - new _rpmvercmp()
 diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c
---- poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c	2007-06-15 12:19:20.145434000 +0200
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-06-15 12:19:59.130685430 +0200
+--- poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c	2007-06-16 20:02:10.545517000 +0200
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/misc.c	2007-06-16 20:02:53.024324896 +0200
 @@ -48,7 +48,7 @@
          struct capreq *cr;
          uint32_t flags, crflags;
@@ -77,7 +77,7 @@ diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/misc.c poldek-0.20.1-cvs200701
      rc = 9;
 diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/pm_rpm.h poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h
 --- poldek-0.20.1-cvs20070108.22.org/pm/rpm/pm_rpm.h	2007-01-08 15:59:16.000000000 +0100
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h	2007-06-15 12:19:59.130685430 +0200
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/pm_rpm.h	2007-06-16 20:02:53.027658397 +0200
 @@ -2,6 +2,7 @@
  #define POLDEK_PM_RPM_MODULE_H
  
@@ -88,7 +88,7 @@ diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/pm_rpm.h poldek-0.20.1-cvs2007
  #endif
 diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpm.c poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c
 --- poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpm.c	2006-12-18 09:53:02.000000000 +0100
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c	2007-06-15 12:20:46.012982003 +0200
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpm.c	2007-06-16 20:02:53.027658397 +0200
 @@ -402,10 +402,6 @@
  #endif /* HAVE_RPMLOG */
      
@@ -102,8 +102,12 @@ diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpm.c poldek-0.20.1-cvs2007010
      return rpmvercmp(one, two);
 diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpmvercmp.c poldek-0.20.1-cvs20070108.22/pm/rpm/rpmvercmp.c
 --- poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpmvercmp.c	2006-12-18 09:52:40.000000000 +0100
-+++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpmvercmp.c	2007-06-15 12:20:13.718066669 +0200
-@@ -9,11 +9,6 @@
++++ poldek-0.20.1-cvs20070108.22/pm/rpm/rpmvercmp.c	2007-06-16 20:03:14.682083082 +0200
+@@ -6,14 +6,10 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <rpm/rpmlib.h>
++#include <rpm/rpmevr.h>
  
  #include "i18n.h"
  
