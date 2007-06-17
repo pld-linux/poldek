@@ -119,3 +119,30 @@ diff -urN poldek-0.20.1-cvs20070108.22.org/pm/rpm/rpmvercmp.c poldek-0.20.1-cvs2
  int main(int argc, char *argv[])
  {
      int cmprc, is_test = 0;
+diff -u -r1.11 -r1.12
+--- poldek/pm/rpm/misc.c	2007/06/16 16:24:08	1.11
++++ poldek/pm/rpm/misc.c	2007/06/16 20:16:40	1.12
+@@ -43,14 +43,20 @@
+ {
+     ds = rpmdsInit(ds);
+     while (rpmdsNext(ds) >= 0) {
+-        const char *name, *evr;
+-        char tmp[256], *tmpptr;
++        const char *evr, *p;
++        char *name, tmp[256], *tmpptr;
+         struct capreq *cr;
+         uint32_t flags, crflags;
+ 
+-        name = rpmdsDNEVR(ds)+2;
++        p = rpmdsDNEVR(ds)+2;
++        n_strdupap(p, &name);
++        if ((p = strchr(name, ' '))) /* cut afer name */
++            *(char*)p = '\0';
++
+         evr = rpmdsEVR(ds);
+         flags = rpmdsFlags(ds);
++
++        DBGF("%s, %s\n", name, evr);
+         
+         if ((flags & RPMSENSE_EQUAL)) {
+             n_strncpy(tmp, evr, 128);
