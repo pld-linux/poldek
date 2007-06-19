@@ -1,0 +1,86 @@
+--- poldek-0.20.1-cvs20060823.21/pm/rpm/misc.c~	2006-07-10 13:17:36.000000000 +0200
++++ poldek-0.20.1-cvs20060823.21/pm/rpm/misc.c	2006-10-30 16:19:12.548718000 +0100
+@@ -171,24 +171,25 @@
+ 
+ int pm_rpm_machine_score(void *pm_rpm, int tag, const char *val)
+ {
+-    int rpmtag = 0;
+-    
+     pm_rpm = pm_rpm;
+     switch (tag) {
+         case PMMSTAG_ARCH:
+-            rpmtag = RPM_MACHTABLE_INSTARCH;
++            return 1;
++	    // no longer supported, decided it was
++	    // not reliable enough
+             break;
+             
+         case PMMSTAG_OS:
+-            rpmtag = RPM_MACHTABLE_INSTOS;
++            return 1;
++	    // no longer supported, always returned 1
++	    // as linux is the only ARCH supported
+             break;
+ 
+         default:
+             n_assert(0);
+             break;
+     }
+-    
+-    return rpmMachineScore(rpmtag, val);
++    return 0;
+ }
+ 
+ 
+@@ -197,6 +196,6 @@
+     if (arch == NULL)
+         return 0;
+     
+-    return rpmMachineScore(RPM_MACHTABLE_INSTARCH, arch);
++    return 1;
+ }
+ 
+--- poldek-0.20.1-cvs20060823.21/configure.in~	2006-08-21 13:20:12.000000000 +0200
++++ poldek-0.20.1-cvs20060823.21/configure.in	2006-10-30 16:17:00.008718000 +0100
+@@ -273,7 +273,7 @@
+ 		[$DBLIB -lrpmdb]),
+ 	    [$DBLIB])
+ 
+-AC_CHECK_FUNCS(rpmMachineScore,,[ AC_MSG_ERROR(["rpmlib not found"])])
++#AC_CHECK_FUNCS(rpmMachineScore,,[ AC_MSG_ERROR(["rpmlib not found"])])
+ AC_CHECK_FUNCS(rpmlog rpmCheckSig rpmVerifySignature)
+ 
+ dnl rpm 4.2?
+--- poldek-0.20.1-cvs20060823.21/pm/rpm/rpm.c~	2006-08-22 16:53:28.000000000 +0200
++++ poldek-0.20.1-cvs20060823.21/pm/rpm/rpm.c	2006-11-02 21:10:17.138247000 +0100
+@@ -402,7 +402,7 @@
+ #endif /* HAVE_RPMLOG */
+     
+         
+-extern int rpmvercmp(const char *one, const char *two);
++extern int (*rpmvercmp)(const char *one, const char *two);
+ int pm_rpm_vercmp(const char *one, const char *two)
+ {
+     return rpmvercmp(one, two);
+--- poldek-0.20.1-cvs20060823.21/pm/rpm/rpmvercmp.c~	2004-08-09 01:03:54.000000000 +0200
++++ poldek-0.20.1-cvs20060823.21/pm/rpm/rpmvercmp.c	2006-11-02 21:15:35.218247000 +0100
+@@ -5,7 +5,7 @@
+ 
+ #include "i18n.h"
+ 
+-extern int rpmvercmp(const char * one, const char * two);
++extern int (*rpmvercmp)(const char * one, const char * two);
+ 
+ 
+ int main(int argc, char *argv[])
+--- poldek-0.20.1-cvs20060823.21/pm/rpm/misc.c~	2006-11-02 21:17:09.000000000 +0100
++++ poldek-0.20.1-cvs20060823.21/pm/rpm/misc.c	2006-11-02 21:39:35.168247000 +0100
+@@ -166,7 +166,7 @@
+ const char *pm_rpm_get_arch(void *pm_rpm) 
+ {
+     pm_rpm = pm_rpm;
+-    return rpmGetVar(RPM_MACHTABLE_INSTARCH);
++    return rpmExpand("%{_target_cpu}", NULL);
+ }
+ 
+ int pm_rpm_machine_score(void *pm_rpm, int tag, const char *val)

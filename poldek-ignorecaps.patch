@@ -1,0 +1,12 @@
+--- poldek-0.20.1-cvs20070618.11/pkgset-req.c~	2007-06-18 11:12:35.000000000 +0300
++++ [oldek-0.20.1-cvs20070618.11/pkgset-req.c	2007-06-19 14:10:11.000000000 +0300
+@@ -364,6 +364,9 @@
+       if (strncmp("rpmlib", capreq_name(req), 6) == 0 && !capreq_is_rpmlib(req))
+          n_assert(0);
+     */ 
++
++    if (strncmp("cpuinfo(", capreq_name(req), sizeof("cpuinfo(")-1) == 0 || strncmp("uname(", capreq_name(req), sizeof("uname(")-1) == 0)
++	matched = 1;
+     
+     if (capreq_is_rpmlib(req) && matched) {
+         int i;
