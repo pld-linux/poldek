@@ -7,7 +7,8 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.9
-%define snap 20070619.16
+#
+%define snap	20070619.16
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -62,7 +63,6 @@ Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
 Requires:	rpm >= %{ver_rpm}
-Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
