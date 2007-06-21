@@ -153,6 +153,9 @@ Moduły języka Python dla poldka.
 %endif
 %patch4 -p1
 
+# cleanup backups after patching
+find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
+
 %build
 %{__autopoint}
 %{__aclocal} -I m4
