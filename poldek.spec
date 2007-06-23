@@ -8,7 +8,7 @@
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.9-1
 #
-%define snap	20070622.20
+%define snap	20070623.21
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -17,7 +17,7 @@ Release:	0.%{snap}.2
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	e55e6c0f920ee3d22d7c1a268d7099bf
+# Source0-md5:	9d50a45ede1a633c77922c591eb9c0cc
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
