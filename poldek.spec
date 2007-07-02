@@ -22,7 +22,8 @@ Source3:	%{name}-aliases.conf
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
-Patch4:		%{name}-ignorecaps.patch
+Patch4:		%{name}-su-sigsev.patch
+Patch5:		%{name}-uninstall-depfix.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -64,6 +65,8 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
 Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
+# vf* scripts use sed
+Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -150,7 +153,8 @@ Moduły języka Python dla poldka.
 %ifarch %{x8664}
 %patch3 -p1
 %endif
-%patch4 -p1
+%patch4 -p0
+%patch5 -p0
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
