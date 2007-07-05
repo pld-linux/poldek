@@ -6,7 +6,7 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.2.50-1
 %define	ver_rpm	4.4.1
-%define	_snap	20070628.00
+%define	_snap	20070703.00
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -22,8 +22,7 @@ Source3:	%{name}-aliases.conf
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
-Patch4:		%{name}-su-sigsev.patch
-Patch5:		%{name}-uninstall-depfix.patch
+Patch4:		%{name}-ndie_fix.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -154,7 +153,6 @@ Moduły języka Python dla poldka.
 %patch3 -p1
 %endif
 %patch4 -p0
-%patch5 -p0
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
