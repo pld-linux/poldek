@@ -17,7 +17,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	17
+Release:	18
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -338,6 +338,11 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 		sed -i -e "/^#hold =/s/^.*/$hold/" /etc/poldek/poldek.conf
 	fi
 fi
+
+%triggerpostun -- poldek < 0.20-15
+# add ignore = msmtp-sendmail* to [ac] source
+# as it would otherwise replace postfix with msmtp-sendmail without even asking!!!
+%{__sed} -i -e '/^path.*=.*%%{_pld_prefix}\/PLD\/%%{_pld_arch}\/PLD\/RPMS\//aignore = msmtp-sendmail*' %{_sysconfdir}/%{name}/pld-source.conf
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
