@@ -1,0 +1,13 @@
+diff -urN poldek-0.20.org/pkgset-req.c poldek-0.20/pkgset-req.c
+--- poldek-0.20.org/pkgset-req.c	2005-10-20 19:27:27.000000000 +0200
++++ poldek-0.20/pkgset-req.c	2007-06-15 00:42:42.499942887 +0200
+@@ -332,6 +332,9 @@
+          n_assert(0);
+     */ 
+     
++    if (strncmp("cpuinfo(", capreq_name(req), sizeof("cpuinfo(")-1) == 0 || strncmp("uname(", capreq_name(req), sizeof("uname(")-1) == 0)
++	matched = 1;
++
+     if (capreq_is_rpmlib(req)) {
+         if (matched) {
+             int i;

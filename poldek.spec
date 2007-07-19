@@ -1,28 +1,44 @@
+# TODO
+# - python bindings need some patch :)
 #
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
 #
+%ifarch %{x8664} alpha ppc
+%undefine	with_python
+%endif
+#
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.3.27-1
-%define	ver_rpm	4.4.7
-%define snap 20070108.22
+%define	ver_db	4.2.50-1
+%define	ver_rpm	4.4.1
 Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
-Version:	0.20.1
-Release:	0.20070108.1.2
+Version:	0.20
+Release:	18
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	47025233d8ebb7082567cbf1392cf16f
+Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
+# Source0-md5:	61c0c03ee4a9de36339fc943b6901266
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
-Patch1:		%{name}-vserver-packages.patch
-Patch2:		%{name}-config.patch
-Patch3:		%{name}-multilib.patch
+Patch0:		%{name}-cvs-fixes.patch
+Patch1:		%{name}-ask-abort.patch
+Patch2:		%{name}-obsoletes.patch
+Patch3:		%{name}-completion.patch
+Patch4:		%{name}-notimestamps.patch
+Patch5:		%{name}-config.patch
+Patch6:		%{name}-uninstall-multilib.patch
+Patch7:		%{name}-bug-5774.patch
+Patch8:		%{name}-cli-hist.patch
+Patch9:		%{name}-vserver-packages.patch
+Patch10:	%{name}-multilib.patch
+Patch11:	%{name}-as_needed-fix.patch
+Patch12:	%{name}-ignorecaps.patch
+Patch13:	%{name}-ac.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -39,7 +55,7 @@ BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
-BuildRequires:	xmlto
+BuildRequires:	sed >= 4.0
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
@@ -59,6 +75,7 @@ Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
+Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -76,7 +93,8 @@ shell mode of Perl's CPAN.
 %{?with_static:This version is statically linked.}
 
 %{!?with_imode:This version hasn't got interactive mode.}
-#'vim
+
+#'
 
 %description -l pl
 poldek jest narzêdziem linii poleceñ s³u¿±cym do weryfikacji,
@@ -141,25 +159,47 @@ Python modules for poldek.
 Modu³y jêzyka Python dla poldka.
 
 %prep
-%setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
-%patch1 -p1
-%patch2 -p1
+%setup -q
+%patch0 -p2
+%patch1 -p0
+%patch2 -p0
+%patch3 -p2
+%patch4 -p1
+%patch5 -p1
+%patch6 -p0
+%patch7 -p2
+%patch8 -p2
+%patch9 -p1
 %ifarch %{x8664}
-%patch3 -p1
+%patch10 -p1
 %endif
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
 
 %build
+%{__libtoolize}
 %{__autopoint}
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
-cp -f config.sub trurlib
+cd trurlib
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
+cd ../tndb
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
+cd ..
 
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
-	--enable-nls \
-	%{?with_python:--with-python}
+	%{?with_python:--with-python} \
+	--enable-nls
 %{__make}
 
 %install
@@ -171,21 +211,23 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %if %{with python}
 %{__make} -C python install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	libdir=%{py_sitedir}
+	DESTDIR=$RPM_BUILD_ROOT
 %endif
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-%ifarch i486 i686 ppc sparc alpha athlon
+#
+# CHANGE IT WHEN SWITCHING poldek.conf FROM AC TO TH !!!
+#
+%ifarch i386 i586 i686 ppc sparc alpha athlon
 %define		_ftp_arch	%{_target_cpu}
 %else
 %ifarch %{x8664}
-%define		_ftp_arch	x86_64
+%define		_ftp_arch	amd64
 %define		_ftp_alt_arch	i686
 %else
-%ifarch i586
-%define		_ftp_arch	i486
+%ifarch i486
+%define		_ftp_arch	i386
 %else
 %ifarch pentium2 pentium3 pentium4
 %define		_ftp_arch	i686
@@ -219,12 +261,14 @@ rm -rf configs
 cp -a conf configs
 rm -f configs/Makefile*
 
+%find_lang %{name}
+
 %if %{with python}
 %py_postclean
-rm -f $RPM_BUILD_ROOT%{py_sitedir}/_poldekmod.la
+install -d $RPM_BUILD_ROOT%{py_sitedir}
+mv $RPM_BUILD_ROOT{%{_libdir},%{py_sitedir}}/_poldekmod.so
+rm -f $RPM_BUILD_ROOT%{_libdir}/_poldekmod.la
 %endif
-
-%find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -295,6 +339,11 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 	fi
 fi
 
+%triggerpostun -- poldek < 0.20-15
+# add ignore = msmtp-sendmail* to [ac] source
+# as it would otherwise replace postfix with msmtp-sendmail without even asking!!!
+%{__sed} -i -e '/^path.*=.*%%{_pld_prefix}\/PLD\/%%{_pld_arch}\/PLD\/RPMS\//aignore = msmtp-sendmail*' %{_sysconfdir}/%{name}/pld-source.conf
+
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc README* NEWS TODO configs/
@@ -307,7 +356,7 @@ fi
 %lang(pl) %{_mandir}/pl/man1/%{name}*
 %{_infodir}/poldek.info*
 
-%if !%{with static}
+%if %{without static}
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
