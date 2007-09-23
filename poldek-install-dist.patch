@@ -1,0 +1,11 @@
+--- poldek/install-dist.c~	2007-07-01 23:04:26.000000000 +0200
++++ poldek/install-dist.c	2007-09-23 15:45:51.812485873 +0200
+@@ -232,6 +232,8 @@
+ 
+     rc = 1;
+ 
++    pkgs = pkgmark_get_packages(ts->pms, PKGMARK_MARK | PKGMARK_DEP);
++
+     ignorer = ts->getop(ts, POLDEK_OP_NODEPS);
+     if (!packages_verify_dependecies(pkgs, ts->ctx->ps) && !ignorer)
+         nerr++;
