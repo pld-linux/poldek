@@ -1,0 +1,16 @@
+--- poldek-0.20/configure.in	2007-07-18 00:40:06.808430585 +0300
++++ poldek-0.21-cvs20070703.00/configure.in	2007-07-03 01:05:52.000000000 +0300
+@@ -58,11 +59,8 @@
+ AM_CFLAGS="-Wall -W"
+ AC_SUBST(AM_CFLAGS)
+ 
+-AM_PATH_CHECK(,[have_check="yes"],
+-               [AC_MSG_WARN([check library not found; cannot run unit tests]) 
+-	       have_check="no"])
+-
+-
++PKG_CHECK_MODULES(CHECK, check >= 0.9.4, have_check=yes, have_check=no)
++ 
+ dnl Process features.
+ AC_CHECK_LIB(tinfo, tigetstr,,[
+ 	AC_CHECK_LIB(ncurses, tigetstr, ,[ 
