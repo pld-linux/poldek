@@ -1,6 +1,6 @@
-diff -urN poldek/ask.c poldek.new/ask.c
---- poldek/ask.c	2007-07-08 18:48:11.000000000 +0200
-+++ poldek.new/ask.c	2007-11-18 18:55:32.000000000 +0100
+diff -urN poldek-0.21-cvs20080103.17/ask.c poldek-0.21-cvs20080103.17.new/ask.c
+--- poldek-0.21-cvs20080103.17/ask.c	2007-07-08 18:48:11.000000000 +0200
++++ poldek-0.21-cvs20080103.17.new/ask.c	2008-01-03 17:50:33.000000000 +0100
 @@ -87,6 +87,38 @@
      return answer;
  }
@@ -66,9 +66,9 @@ diff -urN poldek/ask.c poldek.new/ask.c
      ctx->data_choose_equiv_fn = NULL;
      ctx->choose_equiv_fn = term_choose_pkg;
  }
-diff -urN poldek/install/requirements.c poldek.new/install/requirements.c
---- poldek/install/requirements.c	2007-07-12 23:29:26.000000000 +0200
-+++ poldek.new/install/requirements.c	2007-11-18 18:42:27.000000000 +0100
+diff -urN poldek-0.21-cvs20080103.17/install/requirements.c poldek-0.21-cvs20080103.17.new/install/requirements.c
+--- poldek-0.21-cvs20080103.17/install/requirements.c	2007-07-12 23:29:26.000000000 +0200
++++ poldek-0.21-cvs20080103.17.new/install/requirements.c	2008-01-03 17:50:33.000000000 +0100
 @@ -244,46 +244,94 @@
  }
  
@@ -194,9 +194,9 @@ diff -urN poldek/install/requirements.c poldek.new/install/requirements.c
      
      for (i=0; i < n_array_size(reqs); i++) {
          struct capreq *req = n_array_nth(reqs, i);
-diff -urN poldek/lib_init.c poldek.new/lib_init.c
---- poldek/lib_init.c	2007-07-09 20:31:14.000000000 +0200
-+++ poldek.new/lib_init.c	2007-11-17 22:42:56.000000000 +0100
+diff -urN poldek-0.21-cvs20080103.17/lib_init.c poldek-0.21-cvs20080103.17.new/lib_init.c
+--- poldek-0.21-cvs20080103.17/lib_init.c	2007-07-09 20:31:14.000000000 +0200
++++ poldek-0.21-cvs20080103.17.new/lib_init.c	2008-01-03 17:50:33.000000000 +0100
 @@ -1226,6 +1226,15 @@
                  ctx->data_ts_confirm_fn = vv;
              break;
@@ -213,22 +213,20 @@ diff -urN poldek/lib_init.c poldek.new/lib_init.c
          case POLDEK_CONF_CHOOSEEQUIV_CB:
              if ((vv = va_arg(ap, void*)))
                  ctx->choose_equiv_fn = vv;
-diff -urN poldek/poldek.h poldek.new/poldek.h
---- poldek/poldek.h	2007-07-01 23:04:26.000000000 +0200
-+++ poldek.new/poldek.h	2007-11-17 21:33:31.000000000 +0100
-@@ -53,7 +53,8 @@
- #define POLDEK_CONF_GOODBYE_CB      22
- #define POLDEK_CONF_CONFIRM_CB      23
+diff -urN poldek-0.21-cvs20080103.17/poldek.h poldek-0.21-cvs20080103.17.new/poldek.h
+--- poldek-0.21-cvs20080103.17/poldek.h	2007-07-11 00:56:17.000000000 +0200
++++ poldek-0.21-cvs20080103.17.new/poldek.h	2008-01-03 17:57:35.000000000 +0100
+@@ -55,6 +55,7 @@
  #define POLDEK_CONF_TSCONFIRM_CB    24
--#define POLDEK_CONF_CHOOSEEQUIV_CB  25
-+#define POLDEK_CONF_SUGSCONFIRM_CB  25
-+#define POLDEK_CONF_CHOOSEEQUIV_CB  26
+ #define POLDEK_CONF_CHOOSEEQUIV_CB  25
+ #define POLDEK_CONF_VFILEPROGRESS   26
++#define POLDEK_CONF_SUGSCONFIRM_CB  27
  
  int poldek_configure(struct poldek_ctx *ctx, int param, ...);
  
-diff -urN poldek/poldek_intern.h poldek.new/poldek_intern.h
---- poldek/poldek_intern.h	2007-07-08 18:59:15.000000000 +0200
-+++ poldek.new/poldek_intern.h	2007-11-17 22:47:39.000000000 +0100
+diff -urN poldek-0.21-cvs20080103.17/poldek_intern.h poldek-0.21-cvs20080103.17.new/poldek_intern.h
+--- poldek-0.21-cvs20080103.17/poldek_intern.h	2007-07-08 18:59:15.000000000 +0200
++++ poldek-0.21-cvs20080103.17.new/poldek_intern.h	2008-01-03 17:55:52.000000000 +0100
 @@ -38,6 +38,10 @@
      void *data_ts_confirm_fn;
      int  (*ts_confirm_fn)(void *data, const struct poldek_ts *ts); /* confirm transaction */
@@ -240,20 +238,19 @@ diff -urN poldek/poldek_intern.h poldek.new/poldek_intern.h
      void *data_choose_equiv_fn;
      int  (*choose_equiv_fn)(void *data, const struct poldek_ts *ts,
                              const char *cap, tn_array *pkgs, int hint);
-@@ -74,6 +78,10 @@
+@@ -74,6 +78,9 @@
  
  int poldek__ts_confirm(const struct poldek_ts *ts);
  
 +int poldek__sugs_confirm(const struct poldek_ts *ts,
 +                    int default_answer, const char *message);
 +
-+
  int poldek__choose_equiv(const struct poldek_ts *ts,
                           const char *capname, tn_array *pkgs, struct pkg *hint);
  
-diff -urN poldek/poldek_ts.c poldek.new/poldek_ts.c
---- poldek/poldek_ts.c	2007-07-11 00:56:17.000000000 +0200
-+++ poldek.new/poldek_ts.c	2007-11-17 22:56:19.000000000 +0100
+diff -urN poldek-0.21-cvs20080103.17/poldek_ts.c poldek-0.21-cvs20080103.17.new/poldek_ts.c
+--- poldek-0.21-cvs20080103.17/poldek_ts.c	2007-07-11 00:56:17.000000000 +0200
++++ poldek-0.21-cvs20080103.17.new/poldek_ts.c	2008-01-03 17:56:33.000000000 +0100
 @@ -54,6 +54,7 @@
  
  extern int poldek_term_confirm(int default_answer, const char *msg);
