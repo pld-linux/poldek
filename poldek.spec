@@ -9,7 +9,7 @@
 %define	ver_rpm	4.4.9-1
 #
 %define		_snap	20070703.00
-%define		_rel	10
+%define		_rel	11
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -22,6 +22,10 @@ Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
+%if %{with imode}
+Source4:	%{name}.desktop
+Source5:	%{name}.png
+%endif
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
@@ -232,6 +236,13 @@ sed '
 
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
 
+%if %{with imode}
+# add desktop file and icon
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
+install %{SOURCE4} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+install %{SOURCE5} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+%endif
+
 # get rid of non-pld sources
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora}-source.conf
 # include them in %doc
@@ -326,6 +337,10 @@ fi
 %{_mandir}/man1/%{name}*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
 %{_infodir}/poldek.info*
+%if %{with imode}
+%{_desktopdir}/%{name}.desktop
+%{_pixmapsdir}/%{name}.png
+%endif
 
 %if !%{with static}
 %files libs
