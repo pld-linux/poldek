@@ -17,7 +17,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	20
+Release:	21
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -78,6 +78,7 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
 Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
+Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
