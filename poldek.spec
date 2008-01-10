@@ -8,16 +8,16 @@
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.9-1
 #
-%define		_snap	20070703.00
-%define		_rel	11
+%define		snap	20070703.00
+%define		rel	12
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
 Version:	0.21
-Release:	0.%{_snap}.%{_rel}
+Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{_snap}.tar.bz2
+Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 # Source0-md5:	dae23dec560fad954abf157fd250e4c3
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
@@ -74,6 +74,7 @@ Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
 Requires:	rpm >= %{ver_rpm}
+Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
 # vf* scripts use sed
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -156,7 +157,7 @@ Python modules for poldek.
 Moduły języka Python dla poldka.
 
 %prep
-%setup -q -n %{name}-%{version}%{?_snap:-cvs%{_snap}}
+%setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
 %patch1 -p1
 %patch2 -p1
 %ifarch %{x8664}
