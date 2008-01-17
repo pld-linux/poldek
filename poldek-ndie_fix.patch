@@ -1,0 +1,44 @@
+Index: install/install.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/install/install.c,v
+retrieving revision 1.10
+diff -u -r1.10 install.c
+--- install/install.c	1 Jul 2007 21:04:26 -0000	1.10
++++ install/install.c	4 Jul 2007 13:41:03 -0000
+@@ -327,6 +327,12 @@
+     return nmarked;
+ }
+ 
++static void ts_reset(struct poldek_ts *ts) 
++{
++    pkgmark_massset(ts->pms, 0, PKGMARK_MARK | PKGMARK_DEP);
++    n_hash_clean(ts->ts_summary);
++}
++
+ int in_do_poldek_ts_install(struct poldek_ts *ts)
+ {
+     int i, nmarked = 0, nerr = 0, n, is_particle;
+@@ -422,7 +428,7 @@
+             if (!do_install(&ictx))
+                 nerr++;
+ 
+-            pkgmark_massset(ts->pms, 0, PKGMARK_MARK | PKGMARK_DEP);
++            ts_reset(ictx.ts);
+             install_ctx_reset(&ictx);
+         }
+     }
+Index: log.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/log.c,v
+retrieving revision 1.32
+diff -u -r1.32 log.c
+--- log.c	2 Jul 2007 17:08:38 -0000	1.32
++++ log.c	4 Jul 2007 13:44:04 -0000
+@@ -173,7 +173,6 @@
+     /* auto line break for errors and warnings */
+     if (!last_endlined && !is_continuation && (pri & (LOGERR|LOGWARN))) {
+         buf[buf_len++] = '\n';
+-        n_assert(0);
+     }
+     
+     last_endlined = is_endlined;

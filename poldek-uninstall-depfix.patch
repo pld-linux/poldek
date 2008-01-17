@@ -1,0 +1,174 @@
+Index: capreq.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/capreq.c,v
+retrieving revision 1.44
+diff -u -r1.44 capreq.c
+--- capreq.c	21 Jun 2007 16:47:45 -0000	1.44
++++ capreq.c	29 Jun 2007 20:10:22 -0000
+@@ -59,7 +59,7 @@
+     return strcmp(capreq_name(cr1), capreq_name(cr2));
+ }
+ 
+-__inline__
++__inline__ static
+ int capreq_cmp2name(struct capreq *cr1, const char *name)
+ {
+     return strcmp(capreq_name(cr1), name);
+@@ -427,9 +427,24 @@
+ __inline__
+ int capreq_arr_find(tn_array *capreqs, const char *name)
+ {
++    /* capreq_cmp2name is compilant with capreq_cmp_name_evr */
++    if (!n_array_is_sorted(capreqs))
++        n_array_sort(capreqs);  
++    
+     return n_array_bsearch_idx_ex(capreqs, name,
+                                   (tn_fn_cmp)capreq_cmp2name);
+ }
++
++__inline__
++int capreq_arr_contains(tn_array *capreqs, const char *name)
++{
++    if (!n_array_is_sorted(capreqs))
++        n_array_sort(capreqs);  /* capreq_cmp2name */
++    
++    return n_array_bsearch_idx_ex(capreqs, name,
++                                  (tn_fn_cmp)capreq_cmp2name) > -1;
++}
++
+ 
+ tn_buf *capreq_arr_join(tn_array *capreqs, tn_buf *nbuf, const char *sep)
+ {
+Index: capreq.h
+===================================================================
+RCS file: /cvsroot/poldek/poldek/capreq.h,v
+retrieving revision 1.30
+diff -u -r1.30 capreq.h
+--- capreq.h	21 Jun 2007 22:29:49 -0000	1.30
++++ capreq.h	29 Jun 2007 20:10:22 -0000
+@@ -117,12 +117,12 @@
+ int capreq_strcmp_name_evr(struct capreq *pr1, struct capreq *pr2);
+ 
+ int capreq_cmp_name(struct capreq *cr1, struct capreq *cr2);
+-int capreq_cmp2name(struct capreq *pr1, const char *name);
+ int capreq_cmp_name_evr(struct capreq *cr1, struct capreq *cr2);
+ 
+ #ifndef SWIG
+ tn_array *capreq_arr_new(int size);
+-int capreq_arr_find(tn_array *capreqs, const char *name);
++int capreq_arr_find(tn_array *capreqs, const char *name); /* returns index */
++int capreq_arr_contains(tn_array *capreqs, const char *name); /* returns bool */
+ tn_buf *capreq_arr_join(tn_array *capreqs, tn_buf *nbuf, const char *sep);
+ 
+ int capreq_arr_store_n(tn_array *arr);
+Index: libpoldek.sym
+===================================================================
+RCS file: /cvsroot/poldek/poldek/libpoldek.sym,v
+retrieving revision 1.28
+diff -u -r1.28 libpoldek.sym
+--- libpoldek.sym	28 Jun 2007 22:28:21 -0000	1.28
++++ libpoldek.sym	29 Jun 2007 20:10:22 -0000
+@@ -20,7 +20,6 @@
+ capreq_arr_store
+ capreq_arr_store_n
+ capreq_clone
+-capreq_cmp2name
+ capreq_cmp_name
+ capreq_cmp_name_evr
+ capreq_epoch_
+Index: pkg.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkg.c,v
+retrieving revision 1.115
+diff -u -r1.115 pkg.c
+--- pkg.c	21 Jun 2007 16:47:45 -0000	1.115
++++ pkg.c	29 Jun 2007 20:10:23 -0000
+@@ -920,8 +920,7 @@
+     struct capreq *cnfl = NULL;
+ 
+     DBGF("%s %s%s", pkg_id(pkg), pkg_id(cpkg), isbastard ? " (bastard)" : "");
+-    if (n_array_bsearch_ex(pkg->cnfls, cpkg->name,
+-                           (tn_fn_cmp)capreq_cmp2name) == NULL) {
++    if (!capreq_arr_contains(pkg->cnfls, cpkg->name)) {
+         cnfl = capreq_new(pkg->na, cpkg->name, cpkg->epoch, cpkg->ver,
+                           cpkg->rel, REL_EQ,
+                           (isbastard ? CAPREQ_BASTARD : 0));
+@@ -935,8 +934,7 @@
+ 
+ int pkg_has_pkgcnfl(struct pkg *pkg, struct pkg *cpkg)
+ {
+-    return pkg->cnfls && (n_array_bsearch_ex(pkg->cnfls, cpkg->name,
+-                                             (tn_fn_cmp)capreq_cmp2name));
++    return pkg->cnfls && capreq_arr_contains(pkg->cnfls, cpkg->name);
+ }
+ 
+ struct pkguinf *pkg_xuinf(const struct pkg *pkg, tn_array *langs) 
+Index: pkgdir/pkgdir_dirindex.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/pkgdir/pkgdir_dirindex.c,v
+retrieving revision 1.13
+diff -u -r1.13 pkgdir_dirindex.c
+--- pkgdir/pkgdir_dirindex.c	24 Jun 2007 22:47:27 -0000	1.13
++++ pkgdir/pkgdir_dirindex.c	29 Jun 2007 20:10:23 -0000
+@@ -505,7 +505,7 @@
+ {
+     const char **tl, **tl_save;
+     char val[16 * 1024];
+-    int  vlen, n = 0, nadded = 0;
++    int  vlen, n = 0, nadded = 0, created_here = 0;
+ 
+     n_assert(key[1] == PREFIX_PKGKEY_REQDIR);
+     vlen = sizeof(val);
+@@ -513,15 +513,15 @@
+     if (tl == NULL)
+         return 0;
+     
+-    if (!pkg->reqs)
++    if (!pkg->reqs) {
+         pkg->reqs = capreq_arr_new(n);
+-        
++        created_here = 1;
++    }
++    
+     while (*tl) {
+         const char *dir = *tl;
+         
+-        if (*dir && !n_array_bsearch_ex(pkg->reqs, dir,
+-                                        (tn_fn_cmp)capreq_cmp2name)) {
+-            
++        if (*dir && (created_here || !capreq_arr_contains(pkg->reqs, dir))) {
+             struct capreq *req = capreq_new(pkg->na, dir, 0, NULL, NULL, 0,
+                                             CAPREQ_BASTARD);
+             n_array_push(pkg->reqs, req);
+================================================================
+Index: trurlib/include/trurl/narray.h
+diff -u trurlib/include/trurl/narray.h:1.29 trurlib/include/trurl/narray.h:1.30
+--- trurlib/include/trurl/narray.h:1.29	Tue Jun 19 23:52:49 2007
++++ trurlib/include/trurl/narray.h	Sat Jun 30 09:39:51 2007
+@@ -155,7 +155,9 @@
+ /* internal macros, do not use them */
+ #define TN_ARRAY_set_sorted(arr) ((arr)->flags |= TN_ARRAY_INTERNAL_ISSORTED)
+ #define TN_ARRAY_clr_sorted(arr) ((arr)->flags &= ~TN_ARRAY_INTERNAL_ISSORTED)
+-#define TN_ARRAY_is_sorted(arr)  ((arr)->flags &  TN_ARRAY_INTERNAL_ISSORTED)
++
++
++#define n_array_is_sorted(arr)   ((arr)->flags & TN_ARRAY_INTERNAL_ISSORTED)
+ 
+ tn_array *n_array_grow_priv_(tn_array *arr, size_t req_size);
+ #ifndef SWIG
+
+================================================================
+Index: trurlib/n_array_sorts.c
+diff -u trurlib/n_array_sorts.c:1.6 trurlib/n_array_sorts.c:1.7
+--- trurlib/n_array_sorts.c:1.6	Tue Nov 16 20:01:40 2004
++++ trurlib/n_array_sorts.c	Sat Jun 30 09:39:51 2007
+@@ -121,7 +121,7 @@
+ 
+     cmpf = autosort(arr, cmpf, &set_sorted);
+ 
+-    if ((arr->flags & TN_ARRAY_AUTOSORTED) && TN_ARRAY_is_sorted(arr))
++    if ((arr->flags & TN_ARRAY_AUTOSORTED) && n_array_is_sorted(arr))
+         return arr;
+     
+     switch (alg) {
+
