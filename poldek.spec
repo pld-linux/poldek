@@ -5,9 +5,8 @@
 %bcond_without	python	# don't build python bindings
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.3.27-1
-%define	ver_rpm	4.4.9-1
-#
+%define		ver_db	4.2.50-1
+%define		ver_rpm	4.4.1
 %define		snap	20070703.00
 %define		rel	13
 Summary:	RPM packages management helper tool
