@@ -17,7 +17,7 @@ Summary:	RPM packages management helper tool
 Summary(pl):	Pomocnicze narzêdzie do zarz±dzania pakietami RPM
 Name:		poldek
 Version:	0.20
-Release:	21
+Release:	22
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://poldek.pld-linux.org/download/%{name}-%{version}.tar.bz2
@@ -284,19 +284,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
-
-%triggerpostun -- poldek <= 0.18.3-5
-if [ -f /etc/poldek.conf ]; then
-	sed -i -e '/^promoteepoch:.*yes/s/^/#/' /etc/poldek.conf
-fi
-
-# otherwise don't touch
-%ifarch i386 i586 i686 ppc sparc alpha amd64 athlon
-%triggerpostun -- poldek <= 0.18.7-1
-if [ -f /etc/poldek.conf ]; then
-	sed -i -e 's://ftp.pld-linux.org://ftp.ac.pld-linux.org:g' /etc/poldek.conf
-fi
-%endif
 
 %triggerpostun -- poldek < 0.19.0-1.20050613.22.0
 if [ -f /etc/poldek.conf.rpmsave ]; then
