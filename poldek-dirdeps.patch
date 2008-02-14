@@ -5,7 +5,7 @@
  # unless you know what you are doing
  
 +# RPM 4.4.6 introduces auto dependencies based on package directories. Option controls this feature.
-+#auto directory dependencies = no
++auto directory dependencies = no
 +
  # Automatically install packages required by installed ones.
  #follow = yes
