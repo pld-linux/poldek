@@ -33,6 +33,7 @@ Patch7:		%{name}-nohold-fix.patch
 Patch8:		%{name}-dir-dot.patch
 Patch9:		%{name}-suggests-one-package.patch
 Patch10:	%{name}-reversed-prompt.patch
+Patch11:	%{name}-abort-on-upgrade.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -171,6 +172,7 @@ Moduły języka Python dla poldka.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
