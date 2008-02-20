@@ -7,7 +7,7 @@
 %define	ver_db	4.2.50-1
 %define	ver_rpm	4.4.9-31
 %define	snap	20070703.00
-%define	rel		13
+%define	rel		14
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -20,6 +20,9 @@ Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
+Source4:	%{name}.desktop
+Source5:	%{name}.png
+Patch0:		%{name}-dirdeps.patch
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
@@ -29,7 +32,7 @@ Patch6:		%{name}-install-dist.patch
 Patch7:		%{name}-nohold-fix.patch
 Patch8:		%{name}-dir-dot.patch
 Patch9:		%{name}-suggests-one-package.patch
-Patch10:	%{name}-dirdeps.patch
+Patch10:	%{name}-reversed-prompt.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -155,6 +158,7 @@ Moduły języka Python dla poldka.
 
 %prep
 %setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %ifarch %{x8664}
@@ -235,6 +239,13 @@ sed '
 
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
 
+%if %{with imode}
+# add desktop file and icon
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
+install %{SOURCE4} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+install %{SOURCE5} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+%endif
+
 # get rid of non-pld sources
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora}-source.conf
 # include them in %doc
@@ -252,11 +263,11 @@ rm -f $RPM_BUILD_ROOT%{py_sitedir}/_poldekmod.la
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
+%post	-p	/sbin/postshell
+-/usr/sbin/fix-info-dir -c %{_infodir}
 
-%postun
-[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
+%postun	-p	/sbin/postshell
+-/usr/sbin/fix-info-dir -c %{_infodir}
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
@@ -316,6 +327,10 @@ fi
 %{_mandir}/man1/%{name}*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
 %{_infodir}/poldek.info*
+%if %{with imode}
+%{_desktopdir}/%{name}.desktop
+%{_pixmapsdir}/%{name}.png
+%endif
 
 %if !%{with static}
 %files libs
