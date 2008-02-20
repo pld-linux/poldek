@@ -22,10 +22,8 @@ Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
-%if %{with imode}
 Source4:	%{name}.desktop
 Source5:	%{name}.png
-%endif
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
