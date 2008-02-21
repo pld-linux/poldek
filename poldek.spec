@@ -8,8 +8,8 @@
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.9-1
 #
-%define		_snap	20080103.17
-%define		_rel	1.1
+%define		_snap	20080220.23
+%define		_rel	1
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -18,7 +18,7 @@ Release:	0.%{_snap}.%{_rel}
 License:	GPL v2
 Group:		Applications/System
 Source0:	%{name}-%{version}-cvs%{_snap}.tar.bz2
-# Source0-md5:	0a5d9d9d6b981e1bda8a4687c4bc8683
+# Source0-md5:	a9b9eff803f766a004a9e45fa89e5d63
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
@@ -26,8 +26,6 @@ Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
 Patch4:		%{name}-build-fix.patch
-Patch5:		%{name}-dir-dot.patch
-Patch6:		%{name}-suggests-one-package.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -156,8 +154,6 @@ Moduły języka Python dla poldka.
 %patch3 -p1
 %endif
 %patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
@@ -174,8 +170,7 @@ cp -f config.sub trurlib
 	%{!?with_imode:--disable-imode} \
 	--enable-nls \
 	%{?with_python:--with-python}
-%{__make} \
-	CFLAGS="%{rpmcflags} -DHAVE_HEADER_MAGIC_YES"
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
