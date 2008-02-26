@@ -8,17 +8,17 @@
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.9-1
 #
-%define		snap	20070703.00
-%define		rel	15
+%define		snap	20080225.00
+%define		rel	0.1
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.21
+Version:	0.30
 Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	dae23dec560fad954abf157fd250e4c3
+Source0:	%{name}-%{version}-cvs%{snap}.tar.bz2
+# Source0-md5:	22b2cfb19cebd123e8d8148fb6ca27de
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
@@ -27,13 +27,6 @@ Source5:	%{name}.png
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
-Patch4:		%{name}-ndie_fix.patch
-Patch5:		%{name}-uri-escape-fix.patch
-Patch6:		%{name}-install-dist.patch
-Patch7:		%{name}-nohold-fix.patch
-Patch8:		%{name}-dir-dot.patch
-Patch9:		%{name}-suggests-one-package.patch
-Patch10:	%{name}-reversed-prompt.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -162,13 +155,6 @@ Moduły języka Python dla poldka.
 %ifarch %{x8664}
 %patch3 -p1
 %endif
-%patch4 -p0
-%patch5 -p0
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
