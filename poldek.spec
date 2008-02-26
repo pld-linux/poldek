@@ -166,6 +166,7 @@ find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 %{__automake}
 cp -f config.sub trurlib
 
+CPPFLAGS="-std=gnu99"
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
