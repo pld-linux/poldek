@@ -1,12 +1,11 @@
---- poldek-0.20/conf/poldek.conf~	2006-05-15 16:37:25.044005851 +0300
-+++ poldek-0.20/conf/poldek.conf	2006-05-15 16:38:11.555045489 +0300
-@@ -135,7 +135,8 @@
+--- poldek/conf/poldek.conf~	2008-02-26 17:10:23.000000000 +0100
++++ poldek/conf/poldek.conf	2008-02-26 17:11:24.789742706 +0100
+@@ -138,7 +138,7 @@
  
  # Ignore package list - packages fits given mask will be invisible.
- # ignore   = *-smp-* foo*
--#ignore = 
-+# we ignore vserver-packages by default, util-vserver has it's own poldek config.
+ # ignore = *-smp-* foo*
+-# ignore = vserver-packages
 +ignore = vserver-packages
+ #ignore = 
  
  # Conflicts with already installed packages are treated as resolved 
- # if at least one of multiple-installed package satisfies conflict. 
