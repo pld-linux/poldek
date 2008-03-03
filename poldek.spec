@@ -28,6 +28,7 @@ Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
 Patch4:		%{name}-bug117hack.patch
+Patch5:		%{name}-missing-symbol.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -157,6 +158,7 @@ Moduły języka Python dla poldka.
 %patch3 -p1
 %endif
 %patch4 -p0
+%patch5 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
@@ -322,7 +324,16 @@ fi
 %if !%{with static}
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%attr(755,root,root) %{_libdir}/libpoclidek.so.*.*.*
+%attr(755,root,root) %{_libdir}/libpoldek.so.*.*.*
+%attr(755,root,root) %{_libdir}/libtndb.so.*.*.*
+%attr(755,root,root) %{_libdir}/libtrurl.so.*.*.*
+%attr(755,root,root) %{_libdir}/libvfile.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libpoclidek.so.0
+%attr(755,root,root) %ghost %{_libdir}/libpoldek.so.2
+%attr(755,root,root) %ghost %{_libdir}/libtndb.so.0
+%attr(755,root,root) %ghost %{_libdir}/libtrurl.so.0
+%attr(755,root,root) %ghost %{_libdir}/libvfile.so.0
 %endif
 
 %files devel
