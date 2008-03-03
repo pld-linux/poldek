@@ -180,7 +180,7 @@ CPPFLAGS="-std=gnu99"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -236,7 +236,7 @@ install %{SOURCE5} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # get rid of non-pld sources
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora}-source.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora,centos}-source.conf
 # include them in %doc
 rm -rf configs
 cp -a conf configs
@@ -309,6 +309,7 @@ fi
 %defattr(644,root,root,755)
 %doc README* NEWS TODO configs/
 %dir %{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}/repos.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf
 %attr(755,root,root) %{_bindir}/*
 %dir %{_libdir}/%{name}
