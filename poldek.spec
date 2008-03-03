@@ -7,7 +7,7 @@
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.9-1
 %define	snap	20080225.00
-%define	rel		0.2
+%define	rel		0.3
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -26,7 +26,9 @@ Patch0:		%{name}-dirdeps.patch
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
-Patch4:		%{name}-abort-on-upgrade.patch
+Patch4:		%{name}-bug117hack.patch
+Patch5:		%{name}-missing-symbol.patch
+Patch6:		%{name}-abort-on-upgrade.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -158,7 +160,9 @@ Moduły języka Python dla poldka.
 %ifarch %{x8664}
 %patch3 -p1
 %endif
-%patch4 -p1
+%patch4 -p0
+%patch5 -p1
+%patch6 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
@@ -325,7 +329,16 @@ fi
 %if !%{with static}
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%attr(755,root,root) %{_libdir}/libpoclidek.so.*.*.*
+%attr(755,root,root) %{_libdir}/libpoldek.so.*.*.*
+%attr(755,root,root) %{_libdir}/libtndb.so.*.*.*
+%attr(755,root,root) %{_libdir}/libtrurl.so.*.*.*
+%attr(755,root,root) %{_libdir}/libvfile.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libpoclidek.so.0
+%attr(755,root,root) %ghost %{_libdir}/libpoldek.so.2
+%attr(755,root,root) %ghost %{_libdir}/libtndb.so.0
+%attr(755,root,root) %ghost %{_libdir}/libtrurl.so.0
+%attr(755,root,root) %ghost %{_libdir}/libvfile.so.0
 %endif
 
 %files devel
