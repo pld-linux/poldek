@@ -323,11 +323,11 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 fi
 
 %triggerpostun -- poldek < 0.21-0.20070703.00.15.7
-if ! grep -q '^%%includedir' %{_sysconfdir}/%{name}/poldek.conf; then
-	%{__sed} -i -e '/^%include %%{_distro}-source.conf/{
+if ! grep -q '^%%includedir repos.d' %{_sysconfdir}/%{name}/poldek.conf; then
+	%{__sed} -i -e '/^%%include %%{_distro}-source.conf/{
 		a
 		a# /etc/poldek/repos.d/*.conf
-		a%includedir repos.d
+		a%%includedir repos.d
 	}' %{_sysconfdir}/%{name}/poldek.conf
 fi
 
