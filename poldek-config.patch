@@ -1,6 +1,16 @@
---- poldek-0.20/conf/poldek.conf	2006-03-10 16:45:19.000000000 +0200
-+++ poldek-0.20/conf/poldek.conf	2007-01-31 17:48:31.288247465 +0200
-@@ -127,11 +127,11 @@
+--- poldek-0.20/conf/poldek.conf	2007-01-31 17:48:31.288247465 +0200
++++ poldek-0.21-cvs20070703.00/conf/poldek.conf	2008-03-24 22:52:57.884054072 +0200
+@@ -10,6 +10,9 @@
+ # [global] section, it will be ignored anyway. 
+ %include %{_distro}-source.conf
+ 
++# /etc/poldek/repos.d/*.conf
++%includedir repos.d
++
+ # local sources
+ %include source.conf
+ 
+@@ -127,11 +130,11 @@
  #confirm removal = yes
  
  # Let the user select package among equivalents.
