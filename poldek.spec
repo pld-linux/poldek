@@ -1,15 +1,13 @@
-#
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.3.27-1
-%define	ver_rpm	4.4.9-1
-#
-%define		snap	20070703.00
-%define		rel	15
+%define	ver_db	4.2.50-1
+%define	ver_rpm	4.4.9-31
+%define	snap	20070703.00
+%define	rel		17
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -24,6 +22,7 @@ Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
 Source4:	%{name}.desktop
 Source5:	%{name}.png
+Patch0:		%{name}-dirdeps.patch
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
 Patch3:		%{name}-multilib.patch
@@ -34,6 +33,9 @@ Patch7:		%{name}-nohold-fix.patch
 Patch8:		%{name}-dir-dot.patch
 Patch9:		%{name}-suggests-one-package.patch
 Patch10:	%{name}-reversed-prompt.patch
+Patch11:	%{name}-abort-on-upgrade.patch
+Patch12:	%{name}-nonoorder.patch
+Patch13:	%{name}-bug-79.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -52,6 +54,7 @@ BuildRequires:	popt-devel
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
+BuildRequires:	sed >= 4.0
 BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
@@ -72,6 +75,7 @@ Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}
+Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
 # vf* scripts use sed
@@ -157,6 +161,7 @@ Moduły języka Python dla poldka.
 
 %prep
 %setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %ifarch %{x8664}
@@ -169,6 +174,9 @@ Moduły języka Python dla poldka.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p0
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
@@ -189,7 +197,7 @@ cp -f config.sub trurlib
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -202,25 +210,21 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-%ifarch i486 i686 ppc sparc alpha athlon
+%ifarch i386 i586 i686 ppc sparc alpha athlon
 %define		_ftp_arch	%{_target_cpu}
-%else
+%endif
 %ifarch %{x8664}
-%define		_ftp_arch	x86_64
+%define		_ftp_arch	amd64
 %define		_ftp_alt_arch	i686
-%else
-%ifarch i586
-%define		_ftp_arch	i486
-%else
+%endif
+%ifarch i486
+%define		_ftp_arch	i386
+%endif
 %ifarch pentium2 pentium3 pentium4
 %define		_ftp_arch	i686
-%else
+%endif
 %ifarch sparcv9 sparc64
 %define		_ftp_arch	sparc
-%endif
-%endif
-%endif
-%endif
 %endif
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
@@ -245,7 +249,7 @@ install %{SOURCE5} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # get rid of non-pld sources
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora}-source.conf
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora,centos}-source.conf
 # include them in %doc
 rm -rf configs
 cp -a conf configs
@@ -314,10 +318,20 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 	fi
 fi
 
+%triggerpostun -- poldek < 0.21-0.20070703.00.15.7
+if ! grep -q '^%%includedir repos.d' %{_sysconfdir}/%{name}/poldek.conf; then
+	%{__sed} -i -e '/^%%include %%{_distro}-source.conf/{
+		a
+		a# /etc/poldek/repos.d/*.conf
+		a%%includedir repos.d
+	}' %{_sysconfdir}/%{name}/poldek.conf
+fi
+
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc README* NEWS TODO configs/
 %dir %{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}/repos.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf
 %attr(755,root,root) %{_bindir}/*
 %dir %{_libdir}/%{name}
@@ -333,7 +347,16 @@ fi
 %if !%{with static}
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%attr(755,root,root) %{_libdir}/libpoclidek.so.*.*.*
+%attr(755,root,root) %{_libdir}/libpoldek.so.*.*.*
+%attr(755,root,root) %{_libdir}/libtndb.so.*.*.*
+%attr(755,root,root) %{_libdir}/libtrurl.so.*.*.*
+%attr(755,root,root) %{_libdir}/libvfile.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libpoclidek.so.0
+%attr(755,root,root) %ghost %{_libdir}/libpoldek.so.2
+%attr(755,root,root) %ghost %{_libdir}/libtndb.so.0
+%attr(755,root,root) %ghost %{_libdir}/libtrurl.so.0
+%attr(755,root,root) %ghost %{_libdir}/libvfile.so.0
 %endif
 
 %files devel
