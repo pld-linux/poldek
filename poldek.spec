@@ -7,7 +7,7 @@
 %define	ver_db	4.2.50-1
 %define	ver_rpm	4.4.9-31
 %define	snap	20070703.00
-%define	rel		17
+%define	rel		18
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -25,7 +25,7 @@ Source5:	%{name}.png
 Patch0:		%{name}-dirdeps.patch
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
-Patch3:		%{name}-multilib.patch
+
 Patch4:		%{name}-ndie_fix.patch
 Patch5:		%{name}-uri-escape-fix.patch
 Patch6:		%{name}-install-dist.patch
@@ -164,9 +164,6 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%ifarch %{x8664}
-%patch3 -p1
-%endif
 %patch4 -p0
 %patch5 -p0
 %patch6 -p1
@@ -231,12 +228,12 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
 sed -e '
 	s|%%ARCH%%|%{_ftp_arch}|g
-' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-source.conf
+' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 
 %ifarch %{x8664}
 sed '
 	s|%%ARCH%%|%{_ftp_alt_arch}|g
-' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/pld-multilib-source.conf
+' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 %endif
 
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
@@ -248,8 +245,8 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
 install %{SOURCE5} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
-# get rid of non-pld sources
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora,centos}-source.conf
+# sources we don't package
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,pld,fedora,centos}-source.conf
 # include them in %doc
 rm -rf configs
 cp -a conf configs
@@ -318,14 +315,33 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 	fi
 fi
 
-%triggerpostun -- poldek < 0.21-0.20070703.00.15.7
+%triggerpostun -- poldek < 0.21-0.20070703.00.17.4
 if ! grep -q '^%%includedir repos.d' %{_sysconfdir}/%{name}/poldek.conf; then
-	%{__sed} -i -e '/^%%include %%{_distro}-source.conf/{
+	%{__sed} -i -e '/^%%include source.conf/{
 		a
 		a# /etc/poldek/repos.d/*.conf
 		a%%includedir repos.d
 	}' %{_sysconfdir}/%{name}/poldek.conf
 fi
+
+%{__sed} -i -e '/%%include %%{_distro}-source.conf/d' %{_sysconfdir}/%{name}/poldek.conf
+%{__sed} -i -e '/%%include %%{_distro}-multilib-source.conf/d' %{_sysconfdir}/%{name}/poldek.conf
+
+if [ -f %{_sysconfdir}/%{name}/pld-source.conf.rpmsave ]; then
+	cp -f %{_sysconfdir}/%{name}/repos.d/pld.conf{,.rpmnew}
+	mv -f %{_sysconfdir}/%{name}/pld-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld.conf
+	%{__sed} -i -e 's,_pld_arch,_arch,g;s,_ac_idxtype,_type,g;s,_pld_prefix,_prefix,g' \
+		 %{_sysconfdir}/%{name}/repos.d/pld.conf
+fi
+
+%ifarch %{x8664}
+if [ -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave ]; then
+	cp -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf{,.rpmnew}
+	mv -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+	%{__sed} -i -e 's,_pld_arch,_arch,g;s,_ac_idxtype,_type,g;s,_pld_prefix,_prefix,g' \
+		 %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+fi
+%endif
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -333,6 +349,7 @@ fi
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/repos.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/repos.d/*.conf
 %attr(755,root,root) %{_bindir}/*
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/*
@@ -344,7 +361,7 @@ fi
 %{_pixmapsdir}/%{name}.png
 %endif
 
-%if !%{with static}
+%if %{without static}
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libpoclidek.so.*.*.*
