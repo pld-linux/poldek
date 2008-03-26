@@ -1,20 +1,21 @@
---- poldek-0.21-cvs20070703.00/conf/poldek.conf	2008-03-24 22:52:57.884054072 +0200
-+++ poldek-0.21-cvs20070703.00/conf/poldek.conf	2008-03-24 23:22:01.912491689 +0200
-@@ -7,9 +7,12 @@
- _distro  = pld
+--- poldek-0.21-cvs20070703.00/conf/poldek.conf	2008-03-24 23:22:01.912491689 +0200
++++ poldek-0.21-cvs20070703.00/conf/poldek.conf	2008-03-26 14:08:42.511863910 +0200
+@@ -3,12 +3,9 @@
+ # Some macros. Macros are local, they are not visible in included files
+ # and macros declared in them are not visible to includer.
+ # Macros names starts with underscore '_'.
+-#
+-_distro  = pld
  
- # Both local and remote files may be included. Included files may not contain
+-# Both local and remote files may be included. Included files may not contain
 -# [global] section, it will be ignored anyway. 
-+# [global] section, it will be ignored anyway.
- %include %{_distro}-source.conf
- 
+-%include %{_distro}-source.conf
 +# /etc/poldek/repos.d/*.conf
 +%includedir repos.d
-+
+ 
  # local sources
  %include source.conf
- 
-@@ -30,20 +33,20 @@
+@@ -30,20 +27,20 @@
  # Switch to ordinary user at startup when executed by root
  #runas = poldek
  
@@ -39,7 +40,7 @@
  # description.
  #auto zlib in rpm = yes
  
-@@ -53,24 +56,24 @@
+@@ -53,24 +50,24 @@
  # Do not save given paths into created indexes. This option may significantly
  # reduce index size. Example (notice missing starting '/'):
  # exclude path = usr/share/doc:usr/share/man:usr/src
@@ -71,7 +72,7 @@
  # by external utilities can be configured also. The syntax is:
  # default fetcher = PROTOCOL[,PROTOCOL...]:FETCHER_NAME
  
-@@ -89,15 +92,15 @@
+@@ -89,15 +86,15 @@
  # proxy = PROTOCOL[,PROTOCOL...]:PROXY_URL
  # Example:
  # proxy = http: http://w3cache.foo.org:8080
@@ -90,7 +91,7 @@
  # file if connection breaks. This option tells it how many times
  # it should try.
  #vfile retries = 128
-@@ -105,7 +108,7 @@
+@@ -105,7 +102,7 @@
  
  ### Installation options
  
@@ -99,7 +100,7 @@
  # installations.
  #particle install = yes
  
-@@ -127,19 +130,19 @@
+@@ -127,19 +124,19 @@
  #confirm removal = yes
  
  # Let the user select package among equivalents.
@@ -123,7 +124,7 @@
  # rpm doesn't support such cases, so --pm-nodeps is needed (use with
  # care).
  #allow duplicates = yes
-@@ -152,11 +155,13 @@
+@@ -152,11 +149,13 @@
  # Do not install any documentation:
  # rpmdef  = _netsharedpath /usr/share/info:/usr/share/man
  # rpmdef  = _excludedocs 1
@@ -139,7 +140,7 @@
  # unless you know what you are doing
  
  # RPM 4.4.6 introduces auto dependencies based on package directories. Option controls this feature.
-@@ -169,7 +174,7 @@
+@@ -169,7 +168,7 @@
  # by being uninstalled ones.
  #greedy = yes
  
