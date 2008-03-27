@@ -197,23 +197,19 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
 %ifarch i486 i686 ppc sparc alpha athlon
 %define		_ftp_arch	%{_target_cpu}
-%else
+%endif
 %ifarch %{x8664}
 %define		_ftp_arch	x86_64
 %define		_ftp_alt_arch	i686
-%else
+%endif
 %ifarch i586
 %define		_ftp_arch	i486
-%else
+%endif
 %ifarch pentium2 pentium3 pentium4
 %define		_ftp_arch	i686
-%else
+%endif
 %ifarch sparcv9 sparc64
 %define		_ftp_arch	sparc
-%endif
-%endif
-%endif
-%endif
 %endif
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
