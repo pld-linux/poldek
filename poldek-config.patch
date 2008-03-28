@@ -1,23 +1,22 @@
---- poldek-0.20/conf/poldek.conf	2006-03-10 16:45:19.000000000 +0200
-+++ poldek-0.20/conf/poldek.conf	2007-01-31 17:48:31.288247465 +0200
-@@ -130,10 +130,10 @@
- #confirm removal = yes
+--- poldek-0.30-cvs20080225.00/conf/poldek.conf~	2008-03-27 18:25:49.000000000 +0200
++++ poldek-0.30-cvs20080225.00/conf/poldek.conf	2008-03-27 18:27:35.244886349 +0200
+@@ -3,18 +3,12 @@
+ # Some macros. Macros are local, they are not visible in included files
+ # and macros declared in them are not visible to includer.
+ # Macros names starts with underscore '_'.
+-#
+-_distro  = pld
+-
+-# Both local and remote files may be included. Included files may not contain
+-# [global] section, it will be ignored anyway. 
+-%include %{_distro}-source.conf
  
- # Let the user select package among equivalents.
--#choose equivalents manually = no
-+choose equivalents manually = yes
+ # local sources
+ %include source.conf
  
- # Prevent package listed from being upgraded if they are already installed.
--# hold = kernel*
-+hold = kernel*
- #hold = 
+ # /etc/poldek/repos.d/*.conf
+-#%includedir repos.d
++%includedir repos.d
  
- # Ignore package list - packages fits given mask will be invisible.
---- poldek-0.20/conf/source.conf~	2005-10-28 19:16:24.000000000 +0300
-+++ poldek-0.20/conf/source.conf	2006-05-31 22:45:40.030363503 +0300
-@@ -82,4 +82,4 @@
- #hold   = kernel*
- #ignore = kernel*-smp-*
- #dscr   = pl_PL
--  
-+
+ # External downloaders configuration, not necessary in most cases, cause
+ # to internal HTTP and FTP client.
