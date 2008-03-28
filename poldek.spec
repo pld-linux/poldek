@@ -9,7 +9,7 @@
 %define	ver_rpm	4.4.9-1
 #
 %define		snap	20080225.00
-%define		rel	2
+%define		rel	3
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -26,7 +26,7 @@ Source4:	%{name}.desktop
 Source5:	%{name}.png
 Patch1:		%{name}-vserver-packages.patch
 Patch2:		%{name}-config.patch
-
+Patch3:		%{name}-nonoorder.patch
 Patch4:		%{name}-bug117hack.patch
 Patch5:		%{name}-missing-symbol.patch
 Patch6:		%{name}-abort-on-upgrade.patch
@@ -155,6 +155,7 @@ Moduły języka Python dla poldka.
 %setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 %patch4 -p0
 %patch5 -p1
 %patch6 -p1
