@@ -1,0 +1,11 @@
+--- poldek-0.21-cvs20070703.00/pm/rpm/rpminstall.c~	2008-03-19 21:28:45.000000000 +0200
++++ poldek-0.21-cvs20070703.00/pm/rpm/rpminstall.c	2008-03-19 21:29:42.010639258 +0200
+@@ -374,8 +374,6 @@
+         argv[nargs++] = (char*)ts->rootdir;
+     }
+ 
+-    argv[nargs++] = "--noorder";    /* packages always ordered by me */
+-
+     if (ts->rpmacros) 
+         for (i=0; i<n_array_size(ts->rpmacros); i++) {
+             argv[nargs++] = "--define";

@@ -1,0 +1,49 @@
+Index: install/install.c
+===================================================================
+RCS file: /cvsroot/poldek/poldek/install/install.c,v
+retrieving revision 1.6
+retrieving revision 1.7
+diff -u -r1.6 -r1.7
+--- install/install.c	17 Jun 2007 20:24:47 -0000	1.6
++++ install/install.c	18 Jun 2007 16:12:43 -0000	1.7
+@@ -11,7 +11,7 @@
+ */
+ 
+ /*
+-  $Id$
++  $Id$
+ */
+ 
+ #include <vfile/vfile.h>
+@@ -315,7 +315,8 @@
+ {
+     struct pkg *pkg, *pkg2;
+     int i, n, nmarked = 0;
+-    
++    int multilib = poldek_conf_MULTILIB; /* just for short */
++
+     if (n_array_size(pkgs) < 2)
+         return n_array_size(pkgs);
+     
+@@ -334,14 +335,16 @@
+         
+         if (i == n_array_size(pkgs))
+             break;
+-        
++
+         pkg2 = n_array_nth(pkgs, i);
+         while (pkg_cmp_name(pkg, pkg2) == 0) {
+-            pkg_unmark(pms, pkg2);
+-            DBGF("unmark %s\n", pkg_id(pkg2));
+-
++            if (!multilib || (multilib && pkg_cmp_arch(pkg, pkg2) == 0)) {
++                pkg_unmark(pms, pkg2);
++                DBGF("unmark %s\n", pkg_id(pkg2));
++                n++;
++            }
++            
+             i++;
+-            n++;
+             if (i == n_array_size(pkgs))
+                 break;
+             pkg2 = n_array_nth(pkgs, i);

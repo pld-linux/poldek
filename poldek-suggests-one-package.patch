@@ -1,0 +1,264 @@
+diff -urN poldek/ask.c poldek.new/ask.c
+--- poldek/ask.c	2007-07-08 18:48:11.000000000 +0200
++++ poldek.new/ask.c	2007-11-18 18:55:32.000000000 +0100
+@@ -87,6 +87,38 @@
+     return answer;
+ }
+ 
++static int term_sugs_confirm(void *foo, const struct poldek_ts *ts, int hint,
++                        const char *question) 
++{
++    const char *yn = "[Y/n/c]";
++    int a;
++
++    foo = foo;
++    ts = ts;
++    
++    if (!isatty(STDIN_FILENO))
++        return hint;
++
++    if (hint == 0) /* no */
++        yn = "[N/y/c]";
++
++    poldek_log(LOGINFO, "%s %s", question, yn);
++    
++    a = poldek_term_ask(STDIN_FILENO, "YyNnCc\n", NULL);
++    a = toupper(a);
++    switch(a) {
++        case 'Y': a = 1; break;
++        case 'N': a = 0; break;
++        case 'C': a = -1; break;
++        case '\n': a = hint; break;
++        default:
++            n_assert(0);
++    }
++    
++    msg(-1, "_\n");
++    return a;
++}
++
+ static int term_choose_pkg(void *foo, const struct poldek_ts *ts,
+                            const char *capname, tn_array *pkgs, int hint)
+ {
+@@ -152,6 +184,15 @@
+     return ts->ctx->ts_confirm_fn(ts->ctx->data_ts_confirm_fn, ts);
+ }
+ 
++int poldek__sugs_confirm(const struct poldek_ts *ts, int hint, const char *message)
++{
++    if (ts->ctx->sugs_confirm_fn == NULL)
++        return hint;
++
++    return ts->ctx->sugs_confirm_fn(ts->ctx->data_sugs_confirm_fn, ts, hint, message);
++}
++
++
+ int poldek__choose_equiv(const struct poldek_ts *ts,
+                          const char *capname, tn_array *pkgs, struct pkg *hint)
+ {
+@@ -181,6 +222,9 @@
+     ctx->data_ts_confirm_fn = NULL;
+     ctx->ts_confirm_fn = term_ts_confirm;
+ 
++    ctx->data_sugs_confirm_fn = NULL;
++    ctx->sugs_confirm_fn = term_sugs_confirm;
++
+     ctx->data_choose_equiv_fn = NULL;
+     ctx->choose_equiv_fn = term_choose_pkg;
+ }
+diff -urN poldek/install/requirements.c poldek.new/install/requirements.c
+--- poldek/install/requirements.c	2007-07-12 23:29:26.000000000 +0200
++++ poldek.new/install/requirements.c	2007-11-18 18:42:27.000000000 +0100
+@@ -244,46 +244,94 @@
+ }
+ 
+ /* just append sugs to reqs if user wants to */
+-static tn_array *process_suggets(struct pkg *pkg, struct poldek_ts *ts) 
++static tn_array *process_suggests(struct pkg *pkg, struct install_ctx *ictx) 
+ {
+     char *confirmation, message[2048];
+-    tn_array *reqs;
++    tn_array *reqs, *sugs;
+     tn_buf *nbuf;
+-    int n;
++    int i, j, n;
+     
+     reqs = pkg->reqs;
+     
+-    if (pkg->sugs == NULL || !in_is_user_choosable_equiv(ts))
++    if (pkg->sugs == NULL || !in_is_user_choosable_equiv(ictx->ts))
+         return reqs;
+     
+-    if (!ts->getop(ts, POLDEK_OP_SUGGESTS))
++    if (!ictx->ts->getop(ictx->ts, POLDEK_OP_SUGGESTS))
+         return reqs;
+     
+-    nbuf = capreq_arr_join(pkg->sugs, NULL, NULL);
+-
+-
++    /* Array sugs will contain packages which are suggested and not installed */
++    sugs = capreq_arr_new(n_array_size(pkg->sugs));
++    
++    for (i = 0; i < n_array_size(pkg->sugs); i++)
++    {
++	struct capreq *suggest = n_array_nth(pkg->sugs, i);
++	
++	/* Check if package is already installed */
++	if (!pkgdb_match_req(ictx->ts->db, suggest, ictx->strict, ictx->uninst_set->dbpkgs))
++	{
++	    n_array_push(sugs, suggest);
++	}
++    }
++    
++    if (n_array_size(sugs) == 0)
++	return reqs;
++    
++    nbuf = capreq_arr_join(sugs, NULL, NULL);
+     n = n_snprintf(message, sizeof(message), _("%s suggests installation of: %s"),
+                    pkg_id(pkg), n_buf_ptr(nbuf));
+     n_buf_free(nbuf);
+     
+-    confirmation = ngettext("Try to install it?", "Try to install them?",
+-                            n_array_size(pkg->sugs));    
++    confirmation = ngettext("Try to install it?", "Try to install them?", n_array_size(sugs));
+     n_snprintf(&message[n], sizeof(message) - n, "\n%s", confirmation);
+     
+-    if (poldek__confirm(ts, 0, message)) {
+-        int i;
+-        
+-        reqs = capreq_arr_new(n_array_size(pkg->reqs) + n_array_size(pkg->sugs));
++    if (n_array_size(sugs) > 1)
++    {
++	int answer;
++	
++	answer = poldek__sugs_confirm(ictx->ts, 0, message);
++	
++	/* Install all suggested packages */
++	if (answer == 1)
++	{
++	    reqs = capreq_arr_new(n_array_size(pkg->reqs) + n_array_size(sugs));
+             
+-        for (i=0; i < n_array_size(pkg->reqs); i++)
+-            n_array_push(reqs, n_array_nth(pkg->reqs, i));
++    	    for (i=0; i < n_array_size(pkg->reqs); i++)
++        	n_array_push(reqs, n_array_nth(pkg->reqs, i));
++    	    for (i=0; i < n_array_size(sugs); i++)
++    	        n_array_push(reqs, n_array_nth(sugs, i));
++	    
++    	    n_array_ctl_set_freefn(reqs, NULL); /* "weak" refs */
++    	    
++    	    return reqs;
++	}
++	/* Don't install  */
++	else if (answer == 0)
++	    return reqs;
++    }
++    
++    for (j = 0; j < n_array_size(sugs); j++)
++    {
++	n = n_snprintf(message, sizeof(message), _("%s suggests installation of: %s"),
++                   pkg_id(pkg), capreq_snprintf_s(n_array_nth(sugs, j)));
+         
+-        for (i=0; i < n_array_size(pkg->sugs); i++)
+-            n_array_push(reqs, n_array_nth(pkg->sugs, i));
+-
+-        n_array_ctl_set_freefn(reqs, NULL); /* "weak" refs */
++        n_snprintf(&message[n], sizeof(message) - n, "\n%s", _("Try to install it?"));
++        
++        if (poldek__confirm(ictx->ts, 0, message))
++        {
++    	    tn_array *tmpreqs;
++    	    
++    	    tmpreqs = capreq_arr_new(n_array_size(reqs) + 1);
++    	    
++    	    for (i = 0; i < n_array_size(reqs); i++)
++        	n_array_push(tmpreqs, n_array_nth(reqs, i));
++    	    
++    	    n_array_push(tmpreqs, n_array_nth(sugs, j));
++	    
++	    reqs = tmpreqs;
++	    
++    	    n_array_ctl_set_freefn(reqs, NULL); /* "weak" refs */	    
++        }
+     }
+-
+     return reqs;
+ }
+ 
+@@ -345,7 +393,7 @@
+ 
+     reqs = pkg->reqs;
+     if (process_as == PROCESS_AS_NEW)
+-        reqs = process_suggets(pkg, ictx->ts);
++        reqs = process_suggests(pkg, ictx);
+     
+     for (i=0; i < n_array_size(reqs); i++) {
+         struct capreq *req = n_array_nth(reqs, i);
+diff -urN poldek/lib_init.c poldek.new/lib_init.c
+--- poldek/lib_init.c	2007-07-09 20:31:14.000000000 +0200
++++ poldek.new/lib_init.c	2007-11-17 22:42:56.000000000 +0100
+@@ -1226,6 +1226,15 @@
+                 ctx->data_ts_confirm_fn = vv;
+             break;
+ 
++	case POLDEK_CONF_SUGSCONFIRM_CB:
++            if ((vv = va_arg(ap, void*)))
++                ctx->sugs_confirm_fn = vv;
++            
++            if ((vv = va_arg(ap, void*)))
++                ctx->data_sugs_confirm_fn = vv;
++
++            break;
++
+         case POLDEK_CONF_CHOOSEEQUIV_CB:
+             if ((vv = va_arg(ap, void*)))
+                 ctx->choose_equiv_fn = vv;
+diff -urN poldek/poldek.h poldek.new/poldek.h
+--- poldek/poldek.h	2007-07-01 23:04:26.000000000 +0200
++++ poldek.new/poldek.h	2007-11-17 21:33:31.000000000 +0100
+@@ -53,7 +53,8 @@
+ #define POLDEK_CONF_GOODBYE_CB      22
+ #define POLDEK_CONF_CONFIRM_CB      23
+ #define POLDEK_CONF_TSCONFIRM_CB    24
+-#define POLDEK_CONF_CHOOSEEQUIV_CB  25
++#define POLDEK_CONF_SUGSCONFIRM_CB  25
++#define POLDEK_CONF_CHOOSEEQUIV_CB  26
+ 
+ int poldek_configure(struct poldek_ctx *ctx, int param, ...);
+ 
+diff -urN poldek/poldek_intern.h poldek.new/poldek_intern.h
+--- poldek/poldek_intern.h	2007-07-08 18:59:15.000000000 +0200
++++ poldek.new/poldek_intern.h	2007-11-17 22:47:39.000000000 +0100
+@@ -38,6 +38,10 @@
+     void *data_ts_confirm_fn;
+     int  (*ts_confirm_fn)(void *data, const struct poldek_ts *ts); /* confirm transaction */
+ 
++    void *data_sugs_confirm_fn;
++    int  (*sugs_confirm_fn)(void *data, const struct poldek_ts *ts, int hint,
++                       const char *message); /* confirm suggests */
++
+     void *data_choose_equiv_fn;
+     int  (*choose_equiv_fn)(void *data, const struct poldek_ts *ts,
+                             const char *cap, tn_array *pkgs, int hint);
+@@ -74,6 +78,10 @@
+ 
+ int poldek__ts_confirm(const struct poldek_ts *ts);
+ 
++int poldek__sugs_confirm(const struct poldek_ts *ts,
++                    int default_answer, const char *message);
++
++
+ int poldek__choose_equiv(const struct poldek_ts *ts,
+                          const char *capname, tn_array *pkgs, struct pkg *hint);
+ 
+diff -urN poldek/poldek_ts.c poldek.new/poldek_ts.c
+--- poldek/poldek_ts.c	2007-07-11 00:56:17.000000000 +0200
++++ poldek.new/poldek_ts.c	2007-11-17 22:56:19.000000000 +0100
+@@ -54,6 +54,7 @@
+ 
+ extern int poldek_term_confirm(int default_answer, const char *msg);
+ extern int poldek_term_ts_confirm(const struct poldek_ts *ts);
++extern int poldek_term_sugs_confirm(int default_answer, const char *msg);
+ extern int poldek_term_choose_pkg(const char *capname, tn_array *pkgs,
+                                   struct pkg *hint);
+ 
