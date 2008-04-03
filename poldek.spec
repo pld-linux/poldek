@@ -31,6 +31,7 @@ Patch4:		%{name}-bug117hack.patch
 Patch5:		%{name}-missing-symbol.patch
 Patch6:		%{name}-abort-on-upgrade.patch
 Patch7:		%{name}-uninstall-greedy-fix.patch
+Patch8:		%{name}-pkguinf-kill-assert.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -161,6 +162,7 @@ Moduły języka Python dla poldka.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p0
+%patch8 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
