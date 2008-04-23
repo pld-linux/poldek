@@ -207,23 +207,19 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
 %ifarch i386 i586 i686 ppc sparc alpha athlon
 %define		_ftp_arch	%{_target_cpu}
-%else
+%endif
 %ifarch %{x8664}
 %define		_ftp_arch	amd64
 %define		_ftp_alt_arch	i686
-%else
+%endif
 %ifarch i486
 %define		_ftp_arch	i386
-%else
+%endif
 %ifarch pentium2 pentium3 pentium4
 %define		_ftp_arch	i686
-%else
+%endif
 %ifarch sparcv9 sparc64
 %define		_ftp_arch	sparc
-%endif
-%endif
-%endif
-%endif
 %endif
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
@@ -332,12 +328,16 @@ fi
 if [ -f %{_sysconfdir}/%{name}/pld-source.conf.rpmsave ]; then
 	cp -f %{_sysconfdir}/%{name}/repos.d/pld.conf{,.rpmnew}
 	mv -f %{_sysconfdir}/%{name}/pld-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld.conf
+	%{__sed} -i -e 's,_pld_arch,_arch,g;s,_ac_idxtype,_type,g;s,_pld_prefix,_prefix,g' \
+		 %{_sysconfdir}/%{name}/repos.d/pld.conf
 fi
 
 %ifarch %{x8664}
 if [ -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave ]; then
 	cp -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf{,.rpmnew}
 	mv -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+	%{__sed} -i -e 's,_pld_arch,_arch,g;s,_ac_idxtype,_type,g;s,_pld_prefix,_prefix,g' \
+		 %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 fi
 %endif
 
