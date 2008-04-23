@@ -1,5 +1,5 @@
---- poldek-0.30-cvs20080225.00/conf/poldek.conf~	2008-03-27 18:25:49.000000000 +0200
-+++ poldek-0.30-cvs20080225.00/conf/poldek.conf	2008-03-27 18:27:35.244886349 +0200
+--- poldek-0.30-cvs20080225.00/conf/poldek.conf	2008-03-27 18:27:35.244886349 +0200
++++ poldek-0.30-cvs20080225.00/conf/poldek.conf	2008-04-23 21:30:04.261046197 +0300
 @@ -3,18 +3,12 @@
  # Some macros. Macros are local, they are not visible in included files
  # and macros declared in them are not visible to includer.
@@ -20,3 +20,17 @@
  
  # External downloaders configuration, not necessary in most cases, cause
  # to internal HTTP and FTP client.
+@@ -130,11 +124,10 @@
+ #confirm removal = yes
+ 
+ # Let the user select package among equivalents.
+-#choose equivalents manually = no
++choose equivalents manually = yes
+ 
+ # Prevent package listed from being upgraded if they are already installed.
+-# hold = kernel*
+-#hold = 
++hold = kernel*
+ 
+ # Ignore package list - packages fits given mask will be invisible.
+ # ignore = *-smp-* foo*
