@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Poldek
-GenericName=PLD package manager
-GenericName[pl]=Menadżer pakietów PLD
+GenericName=PLD Linux package manager
+GenericName[pl]=Menadżer pakietów PLD Linuksa
 Comment=RPM packages management helper tool
 Comment[pl]=Pomocnicze narzędzie do zarządzania pakietami RPM
 Exec=poldek
