@@ -9,7 +9,7 @@
 %define	ver_rpm	4.4.9-1
 #
 %define		snap	20080225.00
-%define		rel		8
+%define		rel		9
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -203,17 +203,14 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-%ifarch i486 i686 ppc sparc alpha athlon
+%ifarch i386 i486 i586 i686 ppc sparc alpha
 %define		_ftp_arch	%{_target_cpu}
 %endif
 %ifarch %{x8664}
 %define		_ftp_arch	x86_64
 %define		_ftp_alt_arch	i686
 %endif
-%ifarch i586
-%define		_ftp_arch	i486
-%endif
-%ifarch pentium2 pentium3 pentium4
+%ifarch pentium2 pentium3 pentium4 athlon
 %define		_ftp_arch	i686
 %endif
 %ifarch sparcv9 sparc64
