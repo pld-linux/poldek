@@ -1,3 +1,4 @@
+#
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
@@ -6,8 +7,9 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.9-1
-%define	snap	20080225.00
-%define	rel		0.5
+#
+%define		snap	20080519.22
+%define		rel		0.1
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -15,25 +17,18 @@ Version:	0.30
 Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	22b2cfb19cebd123e8d8148fb6ca27de
+#Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
+Source0:	%{name}-%{version}-cvs%{snap}.tar.bz2
+# Source0-md5:	41c50bb17f8ac2b50d8838c8a346d0ec
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-aliases.conf
 Source4:	%{name}.desktop
 Source5:	%{name}.png
-Patch0:		%{name}-dirdeps.patch
-Patch1:		%{name}-vserver-packages.patch
-Patch2:		%{name}-config.patch
-Patch3:		%{name}-nonoorder.patch
-Patch4:		%{name}-bug117hack.patch
-Patch5:		%{name}-missing-symbol.patch
-Patch6:		%{name}-abort-on-upgrade.patch
-Patch7:		%{name}-uninstall-greedy-fix.patch
-Patch8:		%{name}-pkguinf-kill-assert.patch
-Patch9:		%{name}-pkguinf-sourcerpm.patch
-Patch10:	%{name}-sigint_emit.patch
-Patch11:	%{name}-bug139.patch
+Patch100:	%{name}-dirdeps.patch
+Patch0:		%{name}-vserver-packages.patch
+Patch1:		%{name}-config.patch
+Patch2:		%{name}-abort-on-upgrade.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -159,18 +154,10 @@ Moduły języka Python dla poldka.
 
 %prep
 %setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
+%patch100 -p1
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p0
-%patch5 -p1
-%patch6 -p1
-%patch7 -p0
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p0
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
