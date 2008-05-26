@@ -196,7 +196,11 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 %define		_ftp_alt_arch	i686
 %endif
 %ifarch i586
+%if "%{pld_release}" == "ti"
+%define		_ftp_arch	i586
+%else
 %define		_ftp_arch	i486
+%endif
 %endif
 %ifarch pentium2 pentium3 pentium4
 %define		_ftp_arch	i686
