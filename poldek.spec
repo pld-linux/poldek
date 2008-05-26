@@ -5,11 +5,11 @@
 %bcond_without	python	# don't build python bindings
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.3.27-1
+%define	ver_db	4.7.25-1
 %define	ver_rpm	4.4.9-56
 #
 %define		snap	20080519.22
-%define		rel		1
+%define		rel		2
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -162,6 +162,7 @@ find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
 %build
 %{__autopoint}
+%{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
