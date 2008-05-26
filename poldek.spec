@@ -6,7 +6,7 @@
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.3.27-1
-%define	ver_rpm	4.4.9-1
+%define	ver_rpm	4.4.9-56
 #
 %define		snap	20080519.22
 %define		rel		1
