@@ -22,9 +22,11 @@ Source0:	%{name}-%{version}-cvs%{snap}.tar.bz2
 # Source0-md5:	41c50bb17f8ac2b50d8838c8a346d0ec
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
-Source3:	%{name}-aliases.conf
-Source4:	%{name}.desktop
-Source5:	%{name}.png
+Source3:	%{name}-ti.conf
+Source4:	%{name}-multilib-ti.conf
+Source5:	%{name}-aliases.conf
+Source6:	%{name}.desktop
+Source7:	%{name}.png
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-abort-on-upgrade.patch
@@ -211,6 +213,17 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
+%if "%{pld_release}" == "ti"
+sed -e '
+	s|%%ARCH%%|%{_ftp_arch}|g
+' < %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+
+%ifarch %{x8664}
+sed '
+	s|%%ARCH%%|%{_ftp_alt_arch}|g
+' < %{SOURCE4} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+%endif
+%else
 sed -e '
 	s|%%ARCH%%|%{_ftp_arch}|g
 ' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
@@ -220,14 +233,15 @@ sed '
 	s|%%ARCH%%|%{_ftp_alt_arch}|g
 ' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 %endif
+%endif
 
-install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
 
 %if %{with imode}
 # add desktop file and icon
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
-install %{SOURCE4} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
-install %{SOURCE5} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+install %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+install %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # sources we don't package
