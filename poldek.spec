@@ -5,7 +5,11 @@
 %bcond_without	python	# don't build python bindings
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
+%if "%{pld_release}" == "ti"
+%define	ver_db	4.5.20-8
+%else
 %define	ver_db	4.7.25-1
+%endif
 %define	ver_rpm	4.4.9-56
 #
 %define		snap	20080519.22
