@@ -7,10 +7,10 @@
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %if "%{pld_release}" == "ti"
 %define	ver_db	4.5.20
-%define ver_db_rel 8
+%define	ver_db_rel	8
 %else
 %define	ver_db	4.7.25
-%define ver_db_rel 1
+%define	ver_db_rel	1
 %endif
 %define	ver_rpm	4.4.9-56
 #
