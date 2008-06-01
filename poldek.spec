@@ -6,9 +6,11 @@
 #
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %if "%{pld_release}" == "ti"
-%define	ver_db	4.5.20-8
+%define	ver_db	4.5.20
+%define ver_db_rel 8
 %else
-%define	ver_db	4.7.25-1
+%define	ver_db	4.7.25
+%define ver_db_rel 1
 %endif
 %define	ver_rpm	4.4.9-56
 #
@@ -39,7 +41,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
 BuildRequires:	check
-BuildRequires:	db-devel >= %{ver_db}
+BuildRequires:	db-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	gettext-autopoint
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
@@ -56,7 +58,7 @@ BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
-BuildRequires:	db-static >= %{ver_db}
+BuildRequires:	db-static >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	glibc-static
 BuildRequires:	libselinux-static
 BuildRequires:	libxml2-static
@@ -71,8 +73,9 @@ BuildRequires:	zlib-static
 Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	db >= %{ver_db}
+Requires:	db >= %{ver_db}-%{ver_db_rel}
 Requires:	rpm >= %{ver_rpm}
+Requires:	rpm-db-ver = %{ver_db}
 Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
 # vf* scripts use sed
 Requires:	sed
