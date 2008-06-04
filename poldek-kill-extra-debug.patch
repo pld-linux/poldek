@@ -1,0 +1,13 @@
+--- a/pkgdir/pkg_store.c	2007-06-22 00:28:35.000000000 +0200
++++ b/pkgdir/pkg_store.c	2008-06-04 14:34:10.000000000 +0200
+@@ -91,7 +91,9 @@
+ 
+ int pkg_store_skiptag(int tag, int tag_binsize, tn_stream *st)
+ {
+-    printf("skiptag %c %c\n", tag, tag_binsize ? tag_binsize:'-');
++    DBGF("skiptag %c %c\n", tag, tag_binsize ? tag_binsize:'-');
++    tag = tag;
++    
+     switch (tag_binsize) {
+         case PKG_STORETAG_SIZENIL:
+             return 1;
