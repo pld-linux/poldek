@@ -1,0 +1,13 @@
+diff -urN poldek-0.21-cvs20070703.00/pkgu.c poldek-0.21-cvs20070703.00.new/pkgu.c
+--- poldek-0.21-cvs20070703.00/pkgu.c	2007-06-24 11:25:22.000000000 +0000
++++ poldek-0.21-cvs20070703.00.new/pkgu.c	2008-04-03 17:24:02.948389308 +0000
+@@ -489,9 +489,6 @@
+                 case PKGUINF_DISTRO:
+                     set_member(pkgu, &pkgu->distro, val, len);
+                     break;
+-
+-                default:
+-                    n_assert(0);
+             }
+         }
+     }

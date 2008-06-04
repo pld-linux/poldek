@@ -1,6 +1,106 @@
---- poldek-0.20/conf/poldek.conf	2006-03-10 16:45:19.000000000 +0200
-+++ poldek-0.20/conf/poldek.conf	2007-01-31 17:48:31.288247465 +0200
-@@ -127,11 +127,11 @@
+--- poldek-0.21-cvs20070703.00/conf/poldek.conf	2008-03-24 23:22:01.912491689 +0200
++++ poldek-0.21-cvs20070703.00/conf/poldek.conf	2008-03-26 14:08:42.511863910 +0200
+@@ -3,12 +3,9 @@
+ # Some macros. Macros are local, they are not visible in included files
+ # and macros declared in them are not visible to includer.
+ # Macros names starts with underscore '_'.
+-#
+-_distro  = pld
+ 
+-# Both local and remote files may be included. Included files may not contain
+-# [global] section, it will be ignored anyway. 
+-%include %{_distro}-source.conf
++# /etc/poldek/repos.d/*.conf
++%includedir repos.d
+ 
+ # local sources
+ %include source.conf
+@@ -30,20 +27,20 @@
+ # Switch to ordinary user at startup when executed by root
+ #runas = poldek
+ 
+-# Permits using root privileges for installation only. If set to "auto" then 
++# Permits using root privileges for installation only. If set to "auto" then
+ # automatically turned on when poldek executed as ordinary user.
+ #use sudo = auto
+ 
+-# Load /etc/apt/sources.list. 
++# Load /etc/apt/sources.list.
+ #load apt sources list = no
+ 
+ # Handle gzipped indexes externally (needed on RedHat 9 and Fedora Core 1 and 2).
+-# This option is a workaround for broken zlib linked into librpm; with enabled 
++# This option is a workaround for broken zlib linked into librpm; with enabled
+ # 'auto zlib in rpm' poldek tries to detect such case and then enables external
+ # *.gz handling automatically.
+ #vfile external compress = no
+ 
+-# Auto detection of zlib linked into librpm. See 'vfile external compress' 
++# Auto detection of zlib linked into librpm. See 'vfile external compress'
+ # description.
+ #auto zlib in rpm = yes
+ 
+@@ -53,24 +50,24 @@
+ # Do not save given paths into created indexes. This option may significantly
+ # reduce index size. Example (notice missing starting '/'):
+ # exclude path = usr/share/doc:usr/share/man:usr/src
+-#exclude path = 
++#exclude path =
+ 
+-# Full path name to a PM (rpm for now) binary. 
++# Full path name to a PM (rpm for now) binary.
+ #pm command = /bin/rpm
+ 
+-# Full path name to sudo binary. 
++# Full path name to sudo binary.
+ #sudo command = /usr/bin/sudo
+ 
+ 
+ ### File downloaders configuration
+ 
+-# Send ${USER}@${HOSTNAME} as anonymous FTP password (by default 
+-# 'poldek@znienacka.net' is sent) 
++# Send ${USER}@${HOSTNAME} as anonymous FTP password (by default
++# 'poldek@znienacka.net' is sent)
+ #vfile ftp sysuser as anon passwd = no
+ 
+ # File getters configuration parameter. By this option URL handlers may be configured.
+-# To get file from HTTP and FTP servers poldek uses its internal client (what is 
+-# recommended), although it can be changedby this option. Others protocols handled 
++# To get file from HTTP and FTP servers poldek uses its internal client (what is
++# recommended), although it can be changedby this option. Others protocols handled
+ # by external utilities can be configured also. The syntax is:
+ # default fetcher = PROTOCOL[,PROTOCOL...]:FETCHER_NAME
+ 
+@@ -89,15 +86,15 @@
+ # proxy = PROTOCOL[,PROTOCOL...]:PROXY_URL
+ # Example:
+ # proxy = http: http://w3cache.foo.org:8080
+-#proxy = 
++#proxy =
+ 
+ # Comma separated list of hosts or domains which will not be accessed via proxy.
+ # Option overrides no_proxy environment variable.
+ # Example:
+ # noproxy = localhost, .pl, ftp.foo.bar.org
+-#noproxy = 
++#noproxy =
+ 
+-# Internal HTTP and FTP client is stubborn, it retries to retrive 
++# Internal HTTP and FTP client is stubborn, it retries to retrive
+ # file if connection breaks. This option tells it how many times
+ # it should try.
+ #vfile retries = 128
+@@ -105,7 +102,7 @@
+ 
+ ### Installation options
+ 
+-# Install packages in small groups instead of doing all-or-nothing 
++# Install packages in small groups instead of doing all-or-nothing
+ # installations.
+ #particle install = yes
+ 
+@@ -127,19 +124,19 @@
  #confirm removal = yes
  
  # Let the user select package among equivalents.
@@ -14,6 +114,41 @@
  
  # Ignore package list - packages fits given mask will be invisible.
  # ignore   = *-smp-* foo*
+ # we ignore vserver-packages by default, util-vserver has it's own poldek config.
+ ignore = vserver-packages
+ 
+-# Conflicts with already installed packages are treated as resolved 
+-# if at least one of multiple-installed package satisfies conflict. 
++# Conflicts with already installed packages are treated as resolved
++# if at least one of multiple-installed package satisfies conflict.
+ # rpm doesn't support such cases, so --pm-nodeps is needed (use with
+ # care).
+ #allow duplicates = yes
+@@ -152,11 +149,13 @@
+ # Do not install any documentation:
+ # rpmdef  = _netsharedpath /usr/share/info:/usr/share/man
+ # rpmdef  = _excludedocs 1
+-#rpmdef = 
++# If non-zero, all erasures will be automagically repackaged.
++# rpmdef  = _repackage_all_erasures 1
++#rpmdef =
+ 
+ 
+ ### Dependency processing settings
+-# Subtle dependency processing options, they should not be changed 
++# Subtle dependency processing options, they should not be changed
+ # unless you know what you are doing
+ 
+ # RPM 4.4.6 introduces auto dependencies based on package directories. Option controls this feature.
+@@ -169,7 +168,7 @@
+ # by being uninstalled ones.
+ #greedy = yes
+ 
+-# Be yet more greedy; if successor of orphaned package found, and this 
++# Be yet more greedy; if successor of orphaned package found, and this
+ # successor drags no packages then upgrade the package instead of process
+ # its dependencies. Option value is implied by 'greedy' one by defalut.
+ #aggressive greedy = yes
 --- poldek-0.20/conf/source.conf~	2005-10-28 19:16:24.000000000 +0300
 +++ poldek-0.20/conf/source.conf	2006-05-31 22:45:40.030363503 +0300
 @@ -82,4 +82,4 @@
