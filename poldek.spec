@@ -36,7 +36,8 @@ Source7:	%{name}.png
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-abort-on-upgrade.patch
-Patch3:     %{name}-158fix.patch
+Patch3:		%{name}-158fix.patch
+Patch4:		%{name}-inline.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -165,6 +166,7 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p0
+%patch4 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
