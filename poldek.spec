@@ -9,7 +9,7 @@
 %define	ver_rpm	4.4.9-1
 #
 %define		snap	20080604.13
-%define		rel		0.2
+%define		rel		0.3
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -17,18 +17,21 @@ Version:	0.30
 Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
+#Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}-cvs%{snap}.tar.bz2
 # Source0-md5:	2e1b9bbaf5c39cc626c22978852f6371
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
-Source3:	%{name}-aliases.conf
-Source4:	%{name}.desktop
-Source5:	%{name}.png
+Source5:	%{name}-aliases.conf
+Source6:	%{name}.desktop
+Source7:	%{name}.png
 Patch100:	%{name}-dirdeps.patch
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-abort-on-upgrade.patch
 Patch3:     %{name}-158fix.patch
+Patch4:		%{name}-inline.patch
+Patch5:		%{name}-ls-llu.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -159,6 +162,8 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p0
+%patch4 -p1
+%patch5 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
@@ -222,13 +227,13 @@ sed '
 ' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 %endif
 
-install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
 
 %if %{with imode}
 # add desktop file and icon
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
-install %{SOURCE4} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
-install %{SOURCE5} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+install %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+install %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # sources we don't package
