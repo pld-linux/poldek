@@ -14,8 +14,8 @@
 %endif
 %define	ver_rpm	4.4.9-56
 #
-%define		snap	20080604.13
-%define		rel		3
+%define		snap	20080820.23
+%define		rel		1
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -25,7 +25,7 @@ License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	2e1b9bbaf5c39cc626c22978852f6371
+# Source0-md5:	2738eb3996f1cdf1e5d74b913d6e7414
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-ti.conf
@@ -36,9 +36,9 @@ Source7:	%{name}.png
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-abort-on-upgrade.patch
-Patch3:		%{name}-158fix.patch
-Patch4:		%{name}-inline.patch
-Patch5:		%{name}-ls-llu.patch
+Patch3:		%{name}-inline.patch
+Patch4:		%{name}-ls-llu.patch
+Patch5:		%{name}-op-ldalldesc.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -166,7 +166,7 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p0
+%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 
@@ -174,7 +174,6 @@ Moduły języka Python dla poldka.
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
 %build
-%{__autopoint}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
