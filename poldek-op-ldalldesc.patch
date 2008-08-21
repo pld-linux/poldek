@@ -203,7 +203,7 @@ index 6ea077e..26bb647 100644
      if ((langs = pm_rpmhdr_langs(h))) {
          tn_array *sl_langs = NULL;
 -        char *sl_lang;
-+        char *lc_lang, *sl_lang;
++        char *lc_lang = NULL, *sl_lang = NULL;
  
          pm_rpmhdr_get_raw_entry(h, RPMTAG_SUMMARY, (void*)&summs, &nsumms);
          pm_rpmhdr_get_raw_entry(h, RPMTAG_DESCRIPTION, (void*)&descrs, &ndescrs);
