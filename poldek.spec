@@ -15,7 +15,7 @@
 %define	ver_rpm	4.4.9-56
 #
 %define		snap	20080820.23
-%define		rel		2
+%define		rel		3
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
