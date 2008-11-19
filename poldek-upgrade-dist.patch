@@ -1,0 +1,31 @@
+--- pkgcmp.c~	2008-11-19 12:17:09.000000000 +0100
++++ pkgcmp.c	2008-11-19 14:50:18.440454833 +0100
+@@ -44,7 +44,7 @@
+     register int rc = strcmp(pkg->name, candidate->name);
+     
+     if (rc == 0 && poldek_conf_MULTILIB) {
+-        rc = pkg_cmp_arch(pkg, candidate);
++        rc = 1 - pkg_is_colored_like(candidate, pkg);
+         //if (rc == 0)
+         //    DBGF("%s, %s => YES\n", pkg_id(candidate), pkg_id(pkg));
+     }
+--- upgrade-dist.c~	2008-05-12 18:51:38.000000000 +0300
++++ upgrade-dist.c	2008-11-19 17:20:20.947658293 +0200
+@@ -55,7 +55,7 @@
+ 
+     i = n_array_bsearch_idx_ex(ts->ctx->ps->pkgs, dbpkg, (tn_fn_cmp)pkg_cmp_name); 
+     if (i < 0) {
+-        msgn(3, "%-32s not found in repository", pkg_id(dbpkg));
++        msgn(3, "%-32s not found in repository", pkg_id(dbpkg));
+         return 1;
+     }
+ 
+@@ -73,7 +73,7 @@
+     }
+     
+     if (pkg == NULL) {
+-        msgn(3, "%-32s not found in repository", pkg_id(dbpkg));
++        msgn(3, "%-32s match not found in repository", pkg_id(dbpkg));
+         return 1;
+     }
+     
