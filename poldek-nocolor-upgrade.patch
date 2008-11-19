@@ -1,8 +1,11 @@
---- pkgcmp.c~	2008-02-02 22:49:04.000000000 +0100
-+++ pkgcmp.c	2008-11-19 01:00:37.123524800 +0100
-@@ -84,11 +84,8 @@
+--- pkgcmp.c~	2008-11-19 01:12:49.000000000 +0100
++++ pkgcmp.c	2008-11-19 01:13:36.125519583 +0100
+@@ -82,13 +82,10 @@
+         return 1;
+     
      if (pkg->color && candidate->color)
-         return pkg->color & candidate->color;
+-        return pkg->color & candidate->color;
++        return (pkg->color & candidate->color) > 0;
  
 -    /* same name and candidate without color -> promote candidate */
 -    if (pkg->color && pkg_is_kind_of(candidate, pkg)) 
