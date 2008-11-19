@@ -12,10 +12,10 @@
 %define	ver_db	4.7.25
 %define	ver_db_rel	1
 %endif
-%define	ver_rpm	4.4.9-56
+%define	ver_rpm	4.5-5
 #
 %define		snap	20080820.23
-%define		rel		5.5
+%define		rel		6
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
