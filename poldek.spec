@@ -180,7 +180,7 @@ Moduły języka Python dla poldka.
 %patch8 -p0
 %patch9 -p0
 %patch10 -p1
-%patch11 -p1
+#%patch11 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
