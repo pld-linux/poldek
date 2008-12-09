@@ -1,0 +1,45 @@
+--- poldek-0.30-cvs20080820.23/pkgdir/pndir/description.c.old	2008-12-09 16:11:51.000000000 +0100
++++ poldek-0.30-cvs20080820.23/pkgdir/pndir/description.c	2008-12-09 16:11:57.000000000 +0100
+@@ -162,10 +162,8 @@ struct pkguinf *pndir_load_pkguinf(tn_al
+     if (pkgu && langs) {
+         int i;
+ 
+-        /* start from the end => the last loaded one will be set as
+-           pkguinf default (see pkguinf_restore_i18n()) */
+-        for (i = n_array_size(langs) - 1; i >= 0; i--) {
+-            const char *lang, *loaded_lang = NULL;
++        for (i = 0; i < n_array_size(langs); i++) {
++            const char *lang, *loaded_lang;
+             struct tndb *db;
+             char lang_utf8[32];
+             char dkey[512];
+@@ -178,19 +176,19 @@ struct pkguinf *pndir_load_pkguinf(tn_al
+             if ((db = pndir_db_dscr_h_get(db_dscr_h, lang)) == NULL)
+                 continue;
+ 
+-            n_snprintf(lang_utf8, sizeof(lang_utf8), "%s.UTF-8", lang);
+-            loaded_lang = lang_utf8;
+-
+-            dklen = n_snprintf(dkey, sizeof(dkey), "%s%s", key, lang_utf8);
++            dklen = n_snprintf(dkey, sizeof(dkey), "%s%s", key, lang);
+             vlen = tndb_get(db, dkey, dklen, val, sizeof(val));
+-            
+-            if (vlen == 0) {     /* not exists */
+-                dklen = n_snprintf(dkey, sizeof(dkey), "%s%s", key, lang);
++            loaded_lang = lang;
++
++/*            
++            if (vlen == 0) {
++                n_snprintf(lang_utf8, sizeof(lang_utf8), "%s.UTF-8", lang);
++                loaded_lang = lang_utf8;
++                dklen = n_snprintf(dkey, sizeof(dkey), "%s%s", key, lang_utf8);
+                 vlen = tndb_get(db, dkey, dklen, val, sizeof(val));
+-                loaded_lang = lang;
+             }
+-                
+-            DBGF("ld %s: %s (%d)\n", pkg_id(pkg), loaded_lang ? loaded_lang : lang, vlen);
++*/                
++            DBGF("ld %s: %s (%d)\n", pkg_id(pkg), loaded_lang, vlen);
+             
+             if (vlen > 0) {
+                 tn_buf_it it;
