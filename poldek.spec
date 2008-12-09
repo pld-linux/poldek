@@ -15,7 +15,7 @@
 %define	ver_rpm	4.5-5
 #
 %define		snap	20080820.23
-%define		rel		11
+%define		rel		12
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -44,7 +44,7 @@ Patch7:		%{name}-upgrade-dist.patch
 Patch8:		%{name}-keep-reinstalled-provides.patch
 Patch9:		%{name}-dont-ask-for-suggests-on-errors.patch
 Patch10:	%{name}-crash-on-invalid-locale.patch
-Patch11:	%{name}-up_mini18n.patch
+Patch11:	%{name}-langs_forward.patch
 Patch12:	%{name}-dont-suggests-required-packages.patch
 Patch13:	%{name}-tty-for-erasures.patch
 URL:		http://poldek.pld-linux.org/
@@ -182,7 +182,7 @@ Moduły języka Python dla poldka.
 %patch8 -p0
 %patch9 -p0
 %patch10 -p1
-#%patch11 -p1
+%patch11 -p1
 %patch12 -p1
 %patch13 -p1
 
