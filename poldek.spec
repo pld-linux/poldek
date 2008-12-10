@@ -15,7 +15,7 @@
 %define	ver_rpm	4.5-5
 #
 %define		snap	20080820.23
-%define		rel		13
+%define		rel		14
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -44,7 +44,7 @@ Patch7:		%{name}-upgrade-dist.patch
 Patch8:		%{name}-keep-reinstalled-provides.patch
 Patch9:		%{name}-dont-ask-for-suggests-on-errors.patch
 Patch10:	%{name}-crash-on-invalid-locale.patch
-Patch11:	%{name}-langs_forward.patch
+Patch11:	%{name}-noutf8.patch
 Patch12:	%{name}-dont-suggests-required-packages.patch
 Patch13:	%{name}-tty-for-erasures.patch
 Patch14:	%{name}-both_langs.patch
