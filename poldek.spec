@@ -37,10 +37,11 @@ Patch7:		%{name}-upgrade-dist.patch
 Patch8:		%{name}-keep-reinstalled-provides.patch
 Patch9:		%{name}-dont-ask-for-suggests-on-errors.patch
 Patch10:	%{name}-crash-on-invalid-locale.patch
-Patch11:	%{name}-up_mini18n.patch
+Patch11:	%{name}-noutf8.patch
 Patch12:	%{name}-dont-suggests-required-packages.patch
 Patch13:	%{name}-tty-for-erasures.patch
-Patch14:	%{name}-317130.patch
+Patch14:	%{name}-both_langs.patch
+Patch15:	%{name}-317130.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -178,10 +179,11 @@ Moduły języka Python dla poldka.
 %patch8 -p0
 %patch9 -p0
 %patch10 -p1
-#%patch11 -p1
+%patch11 -p1
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
+%patch15 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
