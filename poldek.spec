@@ -48,6 +48,7 @@ Patch11:	%{name}-noutf8.patch
 Patch12:	%{name}-dont-suggests-required-packages.patch
 Patch13:	%{name}-tty-for-erasures.patch
 Patch14:	%{name}-both_langs.patch
+Patch15:	%{name}-317130.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -187,6 +188,7 @@ Moduły języka Python dla poldka.
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
+%patch15 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
