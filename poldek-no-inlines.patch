@@ -1,0 +1,11 @@
+--- poldek-0.30-cvs20080820.23/pkg.h~	2008-05-25 11:25:31.000000000 +0200
++++ poldek-0.30-cvs20080820.23/pkg.h	2009-01-30 13:34:21.927019363 +0100
+@@ -144,7 +144,7 @@
+ # define extern__inline extern inline
+ #endif
+ 
+-extern__inline struct pkg *pkg_link(struct pkg *pkg);
++struct pkg *pkg_link(struct pkg *pkg);
+ 
+ int pkg_set_arch(struct pkg *pkg, const char *arch);
+ const char *pkg_arch(const struct pkg *pkg);
