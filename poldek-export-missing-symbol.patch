@@ -1,0 +1,16 @@
+Index: libpoldek.sym
+===================================================================
+RCS file: /cvsroot/poldek/poldek/libpoldek.sym,v
+retrieving revision 1.37
+retrieving revision 1.38
+diff -u -r1.37 -r1.38
+--- libpoldek.sym	25 May 2008 09:25:31 -0000	1.37
++++ libpoldek.sym	2 Jan 2009 17:28:42 -0000	1.38
+@@ -180,6 +180,7 @@
+ pkguinf_set
+ pm_dbmtime
+ pm_dbpath
++pm_dbrec_nevr
+ pm_verify_signature
+ poldek_BANNER
+ poldek_BUG_MAILADDR
