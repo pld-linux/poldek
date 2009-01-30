@@ -15,7 +15,7 @@
 %define	ver_rpm	4.5-5
 #
 %define		snap	20080820.23
-%define		rel		15
+%define		rel		16
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -50,6 +50,8 @@ Patch13:	%{name}-tty-for-erasures.patch
 Patch14:	%{name}-both_langs.patch
 Patch15:	%{name}-317130.patch
 Patch16:	%{name}-321546.patch
+Patch17:	%{name}-size-type.patch
+Patch18:	%{name}-no-inlines.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -191,6 +193,8 @@ Moduły języka Python dla poldka.
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
+%patch18 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
