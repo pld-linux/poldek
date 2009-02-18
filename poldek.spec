@@ -15,7 +15,7 @@
 %define	ver_rpm	4.5-5
 #
 %define		snap	20080820.23
-%define		rel		16
+%define		rel		17
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -276,7 +276,7 @@ sed '
 %endif
 %endif
 
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/aliases.conf
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
 
 %if %{with imode}
 # add desktop file and icon
