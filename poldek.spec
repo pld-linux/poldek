@@ -20,7 +20,7 @@ Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
 Version:	0.30
-Release:	0.%{snap}.%{rel}.1
+Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -53,7 +53,6 @@ Patch16:	%{name}-321546.patch
 Patch17:	%{name}-size-type.patch
 Patch18:	%{name}-no-inlines.patch
 Patch19:	%{name}-export-missing-symbol.patch
-Patch20:	%{name}-fd-leak.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -198,7 +197,6 @@ Moduły języka Python dla poldka.
 %patch17 -p1
 %patch18 -p1
 %patch19 -p0
-%patch20 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
