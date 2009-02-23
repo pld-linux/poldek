@@ -1,5 +1,18 @@
---- poldek-0.30-cvs20080820.23/pkg.h~	2008-05-25 11:25:31.000000000 +0200
-+++ poldek-0.30-cvs20080820.23/pkg.h	2009-01-30 13:34:21.927019363 +0100
+diff -urN poldek-0.30-cvs20080820.23/pkgcmp.h poldek-0.30-cvs20080820.23.new/pkgcmp.h
+--- poldek-0.30-cvs20080820.23/pkgcmp.h	2008-01-27 19:42:14.000000000 +0100
++++ poldek-0.30-cvs20080820.23.new/pkgcmp.h	2009-02-23 16:33:50.000000000 +0100
+@@ -21,7 +21,7 @@
+ extern__inline int pkg_ncmp_name(const struct pkg *p1, const struct pkg *p2);
+ 
+ /* strcmp(p1->name, p2->name) */
+-extern__inline int pkg_cmp_name(const struct pkg *p1, const struct pkg *p2);
++int pkg_cmp_name(const struct pkg *p1, const struct pkg *p2);
+ 
+ /* strcmp(pkg_id(p1), pkg_id(p2) */
+ extern__inline int pkg_cmp_id(const struct pkg *p1, const struct pkg *p2);
+diff -urN poldek-0.30-cvs20080820.23/pkg.h poldek-0.30-cvs20080820.23.new/pkg.h
+--- poldek-0.30-cvs20080820.23/pkg.h	2008-05-25 11:25:31.000000000 +0200
++++ poldek-0.30-cvs20080820.23.new/pkg.h	2009-02-23 16:33:41.000000000 +0100
 @@ -144,7 +144,7 @@
  # define extern__inline extern inline
  #endif
