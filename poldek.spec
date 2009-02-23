@@ -53,6 +53,7 @@ Patch16:	%{name}-321546.patch
 Patch17:	%{name}-size-type.patch
 Patch18:	%{name}-no-inlines.patch
 Patch19:	%{name}-export-missing-symbol.patch
+Patch20:	%{name}-skip-suggests-on-upgrade.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -197,6 +198,7 @@ Moduły języka Python dla poldka.
 %patch17 -p1
 %patch18 -p1
 %patch19 -p0
+%patch20 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
