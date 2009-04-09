@@ -1,0 +1,35 @@
+commit 7ac464b1d6d1cbeb6f6bcdaf4b477f0c21e3e334
+Author: Marcin Banasiak <megabajt@pld-linux.org>
+Date:   Thu Apr 9 19:11:23 2009 +0200
+
+    Enable checking for duplicates before adding new pkg to capreq_idx
+    
+    This change partially fixes lp#270503 on systems where multilib is not
+    used (see https://bugs.launchpad.net/poldek/+bug/270503/comments/1) and
+    in candidates is the only one package, but specified several times.
+
+diff --git a/capreqidx.c b/capreqidx.c
+index 1af3a5f..7c31825 100644
+--- a/capreqidx.c
++++ b/capreqidx.c
+@@ -92,7 +92,11 @@ int capreq_idx_add(struct capreq_idx *idx, const char *capname,
+         if (ent->_size == 1)    /* crent_pkgs is NOT allocated */
+             capreq_idx_ent_transform_to_array(ent);
+ 
+-#if 0                           /* not happens in fact */
++        /*
++         * Sometimes, there are duplicates, especially in dotnet-* packages
++         * which provides multiple versions of one cap. For example dotnet-mono-zeroconf
++         * provides: mono(Mono.Zeroconf) = 1.0.0.0, mono(Mono.Zeroconf) = 2.0.0.0, etc.
++         */
+         if (idx->flags & CAPREQ_IDX_CAP) { /* check for duplicates */
+             register int i;
+             for (i=0; i < ent->items; i++) { 
+@@ -100,7 +104,6 @@ int capreq_idx_add(struct capreq_idx *idx, const char *capname,
+                     return 1;
+             }
+         }
+-#endif
+         
+         if (ent->items == ent->_size) {
+             ent->_size *= 2;
