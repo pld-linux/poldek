@@ -15,7 +15,7 @@
 %define	ver_rpm	4.5-5
 #
 %define		snap	20080820.23
-%define		rel		26
+%define		rel		27
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -33,6 +33,7 @@ Source4:	%{name}-multilib-ti.conf
 Source5:	%{name}-aliases.conf
 Source6:	%{name}.desktop
 Source7:	%{name}.png
+Source8:	%{name}-debuginfo.conf
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-abort-on-upgrade.patch
@@ -274,9 +275,13 @@ sed '
 ' < %{SOURCE4} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 %endif
 %else
+# pld_release = th
 sed -e '
 	s|%%ARCH%%|%{_ftp_arch}|g
 ' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+sed -e '
+	s|%%ARCH%%|%{_ftp_arch}|g
+' < %{SOURCE8} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
 
 %ifarch %{x8664}
 sed '
