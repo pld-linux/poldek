@@ -316,8 +316,24 @@ rm -f $RPM_BUILD_ROOT%{py_sitedir}/_poldekmod.la
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p	/sbin/postshell
--/usr/sbin/fix-info-dir -c %{_infodir}
+%post
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
+if [ "$1" = "1" ]; then
+	# remove ignore = vserver-packages inside vserver on first install
+	{
+		while read f ctx; do
+			[ "$f" = "VxID:" -o "$f" = "s_context:" ] && break
+		done </proc/self/status
+	} 2>/dev/null
+	if [ -z "$ctx" -o "$ctx" = "0" ]; then
+		VSERVER=no
+	else
+		VSERVER=yes
+	fi
+	if [ "$VSERVER" = "yes" ]; then
+		%{__sed} -i -e '/^ignore/s/vserver-packages//' %{_sysconfdir}/%{name}/poldek.conf
+	fi
+fi
 
 %postun	-p	/sbin/postshell
 -/usr/sbin/fix-info-dir -c %{_infodir}
