@@ -34,6 +34,8 @@ Source5:	%{name}-aliases.conf
 Source6:	%{name}.desktop
 Source7:	%{name}.png
 Source8:	%{name}-debuginfo.conf
+Source9:	%{name}-aidath.conf
+Source10:	%{name}-multilib-aidath.conf
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-abort-on-upgrade.patch
@@ -262,6 +264,12 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 %endif
 %ifarch sparcv9 sparc64
 %define		_ftp_arch	sparc
+%if "%{pld_release}" == "th"
+%define		_ftp_arch	%{_target_cpu}
+%ifarch sparc64
+%define		_ftp_alt_arch	sparcv9
+%endif
+%endif
 %endif
 
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
@@ -278,6 +286,18 @@ sed '
 %endif
 %else
 # pld_release = th
+%ifarch sparcv9 sparc64
+sed -e '
+	s|%%ARCH%%|%{_ftp_arch}|g
+' < %{SOURCE9} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+
+%ifarch sparc64
+sed '
+	s|%%ARCH%%|%{_ftp_alt_arch}|g
+' < %{SOURCE10} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+%endif
+
+%else
 sed -e '
 	s|%%ARCH%%|%{_ftp_arch}|g
 ' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
@@ -289,6 +309,7 @@ sed -e '
 sed '
 	s|%%ARCH%%|%{_ftp_alt_arch}|g
 ' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+%endif
 %endif
 %endif
 
