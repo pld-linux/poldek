@@ -103,7 +103,7 @@ index f123e03..7bf34d4 100644
      return strcmp(pkg->name, capreq_name(cr)) == 0 &&
          strcmp(pkg->ver, capreq_ver(cr)) == 0 &&
 diff --git a/pkgcmp.h b/pkgcmp.h
-index 6b1b75a..573e32b 100644
+index 6b1b75a..980f675 100644
 --- a/pkgcmp.h
 +++ b/pkgcmp.h
 @@ -17,6 +17,9 @@ int pkg_is_colored_like(const struct pkg *candidate, const struct pkg *pkg);
@@ -116,6 +116,15 @@ index 6b1b75a..573e32b 100644
  /* strncmp(p1->name, p2->name, strlen(p2->name)) */
  extern__inline int pkg_ncmp_name(const struct pkg *p1, const struct pkg *p2);
  
+@@ -27,7 +30,7 @@ int pkg_cmp_name(const struct pkg *p1, const struct pkg *p2);
+ extern__inline int pkg_cmp_id(const struct pkg *p1, const struct pkg *p2);
+ 
+ 
+-/* versions only */
++/* versions only (+epoch) */
+ int pkg_cmp_ver(const struct pkg *p1, const struct pkg *p2);
+ /* EVR only */
+ int pkg_cmp_evr(const struct pkg *p1, const struct pkg *p2);
 diff --git a/upgrade-dist.c b/upgrade-dist.c
 index 458b764..00f34fc 100644
 --- a/upgrade-dist.c
