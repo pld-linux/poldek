@@ -36,3 +36,18 @@ diff -urN a/install3/misc.c b/install3/misc.c
          
      if (n_array_size(suspkgs) == 0) {
          found = 0;
+diff -urN a/install3/process.c b/install3/process.c
+--- a/install3/process.c	2009-11-22 01:39:38.000000000 +0100
++++ b/install3/process.c	2009-11-22 19:41:42.862076125 +0100
+@@ -77,6 +77,11 @@
+             i3_forget_error(ictx, pkg);
+         }
+     }
++
++    /* this package may be used again and we have to process it (do not
++     * stop on the first condition in i3_process_package()) to generate
++     * new ->obsoletedby as we removed them here. */    
++    pkg_clr_mf(ictx->processed, i3pkg->pkg, PKGMARK_GRAY);
+     
+     if (i3pkg->markedby) {
+         indent = inc_indent(indent);
