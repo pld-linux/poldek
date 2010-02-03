@@ -72,21 +72,18 @@ URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
-BuildRequires:	check
 BuildRequires:	db-devel >= %{ver_db}-%{ver_db_rel}
-BuildRequires:	gettext-autopoint
+BuildRequires:	gettext-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
-BuildRequires:	perl-tools-pod
 BuildRequires:	pkgconfig
 BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
-BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
