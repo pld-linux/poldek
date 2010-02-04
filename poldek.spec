@@ -15,7 +15,7 @@
 %define	ver_rpm	4.5-5
 #
 %define		snap	20080820.23
-%define		rel		35
+%define		rel		36
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -68,6 +68,9 @@ Patch28:	%{name}-score-reqs-marked-to-install.patch
 Patch29:	%{name}-dont-be-greedy.patch
 Patch30:	%{name}-dont-lose-deps.patch
 Patch31:	%{name}-ls-queryfmt.patch
+Patch32:	%{name}-prepare_url_fix.patch
+Patch33:	%{name}-noloop_on_terminal_loos.patch
+Patch34:	%{name}-show_only_relative_used_space.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -215,7 +218,7 @@ Moduły języka Python dla poldka.
 %patch22 -p0
 %patch23 -p1
 %patch24 -p1
-# LP#392984
+# LP#392984: add source rpm to ls
 %patch25 -p1
 # LP#408036
 %patch26 -p1
@@ -226,8 +229,15 @@ Moduły języka Python dla poldka.
 # dont be greedy if upgraded pkg has needed capabilities
 %patch29 -p1
 # http://lists.pld-linux.org/mailman/pipermail/pld-devel-pl/2009-November/150519.html
-%patch30 -p1
+%patch30 -p1 
+# LP#392984: add query format to ls
 %patch31 -p1
+# LP#506568
+%patch32 -p0
+# LP#499504
+%patch33 -p1
+# do not info. about amount of transaction space req. but relative to already installed
+%patch34 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f

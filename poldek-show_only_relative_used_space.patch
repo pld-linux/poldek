@@ -1,0 +1,89 @@
+diff --git a/pkgfetch.c b/pkgfetch.c
+index 049eb0e..b2cffbd 100644
+--- a/pkgfetch.c
++++ b/pkgfetch.c
+@@ -105,11 +105,6 @@ void packages_fetch_summary(struct pm_ctx *pmctx, const tn_array *pkgs,
+             msgn(1, _("_ (%s to download)."), buf);
+         }
+         
+-        if (bytesused) {
+-            char buf[64];
+-            snprintf_size(buf, sizeof(buf), bytesused, 1, 1);
+-            msg(1, _("After unpacking %s will be used."), buf);
+-        }
+     }
+     
+     msg(1, "_\n");
+diff --git a/poldek_ts.c b/poldek_ts.c
+index a0dd436..306b492 100644
+--- a/poldek_ts.c
++++ b/poldek_ts.c
+@@ -834,9 +834,10 @@ void poldek__ts_update_summary(struct poldek_ts *ts,
+ void poldek__ts_display_summary(struct poldek_ts *ts)
+ {
+     int ninst = 0, ndep = 0, nrm = 0, npkgs = 0, parseable = 0;
++    long sinsts = 0, sdeps = 0, srems = 0, sdiff = 0;
+     tn_array *ipkgs, *idepkgs, *rmpkgs, *pkgs;
+-    char ms[1024], *to, *prefix;
+-    int n;
++    char ms[1024], *to, *prefix, *take;
++    int i, n;
+     
+     ipkgs = n_hash_get(ts->ts_summary, "I");
+     idepkgs = n_hash_get(ts->ts_summary, "D");
+@@ -846,16 +847,36 @@ void poldek__ts_display_summary(struct poldek_ts *ts)
+     ndep  = idepkgs ? n_array_size(idepkgs) : 0;
+     nrm   = rmpkgs ? n_array_size(rmpkgs) : 0;
+ 
+-    to = _("to install");
+-    prefix = "I";
+-    pkgs = ipkgs;
+-    npkgs = ninst + ndep;
+-    
+-    if (ts->type == POLDEK_TS_UNINSTALL) {
++    if (ipkgs)
++	for (i=0; i < n_array_size(ipkgs); i++) {
++	    struct pkg *pkg = n_array_nth(ipkgs, i);
++	    sinsts += pkg->size;
++	}
++    if (idepkgs)
++	for (i=0; i < n_array_size(idepkgs); i++) {
++	    struct pkg *pkg = n_array_nth(idepkgs, i);
++	    sdeps += pkg->size;
++	}
++    if (rmpkgs)
++	for (i=0; i < n_array_size(rmpkgs); i++) {
++	    struct pkg *pkg = n_array_nth(rmpkgs, i);
++	    srems += pkg->size;
++	}
++
++    if (ts->type != POLDEK_TS_UNINSTALL) {
++        to = _("to install");
++        prefix = "I";
++        pkgs = ipkgs;
++        npkgs = ninst + ndep;
++        take = _("take");
++        sdiff = sinsts + sdeps - srems;
++    } else {
+         to = _("to remove");
+         prefix = "R";
+         pkgs = rmpkgs;
+         npkgs = nrm + ndep;
++        take = _("free");
++        sdiff = sdeps + srems;
+         nrm = 0;
+     }
+     n_assert(pkgs);
+@@ -896,6 +917,12 @@ void poldek__ts_display_summary(struct poldek_ts *ts)
+         if (rmpkgs)
+             packages_display_summary(1, "R", rmpkgs, parseable);
+     }
++
++    if (sdiff) {
++	char size[64];
++        snprintf_size(size, sizeof(size), abs(sdiff), 1, 1);
++        msgn(1, _("This operation will %s %s of disk space."), take, size);
++    }
+ }
+ 
+ tn_array *poldek_ts_get_summary(const struct poldek_ts *ts, const char *mark)
