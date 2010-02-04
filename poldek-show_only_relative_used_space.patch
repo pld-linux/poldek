@@ -81,7 +81,7 @@ index a0dd436..a670379 100644
 +        snprintf_size(size, sizeof(size), labs(sdiff), 1, 1);
 +
 +        if (sdiff > 0)
-+           msgn(1, _("This operation will take %s of disk space."), size);
++           msgn(1, _("This operation will use %s of disk space."), size);
 +        else
 +           msgn(1, _("This operation will free %s of disk space."), size);
 +    }
