@@ -3,18 +3,18 @@
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
-#
+
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.9-1
-#
+
 %define		snap	20080820.23
-%define		rel		22
+%define		rel		36
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
 Version:	0.30
-Release:	0.%{snap}.15.%{rel}
+Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
@@ -48,18 +48,30 @@ Patch18:	%{name}-no-inlines.patch
 Patch19:	%{name}-export-missing-symbol.patch
 Patch20:	%{name}-skip-suggests-on-upgrade.patch
 Patch21:	%{name}-po.patch
+Patch22:	%{name}-refcnt.patch
+Patch23:	%{name}-assertion-failed.patch
+Patch24:	%{name}-unescape-urlencoded-strings.patch
+Patch25:	%{name}-ls-source-rpm.patch
+Patch26:	%{name}-add-arch-match.patch
+Patch27:	%{name}-multilib-upgrade.patch
+Patch28:	%{name}-score-reqs-marked-to-install.patch
+Patch29:	%{name}-dont-be-greedy.patch
+Patch30:	%{name}-dont-lose-deps.patch
+Patch31:	%{name}-ls-queryfmt.patch
+Patch32:	%{name}-prepare_url_fix.patch
+Patch33:	%{name}-noloop_on_terminal_loos.patch
+Patch34:	%{name}-show_only_relative_used_space.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
-BuildRequires:	check
 BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
+BuildRequires:	gettext-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
-BuildRequires:	perl-tools-pod
 BuildRequires:	pkgconfig
 BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
@@ -67,7 +79,6 @@ BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	sed >= 4.0
-BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
@@ -139,6 +150,7 @@ Summary:	Header files for poldek libraries
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek poldka
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	rpm-devel >= %{ver_rpm}
 
 %description devel
 Header files for poldek libraries.
@@ -196,6 +208,29 @@ Moduły języka Python dla poldka.
 %patch19 -p0
 %patch20 -p1
 %patch21 -p1
+%patch22 -p0
+%patch23 -p1
+%patch24 -p1
+# LP#392984: add source rpm to ls
+%patch25 -p1
+# LP#408036
+%patch26 -p1
+# LP#408034
+%patch27 -p1
+# score reqs already marked to install
+%patch28 -p1
+# dont be greedy if upgraded pkg has needed capabilities
+%patch29 -p1
+# http://lists.pld-linux.org/mailman/pipermail/pld-devel-pl/2009-November/150519.html
+%patch30 -p1 
+# LP#392984: add query format to ls
+%patch31 -p1
+# LP#506568
+%patch32 -p0
+# LP#499504
+%patch33 -p1
+# do not info. about amount of transaction space req. but relative to already installed
+%patch34 -p1
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
@@ -214,6 +249,7 @@ CPPFLAGS="-std=gnu99"
 	--enable-nls \
 	%{?with_python:--with-python}
 %{__make}
+#	--enable-trace
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -285,8 +321,24 @@ rm -f $RPM_BUILD_ROOT%{py_sitedir}/_poldekmod.la
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p	/sbin/postshell
--/usr/sbin/fix-info-dir -c %{_infodir}
+%post
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
+if [ "$1" = "1" ]; then
+	# remove ignore = vserver-packages inside vserver on first install
+	{
+		while read f ctx; do
+			[ "$f" = "VxID:" -o "$f" = "s_context:" ] && break
+		done </proc/self/status
+	} 2>/dev/null
+	if [ -z "$ctx" -o "$ctx" = "0" ]; then
+		VSERVER=no
+	else
+		VSERVER=yes
+	fi
+	if [ "$VSERVER" = "yes" ]; then
+		%{__sed} -i -e '/^ignore/s/vserver-packages//' %{_sysconfdir}/%{name}/poldek.conf
+	fi
+fi
 
 %postun	-p	/sbin/postshell
 -/usr/sbin/fix-info-dir -c %{_infodir}
