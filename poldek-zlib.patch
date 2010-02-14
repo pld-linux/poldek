@@ -1,5 +1,3 @@
-? poldek-rpmlib.patch
-? x
 Index: configure.in
 ===================================================================
 RCS file: /cvsroot/poldek/poldek/configure.in,v
@@ -129,3 +127,29 @@ diff -u -u -r1.19 -r1.20
      int                  nline, nerr = 0, nread, n;
      struct pkgroup_idx   *pkgroups = NULL;
      struct idx           idx;
+Index: write.c
+===================================================================
+RCS file: /cvsroot/poldek/tndb/write.c,v
+retrieving revision 1.11
+retrieving revision 1.12
+diff -u -u -r1.11 -r1.12
+--- tndb/write.c	22 Jun 2007 18:20:58 -0000	1.11
++++ tndb/write.c	14 Feb 2010 08:20:52 -0000	1.12
+@@ -45,7 +45,7 @@
+ 
+ struct tndb *tndb_creat(const char *name, int comprlevel, unsigned flags)
+ {
+-    char                path[PATH_MAX], mode[32] = "w+b";
++    char                path[PATH_MAX], mode[32] = "wb";
+     tn_stream           *st;
+     struct tndb         *db = NULL;
+     int                 fd, n, type = TN_STREAM_STDIO;
+@@ -69,7 +69,7 @@
+     if (n > 3 && strcmp(&name[n - 3], ".gz") == 0) {
+         type = TN_STREAM_GZIO;
+         if (comprlevel >= 0 && comprlevel < 10)
+-            snprintf(mode, sizeof(mode), "w+b%d", comprlevel);
++            snprintf(mode, sizeof(mode), "wb%d", comprlevel);
+     }
+     
+     if ((st = n_stream_dopen(fd, mode, type)) == NULL)
