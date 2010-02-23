@@ -153,8 +153,8 @@ diff -u -u -r1.11 -r1.12
      }
      
      if ((st = n_stream_dopen(fd, mode, type)) == NULL)
---- poldek-0.30-cvs20080820.23/vfile/vfile.c~	2007-07-06 00:28:53.000000000 +0200
-+++ poldek-0.30-cvs20080820.23/vfile/vfile.c	2010-02-23 17:47:55.496578466 +0100
+--- vfile/vfile.c~	2007-07-06 00:28:53.000000000 +0200
++++ vfile/vfile.c	2010-02-23 17:47:55.496578466 +0100
 @@ -262,7 +262,7 @@
              char *mode = NULL;
  
