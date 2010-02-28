@@ -164,3 +164,14 @@ diff -u -u -r1.11 -r1.12
              else if (vfmode & VFM_RW)
                  mode = "w";
  			else
+--- vfile/vfile.c~	2010-02-23 17:47:55.496578466 +0100
++++ vfile/vfile.c	2010-02-28 09:50:39.839991093 +0100
+@@ -288,7 +288,7 @@
+             char *mode = NULL;
+             
+             if ((vfmode & VFM_APPEND) == VFM_APPEND)
+-				mode = "a+";
++				mode = "a";
+             else if (vfmode & VFM_RW)
+                 mode = "w";
+ 			else
