@@ -9,7 +9,7 @@
 %define	ver_rpm	4.4.9-1
 
 %define		snap	20080820.23
-%define		rel		36
+%define		rel		41
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -61,6 +61,7 @@ Patch31:	%{name}-ls-queryfmt.patch
 Patch32:	%{name}-prepare_url_fix.patch
 Patch33:	%{name}-noloop_on_terminal_loos.patch
 Patch34:	%{name}-show_only_relative_used_space.patch
+Patch35:	%{name}-zlib.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -231,6 +232,8 @@ Moduły języka Python dla poldka.
 %patch33 -p1
 # do not info. about amount of transaction space req. but relative to already installed
 %patch34 -p1
+# fixes failures with zlib >= 1.2.3.7
+%patch35 -p0
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
