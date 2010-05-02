@@ -5,7 +5,7 @@
  int i3_do_poldek_ts_install(struct poldek_ts *ts)
  {
 -    int i, nerr = 0, n, is_particle;
-+    int i, nerr = 0, n, is_particle, approx_sets;
++    int i, nerr = 0, n, is_particle, approx_sets = 0;
      struct i3ctx ictx;
      tn_array *pkgs = NULL;
      
