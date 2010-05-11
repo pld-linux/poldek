@@ -8,4 +8,4 @@ Exec=poldek
 Terminal=true
 Icon=poldek
 Type=Application
-Categories=System;PackageManager;
+Categories=Settings;PackageManager;
