@@ -1,3 +1,5 @@
+# TODO:
+# - fails to build without poldek-devel - fix it !
 #
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
@@ -76,12 +78,14 @@ URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
+BuildRequires:	check-devel
 BuildRequires:	db-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	gettext-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
+BuildRequires:	perl-tools-pod
 BuildRequires:	pkgconfig
 BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
@@ -230,7 +234,7 @@ Moduły języka Python dla poldka.
 # dont be greedy if upgraded pkg has needed capabilities
 %patch29 -p1
 # http://lists.pld-linux.org/mailman/pipermail/pld-devel-pl/2009-November/150519.html
-%patch30 -p1 
+%patch30 -p1
 # LP#392984: add query format to ls
 %patch31 -p1
 # LP#506568
