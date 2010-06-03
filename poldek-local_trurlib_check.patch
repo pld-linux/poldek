@@ -9,12 +9,3 @@
  	TRURL_LDFLAG="-L\$(top_srcdir)/$TRURL_DIR/"
  	LDFLAGS="$LDFLAGS $TRURL_LDFLAG"
  	CPPFLAGS="$CPPFLAGS $TRURL_INCLUDE"
-@@ -452,7 +452,7 @@
-         #endif
-        ], is_valid_trurlib_ver=yes, is_valid_trurlib_ver=no)
- 
--if test "${is_valid_trurlib_ver}." = "no." ; then
-+if test "${is_valid_trurlib_ver}." == "no." ; then
- 	AC_MSG_RESULT(no)		
-    	AC_MSG_ERROR(["trurlib >= 0.44.0 not found"])
- else
