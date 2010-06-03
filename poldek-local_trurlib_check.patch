@@ -1,16 +1,14 @@
 --- configure.in.old	2010-06-03 04:15:33.000000000 +0200
-+++ configure.in	2010-06-03 04:19:07.000000000 +0200
-@@ -421,8 +421,8 @@
++++ configure.in	2010-06-03 05:20:29.000000000 +0200
+@@ -421,7 +421,7 @@
  if test -n "$TRURL_DIR"; then
  	AC_MSG_CHECKING(for local trurlib copy in $TRURL_DIR)
  	AC_MSG_RESULT([yes])
 -	TRURL_INCLUDE="-I\$(top_srcdir)/$TRURL_DIR/include"
--	TRURL_LDFLAG="-L\$(top_srcdir)/$TRURL_DIR/"
-+	TRURL_INCLUDE="-I$srcdir/$TRURL_DIR/include"
-+	TRURL_LDFLAG="-L$srcdir/$TRURL_DIR/"
++	TRURL_INCLUDE="-I\$(top_srcdir)/$TRURL_DIR/include -I./$TRURL_DIR/include"
+ 	TRURL_LDFLAG="-L\$(top_srcdir)/$TRURL_DIR/"
  	LDFLAGS="$LDFLAGS $TRURL_LDFLAG"
  	CPPFLAGS="$CPPFLAGS $TRURL_INCLUDE"
- 	LIBS="-ltrurl $LIBS"
 @@ -452,7 +452,7 @@
          #endif
         ], is_valid_trurlib_ver=yes, is_valid_trurlib_ver=no)
