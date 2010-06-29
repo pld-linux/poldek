@@ -8,7 +8,7 @@
 +choose equivalents manually = yes
  
  # Prevent package listed from being upgraded if they are already installed.
--# hold = kernel*
+-# hold = kernel* foo*.i686 th-test:* *-smp-* th-ready:bar*.x86_64
 -#hold = 
 +hold = kernel*
  
