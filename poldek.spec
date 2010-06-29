@@ -16,8 +16,8 @@
 %endif
 %define	ver_rpm	4.5-5
 #
-%define		snap	20080820.23
-%define		rel		44
+%define		snap		rc1
+%define		rel		1
 Summary:	RPM packages management helper tool
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
@@ -26,8 +26,8 @@ Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}-cvs%{snap}.tar.bz2
-# Source0-md5:	2738eb3996f1cdf1e5d74b913d6e7414
+Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}%{snap}.tar.bz2
+# Source0-md5:	ff3bde5f9451d2691d67112182b7a2df
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-ti.conf
@@ -40,42 +40,7 @@ Source9:	%{name}-aidath.conf
 Source10:	%{name}-multilib-aidath.conf
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
-Patch2:		%{name}-abort-on-upgrade.patch
-Patch3:		%{name}-inline.patch
-Patch4:		%{name}-ls-llu.patch
-Patch5:		%{name}-op-ldalldesc.patch
-Patch6:		%{name}-nocolor-upgrade.patch
-Patch7:		%{name}-upgrade-dist.patch
-Patch8:		%{name}-keep-reinstalled-provides.patch
-Patch9:		%{name}-dont-ask-for-suggests-on-errors.patch
-Patch10:	%{name}-crash-on-invalid-locale.patch
-Patch11:	%{name}-noutf8.patch
-Patch12:	%{name}-dont-suggests-required-packages.patch
-Patch13:	%{name}-tty-for-erasures.patch
-Patch14:	%{name}-both_langs.patch
-Patch15:	%{name}-317130.patch
-Patch16:	%{name}-321546.patch
-Patch17:	%{name}-size-type.patch
-Patch18:	%{name}-no-inlines.patch
-Patch19:	%{name}-export-missing-symbol.patch
-Patch20:	%{name}-skip-suggests-on-upgrade.patch
-Patch21:	%{name}-po.patch
-Patch22:	%{name}-refcnt.patch
-Patch23:	%{name}-assertion-failed.patch
-Patch24:	%{name}-unescape-urlencoded-strings.patch
-Patch25:	%{name}-ls-source-rpm.patch
-Patch26:	%{name}-add-arch-match.patch
-Patch27:	%{name}-multilib-upgrade.patch
-Patch28:	%{name}-score-reqs-marked-to-install.patch
-Patch29:	%{name}-dont-be-greedy.patch
-Patch30:	%{name}-dont-lose-deps.patch
-Patch31:	%{name}-ls-queryfmt.patch
-Patch32:	%{name}-prepare_url_fix.patch
-Patch33:	%{name}-noloop_on_terminal_loos.patch
-Patch34:	%{name}-show_only_relative_used_space.patch
-Patch35:	%{name}-zlib.patch
-Patch36:	%{name}-caplookup.patch
-Patch37:	%{name}-local_trurlib_check.patch
+Patch2:		%{name}-size-type.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -198,56 +163,10 @@ Python modules for poldek.
 Moduły języka Python dla poldka.
 
 %prep
-%setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
+%setup -q
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p0
-%patch7 -p0
-%patch8 -p0
-%patch9 -p0
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p0
-%patch20 -p1
-%patch21 -p1
-%patch22 -p0
-%patch23 -p1
-%patch24 -p1
-# LP#392984: add source rpm to ls
-%patch25 -p1
-# LP#408036
-%patch26 -p1
-# LP#408034
-%patch27 -p1
-# score reqs already marked to install
-%patch28 -p1
-# dont be greedy if upgraded pkg has needed capabilities
-%patch29 -p1
-# http://lists.pld-linux.org/mailman/pipermail/pld-devel-pl/2009-November/150519.html
-%patch30 -p1
-# LP#392984: add query format to ls
-%patch31 -p1
-# LP#506568
-%patch32 -p0
-# LP#499504
-%patch33 -p1
-# do not info. about amount of transaction space req. but relative to already installed
-%patch34 -p1
-# fixes failures with zlib >= 1.2.3.7
-%patch35 -p0
-%patch36 -p1
-%patch37 -p0
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
@@ -473,7 +392,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc README* NEWS TODO configs
+%doc ChangeLog README* NEWS TODO configs
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/repos.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf
