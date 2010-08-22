@@ -5,7 +5,7 @@
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
-#
+
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %if "%{pld_release}" == "ti"
 %define	ver_db	4.5.20
@@ -15,9 +15,9 @@
 %define	ver_db_rel	1
 %endif
 %define	ver_rpm	4.5-5
-#
-%define		snap		rc1
-%define		rel		2
+
+%define		snap	rc1
+%define		rel		3
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
