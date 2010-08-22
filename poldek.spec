@@ -34,6 +34,7 @@ Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
 Patch3:		gcc-fvisibility.patch
 Patch4:		ac-prog-libtool.patch
+Patch5:		makefile-tabs.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -195,6 +196,7 @@ Moduły języka Python dla poldka.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 rm -f m4/libtool.m4 m4/lt*.m4
 
