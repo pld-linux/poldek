@@ -42,6 +42,9 @@ Source10:	%{name}-multilib-aidath.conf
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
+Patch3:		gcc-fvisibility.patch
+Patch4:		ac-prog-libtool.patch
+Patch5:		makefile-tabs.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -198,6 +201,11 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+
+rm -f m4/libtool.m4 m4/lt*.m4
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
