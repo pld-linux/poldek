@@ -243,80 +243,65 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 %{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
 %ifarch i486 i686 ppc sparc alpha athlon
-%define		_ftp_arch	%{_target_cpu}
+	%define		_ftp_arch	%{_target_cpu}
 %endif
 %ifarch %{x8664}
-%define		_ftp_arch	x86_64
-%define		_ftp_alt_arch	i686
+	%define		_ftp_arch	x86_64
+	%define		_ftp_alt_arch	i686
 %endif
 %ifarch i586
-%if "%{pld_release}" == "ti"
-%define		_ftp_arch	i586
-%else
-%define		_ftp_arch	i486
-%endif
+	%if "%{pld_release}" == "ti"
+		%define		_ftp_arch	i586
+	%else
+		%define		_ftp_arch	i486
+	%endif
 %endif
 %ifarch pentium2 pentium3 pentium4
-%define		_ftp_arch	i686
+	%define		_ftp_arch	i686
 %endif
 %ifarch sparcv9 sparc64
-%define		_ftp_arch	sparc
-%if "%{pld_release}" == "th"
-%define		_ftp_arch	%{_target_cpu}
-%ifarch sparc64
-%define		_ftp_alt_arch	sparcv9
+	%define		_ftp_arch	sparc
+	%if "%{pld_release}" == "th"
+		%define		_ftp_arch	%{_target_cpu}
+		%ifarch sparc64
+		%define		_ftp_alt_arch	sparcv9
+		%endif
+	%endif
 %endif
-%endif
-%endif
-
-%{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
 %if "%{pld_release}" == "ti"
-sed -e '
-	s|%%ARCH%%|%{_ftp_arch}|g
-' < %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+	sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 
-%ifarch %{x8664}
-sed '
-	s|%%ARCH%%|%{_ftp_alt_arch}|g
-' < %{SOURCE4} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+	%ifarch %{x8664}
+		sed 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{SOURCE4} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+	%endif
 %endif
-%else
-# pld_release = th
-%ifarch sparcv9 sparc64
-sed -e '
-	s|%%ARCH%%|%{_ftp_arch}|g
-' < %{SOURCE9} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+%if "%{pld_release}" == "th"
+	# aidath
+	%ifarch sparcv9 sparc64
+		sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{SOURCE9} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 
-%ifarch sparc64
-sed '
-	s|%%ARCH%%|%{_ftp_alt_arch}|g
-' < %{SOURCE10} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
-%endif
+		%ifarch sparc64
+		sed 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{SOURCE10} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+		%endif
+	%else
+		# th
+		sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+		sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{SOURCE8} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
 
-%else
-sed -e '
-	s|%%ARCH%%|%{_ftp_arch}|g
-' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
-sed -e '
-	s|%%ARCH%%|%{_ftp_arch}|g
-' < %{SOURCE8} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
-
-%ifarch %{x8664}
-sed '
-	s|%%ARCH%%|%{_ftp_alt_arch}|g
-' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
-%endif
-%endif
+		%ifarch %{x8664}
+			sed 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+		%endif
+	%endif
 %endif
 
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
+cp -a %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
 
 %if %{with imode}
 # add desktop file and icon
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
-install %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
-install %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+cp -a %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+cp -a %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # sources we don't package
