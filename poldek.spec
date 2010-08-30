@@ -17,7 +17,7 @@
 %define	ver_rpm	4.5-5
 
 %define		snap	rc1
-%define		rel		3
+%define		rel		4
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -39,6 +39,7 @@ Source7:	%{name}.png
 Source8:	%{name}-debuginfo.conf
 Source9:	%{name}-aidath.conf
 Source10:	%{name}-multilib-aidath.conf
+Source11:	%{name}-archive.conf
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
@@ -279,6 +280,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 %if "%{pld_release}" == "th"
 	%define	pld_conf %{SOURCE1}
 	%define	pld_debuginfo_conf %{SOURCE8}
+	%define	pld_archive_conf %{SOURCE11}
 
 	%ifarch %{x8664}
 		%define	pld_multilib_conf %{SOURCE2}
@@ -287,6 +289,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 	# aidath
 	%ifarch sparcv9 sparc64
 		%define	pld_conf %{SOURCE9}
+		%undefine pld_archive_conf
 	%endif
 	%ifarch sparc64
 		%define pld_multilib_conf %{SOURCE10}
@@ -301,6 +304,10 @@ sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_conf} > $RPM_BUILD_ROOT%{_sysconfdir}
 
 %if 0%{?pld_debuginfo_conf:1}
 sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
+%endif
+
+%if 0%{?pld_archive_conf:1}
+sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_archive_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-archive.conf
 %endif
 
 cp -a %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
