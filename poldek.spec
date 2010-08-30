@@ -270,29 +270,37 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 %endif
 
 %if "%{pld_release}" == "ti"
-	sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
-
+	%define	pld_conf %{SOURCE3}
 	%ifarch %{x8664}
-		sed 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{SOURCE4} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+		%define	pld_multilib_conf %{SOURCE4}
 	%endif
 %endif
+
 %if "%{pld_release}" == "th"
+	%define	pld_conf %{SOURCE1}
+	%define	pld_debuginfo_conf %{SOURCE8}
+
+	%ifarch %{x8664}
+		%define	pld_multilib_conf %{SOURCE2}
+	%endif
+
 	# aidath
 	%ifarch sparcv9 sparc64
-		sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{SOURCE9} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
-
-		%ifarch sparc64
-		sed 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{SOURCE10} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
-		%endif
-	%else
-		# th
-		sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
-		sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{SOURCE8} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
-
-		%ifarch %{x8664}
-			sed 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
-		%endif
+		%define	pld_conf %{SOURCE9}
 	%endif
+	%ifarch sparc64
+		%define pld_multilib_conf %{SOURCE10}
+	%endif
+%endif
+
+sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+
+%if 0%{?pld_multilib_conf:1}
+	sed 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+%endif
+
+%if 0%{?pld_debuginfo_conf:1}
+sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
 %endif
 
 cp -a %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
