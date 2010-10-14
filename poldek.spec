@@ -55,6 +55,7 @@ BuildRequires:	db-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	gettext-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
+BuildRequires:  ossp-uuid-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	pkgconfig
