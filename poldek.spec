@@ -16,8 +16,8 @@
 %endif
 %define	ver_rpm	4.5-5
 
-%define		snap	rc1
-%define		rel		5
+%define		snap	rc2
+%define		rel	1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -28,7 +28,7 @@ License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}%{snap}.tar.bz2
-# Source0-md5:	ff3bde5f9451d2691d67112182b7a2df
+# Source0-md5:	98806c2c6c8b5b840e7cfde6164fdeb4
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-ti.conf
@@ -43,9 +43,7 @@ Source11:	%{name}-archive.conf
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
-Patch3:		gcc-fvisibility.patch
-Patch4:		ac-prog-libtool.patch
-Patch5:		makefile-tabs.patch
+Patch3:		ac-prog-libtool.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -55,7 +53,6 @@ BuildRequires:	db-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	gettext-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
-BuildRequires:  ossp-uuid-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	pkgconfig
@@ -204,8 +201,6 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 rm -f m4/libtool.m4 m4/lt*.m4
 
