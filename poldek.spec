@@ -10,8 +10,8 @@
 %define	ver_db	4.3.27-1
 %define	ver_rpm	4.4.9-1
 
-%define		snap	rc1
-%define		rel		2%{pld_release}
+%define		snap	rc2
+%define		rel		1%{pld_release}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -22,7 +22,7 @@ License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}%{snap}.tar.bz2
-# Source0-md5:	ff3bde5f9451d2691d67112182b7a2df
+# Source0-md5:	98806c2c6c8b5b840e7cfde6164fdeb4
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source5:	%{name}-aliases.conf
@@ -32,9 +32,7 @@ Patch100:	%{name}-dirdeps.patch
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
-Patch3:		gcc-fvisibility.patch
 Patch4:		ac-prog-libtool.patch
-Patch5:		makefile-tabs.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -194,9 +192,7 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 %patch4 -p1
-%patch5 -p1
 
 rm -f m4/libtool.m4 m4/lt*.m4
 
@@ -269,8 +265,8 @@ install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
 %if %{with imode}
 # add desktop file and icon
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
-install %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
-install %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+cp -a %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+cp -a %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # sources we don't package
