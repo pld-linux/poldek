@@ -27,7 +27,7 @@ Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}%{snap}.tar.bz2
+Source0:	http://carme.pld-linux.org/~cactus/snaps/poldek/%{name}-%{version}%{snap}.tar.bz2
 # Source0-md5:	14135ae2960da09990c50d5b5342be64
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
