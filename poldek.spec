@@ -209,6 +209,7 @@ rm -f m4/libtool.m4 m4/lt*.m4
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
+chmod u+x ./configure
 
 %build
 %{__libtoolize}
