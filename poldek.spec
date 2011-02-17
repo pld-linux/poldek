@@ -17,7 +17,7 @@
 %define	ver_rpm	4.5-5
 
 %define		snap	rc2
-%define		rel	1
+%define		rel	2
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -28,7 +28,7 @@ License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}%{snap}.tar.bz2
-# Source0-md5:	98806c2c6c8b5b840e7cfde6164fdeb4
+# Source0-md5:	14135ae2960da09990c50d5b5342be64
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-ti.conf
@@ -62,6 +62,7 @@ BuildRequires:	popt-devel
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
+BuildRequires:	swig-python
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
@@ -201,7 +202,7 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
+#%patch3 -p1
 %patch4 -p1
 
 rm -f m4/libtool.m4 m4/lt*.m4
