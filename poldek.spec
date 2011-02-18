@@ -14,7 +14,7 @@
 %define	ver_db	4.7.25
 %define	ver_db_rel	1
 %endif
-%define	ver_rpm	4.5-5
+%define	ver_rpm	4.5-49
 
 %define		snap	rc2
 %define		rel	2
