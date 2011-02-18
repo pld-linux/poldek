@@ -51,6 +51,7 @@ BuildRequires:	automake
 BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
 BuildRequires:	db-devel >= %{ver_db}-%{ver_db_rel}
+BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
