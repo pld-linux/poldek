@@ -1,0 +1,12 @@
+#!/bin/sh
+DEBUGSOURCE=th-debuginfo
+
+poldek -q --skip-installed --sn $DEBUGSOURCE --up
+
+for dep in "$@"; do
+case "$dep" in
+	/usr/lib/debug/.build-id/*)
+	echo "search -f $dep | install"
+	;;
+esac
+done | poldek --skip-installed --sn $DEBUGSOURCE
