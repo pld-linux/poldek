@@ -11,7 +11,7 @@
 %define	ver_rpm	4.5-49
 
 %define		snap	rc2
-%define		rel		3%{pld_release}
+%define		rel		4%{pld_release}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -223,7 +223,8 @@ CPPFLAGS="-std=gnu99"
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
-%{__make} install \
+# -j1 due: https://bugs.launchpad.net/poldek/+bug/891997
+%{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %if %{with python}
