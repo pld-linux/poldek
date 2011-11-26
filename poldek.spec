@@ -16,8 +16,8 @@
 %endif
 %define	ver_rpm	4.5-49
 
-%define		snap	rc2
-%define		rel		5
+%define		snap	rc3
+%define		rel	1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -28,7 +28,7 @@ License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	http://carme.pld-linux.org/~cactus/snaps/poldek/%{name}-%{version}%{snap}.tar.bz2
-# Source0-md5:	14135ae2960da09990c50d5b5342be64
+# Source0-md5:	d85c14544d02d03d67d0b1ebd6ec7c61
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-ti.conf
@@ -43,7 +43,7 @@ Source11:	%{name}-archive.conf
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
-Patch4:		%{name}-Os-fail-workaround.patch
+Patch3:		%{name}-Os-fail-workaround.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -203,7 +203,7 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch4 -p1
+%patch3 -p1
 
 rm -f m4/libtool.m4 m4/lt*.m4
 
@@ -217,7 +217,11 @@ chmod u+x ./configure ./doc/conf-xml2.sh
 %{__autoheader}
 %{__autoconf}
 %{__automake}
-cp -f config.sub trurlib
+cd tndb
+autoreconf -i
+cd ../trurlib
+autoreconf -i
+cd ..
 
 CPPFLAGS="-std=gnu99"
 %configure \
@@ -232,8 +236,7 @@ CPPFLAGS="-std=gnu99"
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
-# -j1 due: https://bugs.launchpad.net/poldek/+bug/891997
-%{__make} -j1 install \
+%{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %if %{with python}
