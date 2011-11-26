@@ -17,13 +17,13 @@
 %define	ver_rpm	4.5-49
 
 %define		snap	rc3
-%define		rel	1
+%define		rel	2
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
 Version:	0.30
-Release:	0.%{snap}.%{rel}
+Release:	1.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
