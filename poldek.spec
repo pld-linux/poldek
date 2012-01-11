@@ -218,8 +218,10 @@ chmod u+x ./configure ./doc/conf-xml2.sh
 %{__autoconf}
 %{__automake}
 cd tndb
+%{__libtoolize}
 autoreconf -i
 cd ../trurlib
+%{__libtoolize}
 autoreconf -i
 cd ..
 
