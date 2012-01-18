@@ -17,7 +17,7 @@
 %define	ver_rpm	4.5-49
 
 %define		snap	rc3
-%define		rel	2
+%define		rel	3
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -236,7 +236,7 @@ CPPFLAGS="-std=gnu99"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -316,13 +316,13 @@ sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_s
 sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_archive_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-archive.conf
 %endif
 
-cp -a %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
+cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
 
 %if %{with imode}
 # add desktop file and icon
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
-cp -a %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
-cp -a %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+cp -p %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+cp -p %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # sources we don't package
@@ -452,6 +452,7 @@ fi
 %{_desktopdir}/%{name}.desktop
 %{_pixmapsdir}/%{name}.png
 %endif
+%dir /var/cache/%{name}
 
 %if %{without static}
 %files libs
