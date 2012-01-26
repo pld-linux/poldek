@@ -44,6 +44,7 @@ Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
 Patch3:		%{name}-Os-fail-workaround.patch
+Patch4:		am-pkglib.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -204,6 +205,7 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 rm -f m4/libtool.m4 m4/lt*.m4
 
