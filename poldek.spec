@@ -17,7 +17,7 @@
 %define	ver_rpm	4.5-49
 
 %define		snap	rc3
-%define		rel	3
+%define		rel	4
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -45,6 +45,7 @@ Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
 Patch3:		%{name}-Os-fail-workaround.patch
 Patch4:		am-pkglib.patch
+Patch5:		ls-security.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -206,6 +207,7 @@ Moduły języka Python dla poldka.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 rm -f m4/libtool.m4 m4/lt*.m4
 

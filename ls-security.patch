@@ -1,0 +1,15 @@
+improve matching security updates from changelogs:
+- match "security" case insensitively
+- match CVE-20xx, I doubt poldek exists in 2100, or I simply don't care :D
+
+--- poldek-0.30/pkgu.c~	2011-11-26 01:45:15.000000000 +0200
++++ poldek-0.30/pkgu.c	2012-01-26 11:15:24.628984938 +0200
+@@ -508,7 +508,7 @@
+         struct changelog_ent *ent = n_array_nth(entries, i);
+         const char *m = ent->message;
+         
+-        if (strstr(m, "CVE-2") || strstr(m, "CVE-19") || strstr(m, "ecurity")) {
++        if (strstr(m, "CVE-20") || strstr(m, "CVE-19") || strcasestr(m, "security")) {
+             yes = 1;
+             break;
+         }
