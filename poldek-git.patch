@@ -1,0 +1,20 @@
+commit f18bedfa368995550e231f382718029bdc2300df
+Author: Marcin Banasiak <marcin.banasiak@gmail.com>
+Date:   Sun Feb 19 16:55:35 2012 +0100
+
+    Fix types in tndb_get_all
+
+diff --git a/read.c b/read.c
+index b57bb50..d560799 100644
+--- a/tndb/read.c
++++ b/tndb/read.c
+@@ -497,7 +497,8 @@ size_t tndb_get_all(struct tndb *db, const void *key, size_t klen,
+ 		    void **val)
+ {
+     off_t  voffs;
+-    size_t nread = 0, vlen;
++    size_t nread = 0;
++    unsigned int vlen;
+     
+     if (tndb_get_voff(db, key, klen, &voffs, &vlen)) {
+ 	*val = n_malloc(vlen + 1); /* extra byte for \0 */
