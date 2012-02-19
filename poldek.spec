@@ -16,8 +16,8 @@
 %endif
 %define	ver_rpm	4.5-49
 
-%define		snap	rc3
-%define		rel	4
+%define		snap	rc4
+%define		rel	1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -27,8 +27,8 @@ Release:	1.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	http://carme.pld-linux.org/~cactus/snaps/poldek/%{name}-%{version}%{snap}.tar.bz2
-# Source0-md5:	d85c14544d02d03d67d0b1ebd6ec7c61
+Source0:	http://carme.pld-linux.org/~cactus/snaps/poldek/%{name}-%{version}%{snap}.tar.xz
+# Source0-md5:	1903db3137c297f42405ba2ac3fa17db
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-ti.conf
@@ -44,8 +44,6 @@ Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
 Patch3:		%{name}-Os-fail-workaround.patch
-Patch4:		am-pkglib.patch
-Patch5:		ls-security.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -206,8 +204,6 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 rm -f m4/libtool.m4 m4/lt*.m4
 
