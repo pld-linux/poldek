@@ -20,3 +20,23 @@ index 830356a..c26fe9f 100644
      
      snprintf(path, sizeof(path), "%s.ndir.%s",
  	     pkgdir->idxpath, pidxpath);
+commit 55c3e1253032e28eab75bf775b247db4882961f2
+Author: Bartlomiej Zimon <uzi18@o2.pl>
+Date:   Wed Mar 21 02:23:27 2012 +0100
+
+    - add name for aria fetcher
+    
+    Signed-off-by: Bartlomiej Zimon <uzi18@o2.pl>
+
+diff --git a/doc/poldek.conf.xml b/doc/poldek.conf.xml
+index 5846888..17347e5 100644
+--- a/doc/poldek.conf.xml
++++ b/doc/poldek.conf.xml
+@@ -729,6 +729,7 @@ proto = http,ftp,https
+ cmd   = wget -N --dot-style=binary -P %d %Pn
+ 
+ [fetcher]
++name  = aria
+ proto = http,ftp,https
+ cmd   = aria2c --log-level=info --summary-interval=0 --truncate-console-readout=true -c -k1M -j5 -s5 -x5 -Z -P -d %d %Pn
+ 
