@@ -60,8 +60,14 @@ index b57bb50..d560799 100644
      
      if (tndb_get_voff(db, key, klen, &voffs, &vlen)) {
  	*val = n_malloc(vlen + 1); /* extra byte for \0 */
+commit dfe8b3eaefac54fb3decf6bf2393fcac7e58f1db
+Author: Arkadiusz Miśkiewicz <arekm@maven.pl>
+Date:   Wed Mar 21 20:22:19 2012 +0100
+
+    One more place when parallel conf-xml2 run could cause writting conflict.
+
 diff --git a/doc/conf-xml2.sh b/doc/conf-xml2.sh
-index 19a7f9d..abda8e6 100755
+index 19a7f9d..844f108 100755
 --- a/doc/conf-xml2.sh
 +++ b/doc/conf-xml2.sh
 @@ -37,10 +37,10 @@ to_conf() {
