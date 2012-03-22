@@ -65,6 +65,7 @@ BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	swig-python
+BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
