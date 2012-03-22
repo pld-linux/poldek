@@ -54,6 +54,7 @@ BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	sed >= 4.0
 BuildRequires:	swig-python
+BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
