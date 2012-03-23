@@ -83,3 +83,37 @@ index 19a7f9d..844f108 100755
      # hash text between =xxxstart and =xxxend
      perl -ne 's/^\s+(=xxx\w+)/$1/; $in = 1 if /^=xxxstart/; $in = 0 if /^=xxxend/; if ($in) { s/^\s+([^#])/# $1/; }; print if $_ !~ /^=/' |
      # remove unneeded leading lines and lines with =remove tag
+commit 11f27d85144a575cfe27a22d72c3816d36e7a754
+Author: Bartlomiej Zimon <uzi18@o2.pl>
+Date:   Fri Mar 23 13:37:06 2012 +0100
+
+    - http: shut up 404 errors when verbose = 0
+    
+    Signed-off-by: Bartlomiej Zimon <uzi18@o2.pl>
+
+diff --git a/vfile/vfff/http.c b/vfile/vfff/http.c
+index b85db3a..f233b1a 100644
+--- a/vfile/vfff/http.c
++++ b/vfile/vfff/http.c
+@@ -44,6 +44,7 @@
+ #include <sigint/sigint.h>
+ 
+ #include "vfff.h"
++#include "../vfile_intern.h" // for verbose level
+ #include "i18n.h"
+ #include "sigint/sigint.h"
+ 
+@@ -674,8 +675,11 @@ static int status_code_ok(int status_code, const char *msg, const char *path)
+             is_err = 0;
+             break;
+             
+-        case HTTP_STATUS_NOT_FOUND: 
+-            vfff_set_err(ENOENT, _("%s: no such file"), path);
++        case HTTP_STATUS_NOT_FOUND:
++            if (*vfile_conf.verbose > 0) // kill error if verbose = 0
++                vfff_set_err(ENOENT, _("%s: no such file"), path);
++            else
++                is_err = 0;
+             break;
+             
+         case HTTP_STATUS_FORBIDDEN:
