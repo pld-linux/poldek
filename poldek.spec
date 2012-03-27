@@ -17,7 +17,7 @@
 %define	ver_rpm	4.5-49
 
 %define		snap	rc5
-%define		rel	6
+%define		rel	7
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
