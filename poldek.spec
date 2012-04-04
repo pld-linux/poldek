@@ -7,22 +7,22 @@
 %bcond_without	python	# don't build python bindings
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.5.20
-%define	ver_rpm	4.5-49
+%define	ver_db	4.3.27-1
+%define	ver_rpm	4.4.9-1
 
-%define		snap	rc5
-%define		rel	5
+%define		snap	rc2
+%define		rel		1%{pld_release}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
 Version:	0.30
-Release:	1.%{snap}.%{rel}
+Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	http://carme.pld-linux.org/~cactus/snaps/poldek/%{name}-%{version}%{snap}.tar.xz
-# Source0-md5:	ab89926c28cfb6b7d72497fc37c16ac4
+Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}%{snap}.tar.bz2
+# Source0-md5:	98806c2c6c8b5b840e7cfde6164fdeb4
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source5:	%{name}-aliases.conf
@@ -32,8 +32,7 @@ Patch100:	%{name}-dirdeps.patch
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
-Patch3:		%{name}-Os-fail-workaround.patch
-Patch4:		%{name}-git.patch
+Patch4:		ac-prog-libtool.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -53,8 +52,6 @@ BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	sed >= 4.0
-BuildRequires:	swig-python
-BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
@@ -195,14 +192,12 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 %patch4 -p1
 
 rm -f m4/libtool.m4 m4/lt*.m4
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
-chmod u+x ./configure ./doc/conf-xml2.sh
 
 %build
 %{__libtoolize}
@@ -210,13 +205,7 @@ chmod u+x ./configure ./doc/conf-xml2.sh
 %{__autoheader}
 %{__autoconf}
 %{__automake}
-cd tndb
-%{__libtoolize}
-autoreconf -i
-cd ../trurlib
-%{__libtoolize}
-autoreconf -i
-cd ..
+cp -f config.sub trurlib
 
 CPPFLAGS="-std=gnu99"
 %configure \
@@ -229,7 +218,7 @@ CPPFLAGS="-std=gnu99"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -271,13 +260,13 @@ sed '
 ' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 %endif
 
-cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
 
 %if %{with imode}
 # add desktop file and icon
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
-cp -p %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
-cp -p %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+cp -a %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+cp -a %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # sources we don't package
@@ -411,7 +400,6 @@ fi
 %{_desktopdir}/%{name}.desktop
 %{_pixmapsdir}/%{name}.png
 %endif
-%dir /var/cache/%{name}
 
 %if %{without static}
 %files libs
