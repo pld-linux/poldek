@@ -1,0 +1,53 @@
+diff -urN poldek-0.30-cvs20080225.00/libpoldek.sym poldek-0.30-cvs20080225.00.new/libpoldek.sym
+--- poldek-0.30-cvs20080225.00/libpoldek.sym	2008-04-08 19:25:12.000000000 +0200
++++ poldek-0.30-cvs20080225.00.new/libpoldek.sym	2008-04-08 19:26:26.000000000 +0200
+@@ -261,6 +261,7 @@
+ sigint_destroy
+ sigint_init
+ sigint_enable
++sigint_emit
+ sigint_pop
+ sigint_push
+ sigint_reached
+diff -urN poldek-0.30-cvs20080225.00/sigint/sigint.c poldek-0.30-cvs20080225.00.new/sigint/sigint.c
+--- poldek-0.30-cvs20080225.00/sigint/sigint.c	2008-02-02 22:49:05.000000000 +0100
++++ poldek-0.30-cvs20080225.00.new/sigint/sigint.c	2008-04-08 19:12:37.000000000 +0200
+@@ -48,6 +48,21 @@
+         orig_sighandler(sig);
+ }
+ 
++void sigint_emit (void)
++{
++    int i;
++
++    if (enabled == 0)
++	return;
++
++    interrupted = 1;
++
++    for (i = 0; i < n_array_size (cb_stack); i++) {
++	void (*cb)(void) = n_array_nth (cb_stack, i);
++
++	cb ();
++    }
++}
+ 
+ void sigint_enable(int v) 
+ {
+diff -urN poldek-0.30-cvs20080225.00/sigint/sigint.h poldek-0.30-cvs20080225.00.new/sigint/sigint.h
+--- poldek-0.30-cvs20080225.00/sigint/sigint.h	2008-02-02 22:38:26.000000000 +0100
++++ poldek-0.30-cvs20080225.00.new/sigint/sigint.h	2008-04-08 19:22:41.000000000 +0200
+@@ -6,7 +6,12 @@
+ void sigint_destroy(void);
+ void sigint_reset(void);
+ 
+-void sigint_reset(void);
++/* 
++ * emit sigint. Can be used in some external applications 
++ * using libpoldek to interrupt given action (eg. searching,
++ * processing dependencies and others)
++ */
++void sigint_emit(void);
+ 
+ void sigint_push(void (*cb)(void));
+ void *sigint_pop(void);

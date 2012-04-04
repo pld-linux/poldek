@@ -1,0 +1,11 @@
+--- poldek-0.30-cvs20080820.23/pkgdir/pkgdir.c.old	2008-11-29 18:32:50.000000000 +0100
++++ poldek-0.30-cvs20080820.23/pkgdir/pkgdir.c	2008-11-29 18:33:42.000000000 +0100
+@@ -337,7 +337,7 @@ int pkgdir_update(struct pkgdir *pkgdir)
+                  (pkgdir->mod->cap_flags & PKGDIR_CAP_NOSAVAFTUP) == 0) {
+ 
+             if (pkgdir->mod->cap_flags & PKGDIR_CAP_SAVEABLE)
+-                rc = pkgdir_save(pkgdir, PKGDIR_CREAT_NOPATCH);
++                rc = pkgdir_save(pkgdir, PKGDIR_CREAT_NOPATCH | PKGDIR_CREAT_MINi18n);
+         }
+             
+     } else if (!rc && uprc == PKGDIR_UPRC_ERR_DESYNCHRONIZED) {

@@ -1,0 +1,52 @@
+with --noorder rpm might run upgrade as erase+install not install+erase, which
+causes %config files being saved as .rpmsave and new file not being installed:
+
+ 104:ConsoleKit             ########################################### [ 86%]
+Run "/sbin/service ConsoleKit start" to start ConsoleKit service.
+warning: /etc/vim/vimrc saved as /etc/vim/vimrc.rpmsave
+Adding group polkituser GID=220.
+Adding user polkituser UID=220.
+ 105:PolicyKit              ########################################### [ 87%]
+ 106:openssh-clients        ########################################### [ 88%]
+ 107:openssh-server         ########################################### [ 88%]
+Reloading OpenSSH service..........................................[ DONE ]
+ 108:sudo                   warning: /etc/sudoers created as /etc/sudoers.rpmnew
+########################################### [ 89%]
+Adding group messagebus GID=122.
+Adding user messagebus UID=122.
+ 109:dbus                   ########################################### [ 90%]
+ 110:bind                   ########################################### [ 91%]
+Stopping Named service.............................................[ DONE ]
+Starting Named service.............................................[ DONE ]
+ 111:mysql                  ########################################### [ 92%]
+Stopping MySQL /var/lib/mysql service..............................[ DONE ]
+Starting MySQL /var/lib/mysql service..............................[ BUSY ]
+Waiting for MySQL to start.........................................[ DONE ]
+ 112:syslog-ng              ########################################### [ 93%]
+Stopping syslog-ng service.........................................[ DONE ]
+Starting syslog-ng service.........................................[ DONE ]
+ 113:man                    ########################################### [ 93%]
+ 114:rpm-build              ########################################### [ 94%]
+ 115:tzdata                 ########################################### [ 95%]
+Setting time zone information (Europe, Warsaw).....................[ DONE ]
+ 116:linux-libc-headers     ########################################### [ 96%]
+You should run MySQL upgrade scripts for all MySQL clusters.
+Thus, you should invoke:
+# mysql_upgrade --datadir=/var/lib/mysql/mysqldb/db
+You should run MySQL upgrade scripts for all MySQL clusters.
+Thus, you should invoke:
+# mysql_upgrade --datadir=/var/lib/mysql/mysqldb/db
+ 117:vim                    ########################################### [ 97%]
+
+
+--- poldek-0.21-cvs20070703.00/pm/rpm/rpminstall.c~	2008-03-19 21:28:45.000000000 +0200
++++ poldek-0.21-cvs20070703.00/pm/rpm/rpminstall.c	2008-03-19 21:29:42.010639258 +0200
+@@ -374,8 +374,6 @@
+         argv[nargs++] = (char*)ts->rootdir;
+     }
+ 
+-    argv[nargs++] = "--noorder";    /* packages always ordered by me */
+-
+     if (ts->rpmacros) 
+         for (i=0; i<n_array_size(ts->rpmacros); i++) {
+             argv[nargs++] = "--define";

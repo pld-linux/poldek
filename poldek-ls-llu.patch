@@ -1,0 +1,13 @@
+with ls -lu (llu), last column name (size) did not fit in one line.
+
+--- poldek-0.30-cvs20080604.13/cli/ls.c~	2008-06-03 21:29:38.000000000 +0200
++++ poldek-0.30-cvs20080604.13/cli/ls.c	2008-08-04 21:10:40.375270267 +0200
+@@ -427,7 +427,7 @@
+         } else {
+             snprintf(fmt_hdr, sizeof(fmt_hdr), "%%-%ds%%-%ds %%-%ds%%%ds\n",
+                      (term_width/2) - 1, (term_width/6) - 1,
+-                     (term_width/6) - 1, (term_width/5) - 1);
++                     (term_width/6) - 1, (term_width/6) - 1);
+ 
+             snprintf(fmt_pkg, sizeof(fmt_pkg), "%%-%ds%%-%ds %%-%ds %%%ds\n",
+                      (term_width/2) - 1, (term_width/6) - 1,

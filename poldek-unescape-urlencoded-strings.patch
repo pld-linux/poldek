@@ -1,0 +1,124 @@
+commit 167f7fc08fc8f6aedf864f3fc3c77b4c96a86f84
+Author: Marcin Banasiak <megabajt@pld-linux.org>
+Date:   Sat May 30 12:13:31 2009 +0200
+
+    Decode strings that may be urlencoded before displaying.
+
+diff --git a/vfile/fetch.c b/vfile/fetch.c
+index 0a4ee5a..88d98dd 100644
+--- a/vfile/fetch.c
++++ b/vfile/fetch.c
+@@ -828,6 +828,39 @@ const char *vf_url_slim_s(const char *url, int maxl)
+     return vf_url_slim(buf, sizeof(buf), url, maxl > 50 ? maxl : 60);
+ }
+ 
++char *vf_url_unescape(const char *url)
++{
++    char *unescaped = NULL;
++    int unesclen = 0;
++
++    if (!url)
++	return NULL;
++
++    unescaped = n_malloc(strlen(url) + 1);
++
++    while (*url) {
++        char ch = *url;
++
++        if (*url == '%' && isxdigit(url[1]) && isxdigit(url[2])) {
++            char str[3];
++            
++            str[0] = url[1];
++            str[1] = url[2];
++            str[2] = '\0';
++
++            ch = (char)strtol(str, NULL, 16);
++
++            url += 2;
++        }
++
++        unescaped[unesclen++] = ch;
++        url++;
++    }
++
++    unescaped[unesclen] = '\0';
++
++    return unescaped;
++}
+ 
+ int vf_find_external_command(char *cmdpath, int size, const char *cmd,
+                              const char *PATH)
+diff --git a/vfile/libvfile.sym b/vfile/libvfile.sym
+index c283fcb..d96d3a5 100644
+--- a/vfile/libvfile.sym
++++ b/vfile/libvfile.sym
+@@ -41,6 +41,7 @@ vf_url_proto
+ vf_url_slim
+ vf_url_slim_s
+ vf_url_type
++vf_url_unescape
+ vf_userathost
+ vf_valid_path
+ vf_vlog
+diff --git a/vfile/vfetch.c b/vfile/vfetch.c
+index 7f23244..cb46dd1 100644
+--- a/vfile/vfetch.c
++++ b/vfile/vfetch.c
+@@ -219,8 +219,8 @@ int vfile__vf_fetch(const char *url, const char *dest_dir, unsigned flags,
+     struct vflock           *vflock = NULL;
+     struct vf_request       *req = NULL;
+     char                    destpath[PATH_MAX];
++    char                    *url_unescaped = NULL;
+     int                     rc = 0;
+-
+     
+     if (*vfile_verbose <= 0)
+         flags |= VF_FETCH_NOLABEL|VF_FETCH_NOPROGRESS;
+@@ -239,11 +239,15 @@ int vfile__vf_fetch(const char *url, const char *dest_dir, unsigned flags,
+     
+     if ((mod = select_vf_module(url)) == NULL) { /* no internal module found */
+         if ((flags & VF_FETCH_NOLABEL) == 0) {
++            url_unescaped = vf_url_unescape(url);
++            
+             if (urlabel)
+                 vf_loginfo(_("Retrieving %s::%s...\n"), urlabel,
+-                           n_basenam(url));
++                           n_basenam(url_unescaped));
+             else
+-                vf_loginfo(_("Retrieving %s...\n"), PR_URL(url));
++                vf_loginfo(_("Retrieving %s...\n"), PR_URL(url_unescaped));
++        
++    	    free(url_unescaped);
+         }
+ 
+         rc = vf_fetch_ext(url, destdir);
+@@ -298,11 +302,15 @@ int vfile__vf_fetch(const char *url, const char *dest_dir, unsigned flags,
+     }
+ 
+     if ((flags & VF_FETCH_NOLABEL) == 0) {
++        url_unescaped = vf_url_unescape(req->url);
++        
+         if (urlabel)
+             vf_loginfo(_("Retrieving %s::%s...\n"), urlabel,
+-                       n_basenam(req->url));
++                       n_basenam(url_unescaped));
+         else
+-            vf_loginfo(_("Retrieving %s...\n"), PR_URL(req->url));
++            vf_loginfo(_("Retrieving %s...\n"), PR_URL(url_unescaped));
++
++	free(url_unescaped);
+     }
+             
+     if ((rc = do_vfile_req(REQTYPE_FETCH, mod, req, flags)) == 0) {
+diff --git a/vfile/vfile.h b/vfile/vfile.h
+index 0125a68..13501eb 100644
+--- a/vfile/vfile.h
++++ b/vfile/vfile.h
+@@ -182,6 +182,7 @@ const char *vf_url_hidepasswd_s(const char *url);
+ const char *vf_url_slim(char *buf, int size, const char *url, int maxl);
+ const char *vf_url_slim_s(const char *url, int maxl);
+ 
++char *vf_url_unescape(const char *url);
+ 
+ int vf_valid_path(const char *path);
+ int vf_mkdir(const char *path);

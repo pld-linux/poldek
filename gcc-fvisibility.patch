@@ -1,0 +1,25 @@
+Signed-off-by: Elan Ruusamäe <glen@pld-linux.org>
+
+--- poldek-0.30/configure.ac~	2010-06-29 02:00:30.000000000 +0300
++++ poldek-0.30/configure.ac	2010-08-22 14:25:03.838184361 +0300
+@@ -61,6 +61,7 @@
+ AC_SUBST(AM_CFLAGS)
+ 
+ if test -n "$GCC"; then
++  cflags_save="$CFLAGS"
+   CFLAGS="$CFLAGS -fvisibility=hidden"
+   AC_MSG_CHECKING([whether gcc supports visibility])
+   AC_TRY_COMPILE(
+@@ -70,7 +71,11 @@
+ 	 extern __attribute__((__visibility__("default"))) int exportedfunc (void);],
+ 	[],
+ 	AC_MSG_RESULT(yes),
+-	AC_MSG_ERROR(["compiler does not support visibility"]))
++	[
++	  AC_MSG_WARN([compiler does not support visibility])
++	  CFLAGS="$cflags_save"
++	]
++  )
+ fi
+ 
+ 
