@@ -1,9 +1,0 @@
---- poldek-0.30-cvs20080820.23/pm/rpm/rpminstall.c~	2008-05-12 18:11:33.000000000 +0200
-+++ poldek-0.30-cvs20080820.23/pm/rpm/rpminstall.c	2008-12-08 13:13:03.226547469 +0100
-@@ -572,5 +572,5 @@
-         msgn(1, _("Running%s..."), buf);
-     }
- 
--    return pm_rpm_execrpm(cmd, argv, 0, 0) == 0;
-+    return pm_rpm_execrpm(cmd, argv, 1, 0) == 0;
- }
