@@ -34,3 +34,14 @@
  
  # Ignore package list - packages fits given mask will be invisible.
  # ignore = *-smp-* foo*
+--- poldek-0.30/conf_sections.c~	2012-04-04 12:01:04.000000000 +0300
++++ poldek-0.30/conf_sections.c	2012-04-04 12:04:46.080171888 +0300
+@@ -173,7 +173,7 @@
+              
+    { "choose equivalents manually", 
+      CONF_TYPE_BOOLEAN,
+-             "no",
++             "yes",
+              POLDEK_OP_EQPKG_ASKUSER, { 0 } },
+              
+    { "hold", 
