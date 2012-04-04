@@ -1,5 +1,3 @@
-# TODO:
-# - fails to build without poldek-devel - fix it !
 #
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
@@ -7,22 +5,21 @@
 %bcond_without	python	# don't build python bindings
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.5.20
-%define	ver_rpm	4.5-49
+%define	ver_db	4.3.27-1
+%define	ver_rpm	4.4.9-1
 
-%define		snap	rc5
-%define		rel	5
+%define		snap	20080820.23
+%define		rel		41
 Summary:	RPM packages management helper tool
-Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
 Version:	0.30
-Release:	1.%{snap}.%{rel}
+Release:	0.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	http://carme.pld-linux.org/~cactus/snaps/poldek/%{name}-%{version}%{snap}.tar.xz
-# Source0-md5:	ab89926c28cfb6b7d72497fc37c16ac4
+Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}-cvs%{snap}.tar.bz2
+# Source0-md5:	2738eb3996f1cdf1e5d74b913d6e7414
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source5:	%{name}-aliases.conf
@@ -31,14 +28,44 @@ Source7:	%{name}.png
 Patch100:	%{name}-dirdeps.patch
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
-Patch2:		%{name}-size-type.patch
-Patch3:		%{name}-Os-fail-workaround.patch
-Patch4:		%{name}-git.patch
+Patch2:		%{name}-abort-on-upgrade.patch
+Patch3:		%{name}-inline.patch
+Patch4:		%{name}-ls-llu.patch
+Patch5:		%{name}-op-ldalldesc.patch
+Patch6:		%{name}-nocolor-upgrade.patch
+Patch7:		%{name}-upgrade-dist.patch
+Patch8:		%{name}-keep-reinstalled-provides.patch
+Patch9:		%{name}-dont-ask-for-suggests-on-errors.patch
+Patch10:	%{name}-crash-on-invalid-locale.patch
+Patch11:	%{name}-noutf8.patch
+Patch12:	%{name}-dont-suggests-required-packages.patch
+Patch13:	%{name}-tty-for-erasures.patch
+Patch14:	%{name}-both_langs.patch
+Patch15:	%{name}-317130.patch
+Patch16:	%{name}-321546.patch
+Patch17:	%{name}-size-type.patch
+Patch18:	%{name}-no-inlines.patch
+Patch19:	%{name}-export-missing-symbol.patch
+Patch20:	%{name}-skip-suggests-on-upgrade.patch
+Patch21:	%{name}-po.patch
+Patch22:	%{name}-refcnt.patch
+Patch23:	%{name}-assertion-failed.patch
+Patch24:	%{name}-unescape-urlencoded-strings.patch
+Patch25:	%{name}-ls-source-rpm.patch
+Patch26:	%{name}-add-arch-match.patch
+Patch27:	%{name}-multilib-upgrade.patch
+Patch28:	%{name}-score-reqs-marked-to-install.patch
+Patch29:	%{name}-dont-be-greedy.patch
+Patch30:	%{name}-dont-lose-deps.patch
+Patch31:	%{name}-ls-queryfmt.patch
+Patch32:	%{name}-prepare_url_fix.patch
+Patch33:	%{name}-noloop_on_terminal_loos.patch
+Patch34:	%{name}-show_only_relative_used_space.patch
+Patch35:	%{name}-zlib.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
-BuildRequires:	check-devel
 BuildRequires:	db-devel >= %{ver_db}
 BuildRequires:	gettext-autopoint
 BuildRequires:	gettext-devel
@@ -53,8 +80,6 @@ BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	sed >= 4.0
-BuildRequires:	swig-python
-BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
@@ -96,20 +121,6 @@ shell mode of Perl's CPAN.
 %{!?with_imode:This version hasn't got interactive mode.}
 #'vim
 
-%description -l hu.UTF-8
-poldek egy RPM csomagkezelő eszköz, amely megkönnyíti a
-csomagellenőrzést, telepítést (beleértve a rendszertelepítést a
-nulláról), frissítést és eltávolítást.
-
-A program használható parancssorból (mint a Debian apt-get programja)
-vagy interaktív módban. Az interaktív mód egy readline környezetet
-jelent, parancskiegészítéssel és előzményekkel, hasonlóan a Perl CPAN
-shell módjához.
-
-%{?with_static:Ez a verzió statikusan linkelt.}
-
-%{!?with_imode:Ennek a verziónak nincs interaktív módja.}
-
 %description -l pl.UTF-8
 poldek jest narzędziem linii poleceń służącym do weryfikacji,
 instalacji (włączając instalację systemu od zera), aktualizacji i
@@ -126,22 +137,17 @@ modułu CPAN.
 
 %package libs
 Summary:	poldek libraries
-Summary(hu.UTF-8):	A poldek könyvtárai
 Summary(pl.UTF-8):	Biblioteki poldka
 Group:		Libraries
 
 %description libs
 poldek libraries.
 
-%description libs -l hu.UTF-8
-A poldek könyvtárai.
-
 %description libs -l pl.UTF-8
 Biblioteki poldka.
 
 %package devel
 Summary:	Header files for poldek libraries
-Summary(hu.UTF-8):	A poldek könyvtár fejlesztői fájljai
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek poldka
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
@@ -150,15 +156,11 @@ Requires:	rpm-devel >= %{ver_rpm}
 %description devel
 Header files for poldek libraries.
 
-%description devel -l hu.UTF-8
-A poldek könyvtár fejlesztői fájljai.
-
 %description devel -l pl.UTF-8
 Pliki nagłówkowe bibliotek poldka.
 
 %package static
 Summary:	poldek static libraries
-Summary(hu.UTF-8):	poldek statikus könyvtárak
 Summary(pl.UTF-8):	Biblioteki statyczne poldka
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
@@ -166,15 +168,11 @@ Requires:	%{name}-devel = %{version}-%{release}
 %description static
 poldek static libraries.
 
-%description static -l hu.UTF-8
-poldek statikus könyvtárak.
-
 %description static -l pl.UTF-8
 Biblioteki statyczne poldka.
 
 %package -n python-poldek
 Summary:	Python modules for poldek
-Summary(hu.UTF-8):	Python modulok poldek-hez
 Summary(pl.UTF-8):	Moduły języka Python dla poldka
 Group:		Libraries/Python
 Requires:	%{name}-libs = %{version}-%{release}
@@ -183,40 +181,69 @@ Requires:	%{name}-libs = %{version}-%{release}
 %description -n python-poldek
 Python modules for poldek.
 
-%description -n python-poldek -l hu.UTF-8
-Python modulok poldek-hez.
-
 %description -n python-poldek -l pl.UTF-8
 Moduły języka Python dla poldka.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}%{?snap:-cvs%{snap}}
 %patch100 -p1
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-
-rm -f m4/libtool.m4 m4/lt*.m4
+%patch5 -p1
+%patch6 -p0
+%patch7 -p0
+%patch8 -p0
+%patch9 -p0
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p0
+%patch20 -p1
+%patch21 -p1
+%patch22 -p0
+%patch23 -p1
+%patch24 -p1
+# LP#392984: add source rpm to ls
+%patch25 -p1
+# LP#408036
+%patch26 -p1
+# LP#408034
+%patch27 -p1
+# score reqs already marked to install
+%patch28 -p1
+# dont be greedy if upgraded pkg has needed capabilities
+%patch29 -p1
+# http://lists.pld-linux.org/mailman/pipermail/pld-devel-pl/2009-November/150519.html
+%patch30 -p1 
+# LP#392984: add query format to ls
+%patch31 -p1
+# LP#506568
+%patch32 -p0
+# LP#499504
+%patch33 -p1
+# do not info. about amount of transaction space req. but relative to already installed
+%patch34 -p1
+# fixes failures with zlib >= 1.2.3.7
+%patch35 -p0
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
-chmod u+x ./configure ./doc/conf-xml2.sh
 
 %build
-%{__libtoolize}
+%{__autopoint}
 %{__aclocal} -I m4
-%{__autoheader}
 %{__autoconf}
 %{__automake}
-cd tndb
-%{__libtoolize}
-autoreconf -i
-cd ../trurlib
-%{__libtoolize}
-autoreconf -i
-cd ..
+cp -f config.sub trurlib
 
 CPPFLAGS="-std=gnu99"
 %configure \
@@ -229,7 +256,7 @@ CPPFLAGS="-std=gnu99"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -271,13 +298,13 @@ sed '
 ' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 %endif
 
-cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
 
 %if %{with imode}
 # add desktop file and icon
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
-cp -p %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
-cp -p %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+install %{SOURCE6} $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop
+install %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # sources we don't package
@@ -396,7 +423,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc ChangeLog README* NEWS TODO configs
+%doc README* NEWS TODO configs
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/repos.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf
@@ -411,7 +438,6 @@ fi
 %{_desktopdir}/%{name}.desktop
 %{_pixmapsdir}/%{name}.png
 %endif
-%dir /var/cache/%{name}
 
 %if %{without static}
 %files libs
