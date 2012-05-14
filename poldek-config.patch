@@ -1,0 +1,47 @@
+--- poldek-0.30/doc/poldek.conf.xml	2012-04-04 11:37:12.737381529 +0300
++++ poldek-0.30/doc/poldek.conf.xml	2012-04-04 11:38:47.231352866 +0300
+@@ -369,7 +369,7 @@
+     </description>
+   </option>
+ 
+-  <option name="choose equivalents manually" type="boolean" default="no" op="EQPKG_ASKUSER">
++  <option name="choose equivalents manually" type="boolean" default="yes" op="EQPKG_ASKUSER">
+     <description>
+     Let the user select package among equivalents.
+     </description>
+@@ -598,7 +598,7 @@
+     </description>
+   </option>
+ 
+-  <option name="hold" type="string" list="yes" default="" multiple="yes">
++  <option name="hold" type="string" list="yes" default="kernel*" multiple="yes">
+     <description>
+     Have the same meaning as [ global ] parameter. Example:
+     [screen]
+--- poldek-0.30/conf/poldek.conf~	2010-08-22 14:19:51.000000000 +0300
++++ poldek-0.30/conf/poldek.conf	2010-08-22 14:20:28.524878981 +0300
+@@ -127,11 +127,11 @@
+ #confirm removal = yes
+ 
+ # Let the user select package among equivalents.
+-#choose equivalents manually = no
++choose equivalents manually = yes
+ 
+ # Prevent package listed from being upgraded if they are already installed.
+ # hold = kernel* foo*.i686 th-test:* *-smp-* th-ready:bar*.x86_64
+-#hold = 
++hold = kernel*
+ 
+ # Ignore package list - packages fits given mask will be invisible.
+ # ignore = *-smp-* foo*
+--- poldek-0.30/conf_sections.c~	2012-04-04 12:01:04.000000000 +0300
++++ poldek-0.30/conf_sections.c	2012-04-04 12:04:46.080171888 +0300
+@@ -173,7 +173,7 @@
+              
+    { "choose equivalents manually", 
+      CONF_TYPE_BOOLEAN,
+-             "no",
++             "yes",
+              POLDEK_OP_EQPKG_ASKUSER, { 0 } },
+              
+    { "hold", 
