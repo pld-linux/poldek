@@ -224,18 +224,18 @@ CPPFLAGS="-std=gnu99"
 	%{!?with_imode:--disable-imode} \
 	--enable-nls \
 	%{?with_python:--with-python}
-%{__make}
+%{__make} -j1
 #	--enable-trace
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 
-%{__make} install \
+%{__make} install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %if %{with python}
-%{__make} -C python install \
+%{__make} -C python -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	libdir=%{py_sitedir}
 %endif
