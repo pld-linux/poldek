@@ -1,5 +1,3 @@
-# TODO:
-# - fails to build without poldek-devel - fix it !
 #
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
