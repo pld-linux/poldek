@@ -1,0 +1,50 @@
+--- poldek-0.30/conf/Makefile.am.orig	2012-03-20 21:41:46.000000000 +0100
++++ poldek-0.30/conf/Makefile.am	2012-06-15 18:19:28.195427542 +0200
+@@ -25,7 +25,7 @@
+ 	$(SHELL) $(top_srcdir)/doc/conf-xml2.sh conf $(top_srcdir)/doc/poldek.conf.xml poldek
+ 
+ install-data-local: $(GENCONFIGS)
+-	 $(mkdir_p) $(DESTDIR)$(sysconfdir)/$(PACKAGE)/repos.d
++	 $(MKDIR_P) $(DESTDIR)$(sysconfdir)/$(PACKAGE)/repos.d
+ 	 for a in $(CONFIGS); do \
+ 	 	$(INSTALL_DATA) $(srcdir)/$$a $(DESTDIR)$(sysconfdir)/$(PACKAGE); \
+ 	 done
+--- poldek-0.30/doc/Makefile.am.orig	2012-03-20 21:41:46.000000000 +0100
++++ poldek-0.30/doc/Makefile.am	2012-06-15 18:18:42.875429444 +0200
+@@ -69,7 +69,7 @@
+ 	xmlto --skip-validation -m $(srcdir)/NEWS.xsl -m $(srcdir)/manual-web.xsl xhtml-nochunks NEWS.docb.tmp && mv NEWS.docb.html $@
+ 
+ $(MANUAL_XHTMLDIR): $(abs_builddir)/manual.xml.xhtml.tmp
+-	$(mkdir_p) $(MANUAL_XHTMLDIR)
++	$(MKDIR_P) $(MANUAL_XHTMLDIR)
+ 	rm -f $(MANUAL_XHTMLDIR)/*.*
+ 	xmlto --skip-validation -m $(srcdir)/manual.xsl -o $(MANUAL_XHTMLDIR) xhtml $<
+ # remove empty indexterm's (I'm docbook novice)
+@@ -78,7 +78,7 @@
+ 
+ # as above but with manual-web.xsl
+ manual-web: $(abs_builddir)/manual.xml.xhtml.tmp
+-	$(mkdir_p) manual-web
++	$(MKDIR_P) manual-web
+ 	rm -f manual-web/*.*
+ 	xmlto --skip-validation -m $(srcdir)/manual.xsl -m $(srcdir)/manual-web.xsl -o manual-web xhtml $<
+ # remove empty indexterm's (I'm docbook novice)
+@@ -108,7 +108,7 @@
+ 	-rm -f core *.o *.bak *~ *% *\# TAGS gmon.out \#* *\# poldek.html *.tmp
+ 
+ install-exec-hook:
+-	$(mkdir_p) "$(DESTDIR)$(infodir)"
++	$(MKDIR_P) "$(DESTDIR)$(infodir)"
+ 	$(INSTALL_DATA) $(srcdir)/poldek.info $(DESTDIR)$(infodir)
+ 
+ uninstall-hook:
+--- poldek-0.30/configure.ac.orig	2012-03-20 21:41:46.000000000 +0100
++++ poldek-0.30/configure.ac	2012-06-15 18:19:58.392092942 +0200
+@@ -53,6 +53,7 @@
+ AC_C_INLINE
+ AC_PROG_INSTALL
+ AC_PROG_LN_S
++AC_PROG_MKDIR_P
+ AC_CHECK_PROG(POD2MAN, pod2man, pod2man)
+ AM_GNU_GETTEXT([external])
+ AM_GNU_GETTEXT_VERSION(0.11.5)

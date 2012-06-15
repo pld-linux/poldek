@@ -45,6 +45,7 @@ Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
 Patch3:		%{name}-Os-fail-workaround.patch
 Patch4:		%{name}-git.patch
+Patch5:		%{name}-am.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -207,8 +208,9 @@ Moduły języka Python dla poldka.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
-rm -f m4/libtool.m4 m4/lt*.m4
+%{__rm} m4/libtool.m4 m4/lt*.m4
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
@@ -222,13 +224,19 @@ chmod u+x ./configure ./doc/conf-xml2.sh
 %{__automake}
 cd tndb
 %{__libtoolize}
-autoreconf -i
+%{__aclocal}
+%{__autoheader}
+%{__autoconf}
+%{__automake}
 cd ../trurlib
 %{__libtoolize}
-autoreconf -i
+%{__aclocal}
+%{__autoheader}
+%{__autoconf}
+%{__automake}
 cd ..
 
-CPPFLAGS="-std=gnu99"
+CPPFLAGS="%{rpmcppflags} -std=gnu99"
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
@@ -250,7 +258,7 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	libdir=%{py_sitedir}
 %endif
 
-%{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
+%{?with_static:%{__rm} $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
 %ifarch i486 i686 ppc sparc alpha athlon
 	%define		_ftp_arch	%{_target_cpu}
@@ -329,7 +337,7 @@ cp -p %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %endif
 
 # sources we don't package
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,pld,fedora,centos}-source.conf
+%{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora,centos}-source.conf
 # include them in %doc
 rm -rf configs
 cp -a conf configs
@@ -337,7 +345,7 @@ rm -f configs/Makefile*
 
 %if %{with python}
 %py_postclean
-rm -f $RPM_BUILD_ROOT%{py_sitedir}/_poldekmod.la
+%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/_poldekmod.la
 %endif
 
 %find_lang %{name}
@@ -445,10 +453,12 @@ fi
 %dir %{_sysconfdir}/%{name}/repos.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/repos.d/*.conf
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_bindir}/ipoldek
+%attr(755,root,root) %{_bindir}/poldek
+%attr(755,root,root) %{_bindir}/rpmvercmp
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/*
-%{_mandir}/man1/%{name}*
+%{_mandir}/man1/%{name}*.1*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
 %{_infodir}/poldek.info*
 %if %{with imode}
@@ -474,13 +484,28 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%{!?with_static:%attr(755,root,root) %{_libdir}/lib*.so}
-%{_libdir}/lib*.la
-%{_includedir}/*
+%if %{without static}
+%attr(755,root,root) %{_libdir}/libpoclidek.so
+%attr(755,root,root) %{_libdir}/libpoldek.so
+%attr(755,root,root) %{_libdir}/libtndb.so
+%attr(755,root,root) %{_libdir}/libtrurl.so
+%attr(755,root,root) %{_libdir}/libvfile.so
+%endif
+%{_libdir}/libpoclidek.la
+%{_libdir}/libpoldek.la
+%{_libdir}/libtndb.la
+%{_libdir}/libtrurl.la
+%{_libdir}/libvfile.la
+%{_includedir}/poldek
+%{_includedir}/tndb
+%{_includedir}/trurl
+%{_includedir}/vfile
+%{_pkgconfigdir}/tndb.pc
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libtndb.a
+%{_libdir}/libtrurl.a
 
 %if %{with python}
 %files -n python-poldek
