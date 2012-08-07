@@ -84,6 +84,7 @@ Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}-%{ver_db_rel}
+Requires:	libxml2
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-db-ver = %{ver_db}
 Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
