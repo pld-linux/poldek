@@ -15,7 +15,7 @@
 %define	ver_rpm	4.5-49
 
 %define		snap	rc5
-%define		rel	11
+%define		rel	12
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -84,7 +84,6 @@ Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}-%{ver_db_rel}
-Requires:	libxml2
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-db-ver = %{ver_db}
 Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
