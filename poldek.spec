@@ -3,15 +3,11 @@
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
+%bcond_with	snap	# don't build python bindings
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%if "%{pld_release}" == "ti"
-%define	ver_db	4.5.20
-%define	ver_db_rel	8
-%else
 %define	ver_db	4.7.25
 %define	ver_db_rel	1
-%endif
 %define	ver_rpm	4.5-49
 
 %define		snap	rc5
@@ -29,8 +25,6 @@ Source0:	http://carme.pld-linux.org/~cactus/snaps/poldek/%{name}-%{version}%{sna
 # Source0-md5:	ab89926c28cfb6b7d72497fc37c16ac4
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
-Source3:	%{name}-ti.conf
-Source4:	%{name}-multilib-ti.conf
 Source5:	%{name}-aliases.conf
 Source6:	%{name}.desktop
 Source7:	%{name}.png
@@ -266,49 +260,34 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	%define		_ftp_alt_arch	i686
 %endif
 %ifarch i586
-	%if "%{pld_release}" == "ti"
-		%define		_ftp_arch	i586
-	%else
-		%define		_ftp_arch	i486
-	%endif
+	%define		_ftp_arch	i486
 %endif
 %ifarch pentium2 pentium3 pentium4
 	%define		_ftp_arch	i686
 %endif
 %ifarch sparcv9 sparc64
 	%define		_ftp_arch	sparc
-	%if "%{pld_release}" == "th"
-		%define		_ftp_arch	%{_target_cpu}
-		%ifarch sparc64
-		%define		_ftp_alt_arch	sparcv9
-		%endif
-	%endif
-%endif
-
-%if "%{pld_release}" == "ti"
-	%define	pld_conf %{SOURCE3}
-	%ifarch %{x8664}
-		%define	pld_multilib_conf %{SOURCE4}
-	%endif
-%endif
-
-%if "%{pld_release}" == "th"
-	%define	pld_conf %{SOURCE1}
-	%define	pld_debuginfo_conf %{SOURCE8}
-	%define	pld_archive_conf %{SOURCE11}
-
-	%ifarch %{x8664}
-		%define	pld_multilib_conf %{SOURCE2}
-	%endif
-
-	# aidath
-	%ifarch sparcv9 sparc64
-		%define	pld_conf %{SOURCE9}
-		%undefine pld_archive_conf
-	%endif
+	%define		_ftp_arch	%{_target_cpu}
 	%ifarch sparc64
-		%define pld_multilib_conf %{SOURCE10}
+		%define		_ftp_alt_arch	sparcv9
 	%endif
+%endif
+
+%define	pld_conf %{SOURCE1}
+%define	pld_debuginfo_conf %{SOURCE8}
+%define	pld_archive_conf %{SOURCE11}
+
+%ifarch %{x8664}
+	%define	pld_multilib_conf %{SOURCE2}
+%endif
+
+# aidath
+%ifarch sparcv9 sparc64
+	%define	pld_conf %{SOURCE9}
+	%undefine pld_archive_conf
+%endif
+%ifarch sparc64
+	%define pld_multilib_conf %{SOURCE10}
 %endif
 
 sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
