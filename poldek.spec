@@ -45,6 +45,8 @@ Patch2:		%{name}-size-type.patch
 Patch3:		%{name}-Os-fail-workaround.patch
 Patch4:		%{name}-git.patch
 Patch5:		%{name}-am.patch
+Patch6:		https://bugs.launchpad.net/poldek/+bug/1031767/+attachment/3252805/+files/%{name}-ls-space-lp1031767.patch
+# Patch6-md5:	9ba0f7abdb2ba1051e1a396f9daec606
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -208,6 +210,7 @@ Moduły języka Python dla poldka.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
