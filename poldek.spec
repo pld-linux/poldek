@@ -3,7 +3,7 @@
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
-%bcond_with	snap	# don't build python bindings
+%bcond_with	snap	# install configs for official Th snapshot
 
 %if %{with snap}
 %define		SNAP	2012
