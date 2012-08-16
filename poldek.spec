@@ -5,6 +5,10 @@
 %bcond_without	python	# don't build python bindings
 %bcond_with	snap	# don't build python bindings
 
+%if %{with snap}
+%define		SNAP	2012
+%endif
+
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.7.25
 %define	ver_db_rel	1
@@ -32,6 +36,9 @@ Source8:	%{name}-debuginfo.conf
 Source9:	%{name}-aidath.conf
 Source10:	%{name}-multilib-aidath.conf
 Source11:	%{name}-archive.conf
+Source100:	%{name}-snap.conf
+Source101:	%{name}-multilib-snap.conf
+Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
@@ -302,6 +309,20 @@ sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_s
 
 %if 0%{?pld_archive_conf:1}
 sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_archive_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-archive.conf
+%endif
+
+%if %{with snap}
+sed -e 's|%%ARCH%%|%{_ftp_arch}|g' \
+	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE100} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
+sed -e 's|%%ARCH%%|%{_ftp_arch}|g' \
+	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE102} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-debuginfo.conf
+%ifarch %{x8664}
+	sed -e 's|%%ARCH%%|%{_ftp_alt_arch}|g' \
+		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf
+%endif
+sed -i -e 's|@@SNAP@@||g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+%else
+sed -i '/@@SNAP@@.*/d' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 %endif
 
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
