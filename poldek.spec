@@ -297,32 +297,32 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	%define pld_multilib_conf %{SOURCE10}
 %endif
 
-sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 
 %if 0%{?pld_multilib_conf:1}
-	sed 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+	%{__sed} 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 %endif
 
 %if 0%{?pld_debuginfo_conf:1}
-sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
+%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
 %endif
 
 %if 0%{?pld_archive_conf:1}
-sed -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_archive_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-archive.conf
+%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_archive_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-archive.conf
 %endif
 
 %if %{with snap}
-sed -e 's|%%ARCH%%|%{_ftp_arch}|g' \
+%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' \
 	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE100} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
-sed -e 's|%%ARCH%%|%{_ftp_arch}|g' \
+%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' \
 	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE102} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-debuginfo.conf
 %ifarch %{x8664}
-	sed -e 's|%%ARCH%%|%{_ftp_alt_arch}|g' \
+	%{__sed} -e 's|%%ARCH%%|%{_ftp_alt_arch}|g' \
 		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf
 %endif
-sed -i -e 's|@@SNAP@@||g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+%{__sed} -i -e 's|@@SNAP@@||g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 %else
-sed -i '/@@SNAP@@.*/d' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+%{__sed} -i '/@@SNAP@@.*/d' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 %endif
 
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
@@ -337,9 +337,9 @@ cp -p %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 # sources we don't package
 %{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{rh,fedora,centos}-source.conf
 # include them in %doc
-rm -rf configs
+%{__rm} -rf configs
 cp -a conf configs
-rm -f configs/Makefile*
+%{__rm} -f configs/Makefile*
 
 %if %{with python}
 %py_postclean
@@ -416,7 +416,7 @@ if [ -f /etc/poldek.conf.rpmsave ]; then
 	# copy hold=
 	hold=$(grep ^hold /etc/poldek.conf.rpmsave)
 	if [ "$hold" ]; then
-		sed -i -e "/^#hold =/s/^.*/$hold/" /etc/poldek/poldek.conf
+		%{__sed} -i -e "/^#hold =/s/^.*/$hold/" /etc/poldek/poldek.conf
 	fi
 fi
 
