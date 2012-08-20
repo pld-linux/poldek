@@ -5,9 +5,8 @@
 %bcond_without	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
 
-%if %{with snap}
+# corrent snapshot name
 %define		SNAP	2012
-%endif
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define	ver_db	4.7.25
@@ -314,7 +313,7 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 %{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_archive_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-archive.conf
 %endif
 
-%if %{with snap}
+# Always install snapshot configs
 %{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' \
 	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE100} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
 %{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' \
@@ -323,8 +322,12 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	%{__sed} -e 's|%%ARCH%%|%{_ftp_alt_arch}|g' \
 		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf
 %endif
+
+%if %{with snap}
 %{__sed} -i -e 's|@@SNAP@@||g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+%{__sed} -i '/@@SNAP@@.*/d' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
 %else
+%{__sed} -i -e 's|@@SNAP@@||g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
 %{__sed} -i '/@@SNAP@@.*/d' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 %endif
 
