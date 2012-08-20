@@ -5,7 +5,7 @@
 %bcond_without	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
 
-# corrent snapshot name
+# current snapshot name
 %define		SNAP	2012
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
