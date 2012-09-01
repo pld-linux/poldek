@@ -1,21 +1,17 @@
+# TODO:
+# - fails to build without poldek-devel - fix it !
 #
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
-%bcond_with	snap	# install configs for official Th snapshot
-
-%if %{with snap}
-%define		SNAP	2012
-%endif
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.7.25
-%define	ver_db_rel	1
+%define	ver_db	4.5.20
 %define	ver_rpm	4.5-49
 
 %define		snap	rc5
-%define		rel	12
+%define		rel	14
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -32,19 +28,12 @@ Source2:	%{name}-multilib.conf
 Source5:	%{name}-aliases.conf
 Source6:	%{name}.desktop
 Source7:	%{name}.png
-Source8:	%{name}-debuginfo.conf
-Source9:	%{name}-aidath.conf
-Source10:	%{name}-multilib-aidath.conf
-Source11:	%{name}-archive.conf
-Source100:	%{name}-snap.conf
-Source101:	%{name}-multilib-snap.conf
-Source102:	%{name}-debuginfo-snap.conf
+Patch100:	%{name}-dirdeps.patch
 Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
 Patch3:		%{name}-Os-fail-workaround.patch
 Patch4:		%{name}-git.patch
-Patch5:		%{name}-am.patch
 Patch6:		https://bugs.launchpad.net/poldek/+bug/1031767/+attachment/3252805/+files/%{name}-ls-space-lp1031767.patch
 # Patch6-md5:	9ba0f7abdb2ba1051e1a396f9daec606
 URL:		http://poldek.pld-linux.org/
@@ -52,12 +41,11 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
-BuildRequires:	db-devel >= %{ver_db}-%{ver_db_rel}
-BuildRequires:	docbook-dtd412-xml
+BuildRequires:	db-devel >= %{ver_db}
+BuildRequires:	gettext-autopoint
 BuildRequires:	gettext-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
-BuildRequires:	neon-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	pkgconfig
@@ -66,12 +54,13 @@ BuildRequires:	popt-devel
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
+BuildRequires:	sed >= 4.0
 BuildRequires:	swig-python
 BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
-BuildRequires:	db-static >= %{ver_db}-%{ver_db_rel}
+BuildRequires:	db-static >= %{ver_db}
 BuildRequires:	glibc-static
 BuildRequires:	libselinux-static
 BuildRequires:	libxml2-static
@@ -86,9 +75,9 @@ BuildRequires:	zlib-static
 Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	db >= %{ver_db}-%{ver_db_rel}
+Requires:	db >= %{ver_db}
+Requires:	openssl >= 0.9.7d
 Requires:	rpm >= %{ver_rpm}
-Requires:	rpm-db-ver = %{ver_db}
 Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
 # vf* scripts use sed
 Requires:	sed
@@ -204,12 +193,12 @@ Moduły języka Python dla poldka.
 
 %prep
 %setup -q
+%patch100 -p1
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 %patch6 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
@@ -260,72 +249,35 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	libdir=%{py_sitedir}
 %endif
 
-%{?with_static:%{__rm} $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
+%{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-%ifarch i486 i686 ppc sparc alpha athlon
-	%define		_ftp_arch	%{_target_cpu}
+%ifarch i386 i586 i686 ppc sparc alpha athlon
+%define		_ftp_arch	%{_target_cpu}
 %endif
 %ifarch %{x8664}
-	%define		_ftp_arch	x86_64
-	%define		_ftp_alt_arch	i686
+%define		_ftp_arch	amd64
+%define		_ftp_alt_arch	i686
 %endif
-%ifarch i586
-	%define		_ftp_arch	i486
+%ifarch i486
+%define		_ftp_arch	i386
 %endif
 %ifarch pentium2 pentium3 pentium4
-	%define		_ftp_arch	i686
+%define		_ftp_arch	i686
 %endif
 %ifarch sparcv9 sparc64
-	%define		_ftp_arch	sparc
-	%define		_ftp_arch	%{_target_cpu}
-	%ifarch sparc64
-		%define		_ftp_alt_arch	sparcv9
-	%endif
+%define		_ftp_arch	sparc
 %endif
 
-%define	pld_conf %{SOURCE1}
-%define	pld_debuginfo_conf %{SOURCE8}
-%define	pld_archive_conf %{SOURCE11}
+%{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
+
+sed -e '
+	s|%%ARCH%%|%{_ftp_arch}|g
+' < %{SOURCE1} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 
 %ifarch %{x8664}
-	%define	pld_multilib_conf %{SOURCE2}
-%endif
-
-# aidath
-%ifarch sparcv9 sparc64
-	%define	pld_conf %{SOURCE9}
-	%undefine pld_archive_conf
-%endif
-%ifarch sparc64
-	%define pld_multilib_conf %{SOURCE10}
-%endif
-
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
-
-%if 0%{?pld_multilib_conf:1}
-	%{__sed} 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
-%endif
-
-%if 0%{?pld_debuginfo_conf:1}
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
-%endif
-
-%if 0%{?pld_archive_conf:1}
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_archive_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-archive.conf
-%endif
-
-%if %{with snap}
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' \
-	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE100} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' \
-	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE102} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-debuginfo.conf
-%ifarch %{x8664}
-	%{__sed} -e 's|%%ARCH%%|%{_ftp_alt_arch}|g' \
-		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf
-%endif
-%{__sed} -i -e 's|@@SNAP@@||g' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
-%else
-%{__sed} -i '/@@SNAP@@.*/d' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+sed '
+	s|%%ARCH%%|%{_ftp_alt_arch}|g
+' < %{SOURCE2} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 %endif
 
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
@@ -437,13 +389,17 @@ fi
 
 if [ -f %{_sysconfdir}/%{name}/pld-source.conf.rpmsave ]; then
 	cp -f %{_sysconfdir}/%{name}/repos.d/pld.conf{,.rpmnew}
-	cp -f %{_sysconfdir}/%{name}/pld-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld.conf
+	mv -f %{_sysconfdir}/%{name}/pld-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld.conf
+	%{__sed} -i -e 's,_pld_arch,_arch,g;s,_ac_idxtype,_type,g;s,_pld_prefix,_prefix,g' \
+		 %{_sysconfdir}/%{name}/repos.d/pld.conf
 fi
 
 %ifarch %{x8664}
 if [ -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave ]; then
 	cp -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf{,.rpmnew}
-	cp -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+	mv -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+	%{__sed} -i -e 's,_pld_arch,_arch,g;s,_ac_idxtype,_type,g;s,_pld_prefix,_prefix,g' \
+		 %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 fi
 %endif
 
