@@ -9,12 +9,12 @@
 %define		SNAP	2012
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define	ver_db	4.7.25
-%define	ver_db_rel	1
-%define	ver_rpm	4.5-49
+%define		ver_db		5.3
+%define		ver_db_rel	1
+%define		ver_rpm		5.4.10
 
 %define		snap	rc5
-%define		rel	14%{?with_snap:.%{SNAP}}
+%define		rel	14.1%{?with_snap:.%{SNAP}}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -48,6 +48,8 @@ Patch6:		https://bugs.launchpad.net/poldek/+bug/1031767/+attachment/3252805/+fil
 # Patch6-md5:	9ba0f7abdb2ba1051e1a396f9daec606
 Patch7:		https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3285885/+files/poldek-rpm54.patch
 # Patch7-md5:	128afb37934a3f12077fff12fddaa3ec
+Patch8:		https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3298948/+files/poldek-pkg-recno-type.patch
+# Patch8-md5:	bdc855d84167592a1adef576eba75de6
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -213,6 +215,7 @@ Moduły języka Python dla poldka.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
