@@ -14,7 +14,7 @@
 %define		ver_rpm		5.4.10
 
 %define		snap	rc5
-%define		rel	14.1%{?with_snap:.%{SNAP}}
+%define		rel	14.2%{?with_snap:.%{SNAP}}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -50,6 +50,7 @@ Patch7:		https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3285885/+
 # Patch7-md5:	128afb37934a3f12077fff12fddaa3ec
 Patch8:		https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3298948/+files/poldek-pkg-recno-type.patch
 # Patch8-md5:	bdc855d84167592a1adef576eba75de6
+Patch9:		%{name}-Werror-format-security.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -216,6 +217,7 @@ Moduły języka Python dla poldka.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
