@@ -51,6 +51,8 @@ Patch7:		https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3285885/+
 Patch8:		https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3298948/+files/poldek-pkg-recno-type.patch
 # Patch8-md5:	bdc855d84167592a1adef576eba75de6
 Patch9:		%{name}-Werror-format-security.patch
+Patch10:	https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3307962/+files/poldek-leaking-locks.patch
+# Patch10-md5:	bdc855d84167592a1adef576eba75de6
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -218,6 +220,7 @@ Moduły języka Python dla poldka.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
