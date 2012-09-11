@@ -52,7 +52,7 @@ Patch8:		https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3298948/+
 # Patch8-md5:	bdc855d84167592a1adef576eba75de6
 Patch9:		%{name}-Werror-format-security.patch
 Patch10:	https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3307962/+files/poldek-leaking-locks.patch
-# Patch10-md5:	bdc855d84167592a1adef576eba75de6
+# Patch10-md5:	1fe6857ef429c4b35b94679489850ddd
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
