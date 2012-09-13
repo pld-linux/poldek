@@ -89,8 +89,6 @@ Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_binary_payload		w9.gzdio
-
 %description
 poldek is an RPM package management tool which allows you to easily
 perform package verification, installation (including system
