@@ -13,8 +13,8 @@
 %define		ver_db_rel	1
 %define		ver_rpm		5.4.10
 
-%define		snap	rc5
-%define		rel	14.2%{?with_snap:.%{SNAP}}
+%define		snap	rc6
+%define		rel	0.1%{?with_snap:.%{SNAP}}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -24,8 +24,8 @@ Release:	1.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	http://carme.pld-linux.org/~cactus/snaps/poldek/%{name}-%{version}%{snap}.tar.xz
-# Source0-md5:	ab89926c28cfb6b7d72497fc37c16ac4
+Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}%{snap}.tar.xz
+# Source0-md5:	4b528ad356b02efdd72b81f1ecaceb83
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source5:	%{name}-aliases.conf
@@ -42,17 +42,6 @@ Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
 Patch3:		%{name}-Os-fail-workaround.patch
-Patch4:		%{name}-git.patch
-Patch5:		%{name}-am.patch
-Patch6:		https://bugs.launchpad.net/poldek/+bug/1031767/+attachment/3252805/+files/%{name}-ls-space-lp1031767.patch
-# Patch6-md5:	9ba0f7abdb2ba1051e1a396f9daec606
-Patch7:		https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3285885/+files/poldek-rpm54.patch
-# Patch7-md5:	128afb37934a3f12077fff12fddaa3ec
-Patch8:		https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3298948/+files/poldek-pkg-recno-type.patch
-# Patch8-md5:	bdc855d84167592a1adef576eba75de6
-Patch9:		%{name}-Werror-format-security.patch
-Patch10:	https://bugs.launchpad.net/pld-linux/+bug/1042200/+attachment/3307962/+files/poldek-leaking-locks.patch
-# Patch10-md5:	1fe6857ef429c4b35b94679489850ddd
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -216,13 +205,6 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
