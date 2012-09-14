@@ -14,7 +14,7 @@
 %define		ver_rpm		5.4.10
 
 %define		snap	rc6
-%define		rel	0.1%{?with_snap:.%{SNAP}}
+%define		rel	0.2%{?with_snap:.%{SNAP}}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -85,7 +85,8 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	db >= %{ver_db}-%{ver_db_rel}
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-db-ver = %{ver_db}
-Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
+#Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
+Requires:	rpm-lib >= 5.4.10
 # vf* scripts use sed
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
