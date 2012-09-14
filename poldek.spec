@@ -347,6 +347,8 @@ cp -a conf configs
 
 %find_lang %{name}
 
+ldd $RPM_BUILD_ROOT%{_libdir}/libpoldek.so.2.0.0
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
