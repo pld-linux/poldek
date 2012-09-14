@@ -1,0 +1,14 @@
+--- poldek-0.30/configure.ac~	2012-09-13 15:34:00.000000000 +0200
++++ poldek-0.30/configure.ac	2012-09-14 23:02:24.729923159 +0200
+@@ -329,10 +329,7 @@
+ 	have_beecrypt=yes, have_beecrypt=no)
+ fi
+ 
+-if test "${is_rpm4}." = "yes." ; then
+-	AC_CHECK_LIB(rpmio, rpmCleanPath,,AC_MSG_ERROR(["rpmio not found"]))
+-fi
+-
++AC_CHECK_LIB(rpmio, rpmCleanPath,,AC_MSG_ERROR(["rpmio not found"]))
+ 
+ AC_CHECK_LIB(rpm, rpmReadPackageInfo,[LIBS="-lrpm $DBLIB $LIBS"],
+ 	AC_CHECK_LIB(rpm, rpmReadPackageHeader,
