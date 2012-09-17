@@ -1,0 +1,74 @@
+diff -ur poldek-0.30/config.h.in poldek-0.30-vrpmlog/config.h.in
+--- poldek-0.30/config.h.in	2012-09-13 15:34:44.000000000 +0200
++++ poldek-0.30-vrpmlog/config.h.in	2012-09-17 21:07:20.000000000 +0200
+@@ -359,6 +359,9 @@
+ /* Define to 1 if you have the `vprintf' function. */
+ #undef HAVE_VPRINTF
+ 
++/* Define to 1 if you have the `vrpmlog' function. */
++#undef HAVE_VRPMLOG
++
+ /* Define to 1 if you have the `_rpmvercmp' function. */
+ #undef HAVE__RPMVERCMP
+ 
+diff -ur poldek-0.30/configure.ac poldek-0.30-vrpmlog/configure.ac
+--- poldek-0.30/configure.ac	2012-09-17 21:11:07.933745548 +0200
++++ poldek-0.30-vrpmlog/configure.ac	2012-09-17 21:06:52.533754558 +0200
+@@ -343,7 +343,7 @@
+ 		[$DBLIB -lrpmdb]),
+ 	    [$DBLIB])
+ 
+-AC_CHECK_FUNCS(rpmlog rpmCheckSig rpmVerifySignature)
++AC_CHECK_FUNCS(rpmlog vrpmlog rpmCheckSig rpmVerifySignature)
+ 
+ dnl rpm 4.2?
+ AC_CHECK_FUNCS(rpmtsColor, [LIBS="$LIBS -lpthread"
+diff -ur poldek-0.30/pm/rpm/rpm.c poldek-0.30-vrpmlog/pm/rpm/rpm.c
+--- poldek-0.30/pm/rpm/rpm.c	2012-09-13 15:26:29.000000000 +0200
++++ poldek-0.30-vrpmlog/pm/rpm/rpm.c	2012-09-17 21:08:55.423750223 +0200
+@@ -317,14 +317,20 @@
+     return dir;
+ }
+ 
+-
+-#if defined HAVE_RPMLOG && !defined ENABLE_STATIC
++#if !defined ENABLE_STATIC && (defined HAVE_RPMLOG || defined HAVE_VRPMLOG)
+ /* XXX hack: rpmlib dumps messges to stdout only... (AFAIK)  */
++#if defined HAVE_RPMLOG
+ void rpmlog(int prii, const char *fmt, ...) __attribute__ ((visibility("default")));
+ 
+-void rpmlog(int prii, const char *fmt, ...) 
++void rpmlog(int prii, const char *fmt, ...)
+ {
+     va_list args;
++#elif defined HAVE_VRPMLOG
++void vrpmlog(unsigned prii, const char *fmt, va_list args) __attribute__ ((visibility("default")));
++
++void vrpmlog(unsigned prii, const char *fmt, va_list args)
++{
++#endif
+     int pri, mask;
+     int rpmlogMask, logpri = LOGERR, verbose_level = -1;
+ 
+@@ -350,7 +356,9 @@
+         verbose_level = 2;
+     }
+ 
++#if defined HAVE_RPMLOG
+     va_start(args, fmt);
++#endif
+ 
+ #if 0
+     printf("%d, v = %d, verbose = %d, pm_rpm_verbose = %d\n", pri,
+@@ -389,9 +397,10 @@
+         log(logpri | LOGWARN, "%s\n", p);
+     }
+         
++#if defined HAVE_RPMLOG
+     va_end(args);
++#endif
+ }
+-
+ #endif /* HAVE_RPMLOG */
+ 
+ int pm_rpm_vercmp(const char *one, const char *two)
