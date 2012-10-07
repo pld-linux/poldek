@@ -107,3 +107,61 @@ index a6f422f..abfd05c 100644
          path++;
  
      if (!tndb_get_str(dirindex->db, path, val, sizeof(val)))
+commit f575c9bbe3cdd8f2d6ef27eb73dcc270c1a8a3f2
+Author: Marcin Banasiak <marcin.banasiak@gmail.com>
+Date:   Sun Oct 7 12:41:42 2012 +0200
+
+    Provide function body for inlined pkg_id
+
+diff --git a/pkg.c b/pkg.c
+index 6e83694..227fe14 100644
+--- a/pkg.c
++++ b/pkg.c
+@@ -1463,11 +1463,6 @@ struct pkg *pkg_link(struct pkg *pkg)
+     return pkg;
+ }
+ 
+-const char *pkg_id(const struct pkg *p) 
+-{
+-    return p->_nvr;
+-}
+-
+ int pkg_id_snprintf(char *str, size_t size, const struct pkg *pkg)
+ {
+     return n_snprintf(str, size, "%s", pkg_id(pkg));
+diff --git a/pkg.h b/pkg.h
+index f0d71ac..ec6cc6d 100644
+--- a/pkg.h
++++ b/pkg.h
+@@ -231,7 +231,11 @@ EXPORT const char *pkg_pkgdirpath(const struct pkg *pkg);
+ EXPORT unsigned pkg_file_url_type(const struct pkg *pkg);
+ 
+ 
+-EXPORT extern__inline const char *pkg_id(const struct pkg *p);
++static inline const char *pkg_id(const struct pkg *p)
++{
++    return p->_nvr;
++}
++
+ EXPORT int pkg_id_snprintf(char *str, size_t size, const struct pkg *pkg);
+ EXPORT int pkg_idevr_snprintf(char *str, size_t size, const struct pkg *pkg);
+ 
+commit ce00c5a5311fb6d77fcf96b04bca5cf2904d90ae
+Author: Marcin Banasiak <marcin.banasiak@gmail.com>
+Date:   Sun Oct 7 12:46:36 2012 +0200
+
+    Kill redundant EXPORT in pm.h
+
+diff --git a/pm/pm.h b/pm/pm.h
+index 9913168..a20c305 100644
+--- a/pm/pm.h
++++ b/pm/pm.h
+@@ -204,7 +204,7 @@ EXPORT int pm_get_dbdepdirs(struct pm_ctx *ctx,
+ 
+ EXPORT struct pkg *pm_load_package(struct pm_ctx *ctx,
+                             tn_alloc *na, const char *path, unsigned ldflags);
+-EXPORT struct pkgdir;
++struct pkgdir;
+ EXPORT struct pkgdir *pkgdb_to_pkgdir(struct pm_ctx *ctx, const char *rootdir,
+                                const char *path, unsigned pkgdir_ldflags,
+                                const char *key, ...);
