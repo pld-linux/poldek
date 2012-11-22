@@ -9,8 +9,8 @@
 %define		SNAP	2012
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%define		ver_db		5.3
-%define		ver_db_rel	1
+%define		ver_db		5.2
+%define		ver_db_rel	2
 %define		ver_rpm		5.4.10
 
 %define		snap	rc6
