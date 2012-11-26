@@ -10,7 +10,7 @@
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %define		ver_db		5.2
-%define		ver_db_rel	2
+%define		ver_db_rel	3
 %define		ver_rpm		5.4.10
 
 %define		snap	rc6
@@ -45,6 +45,7 @@ Patch3:		%{name}-Os-fail-workaround.patch
 Patch4:		%{name}-link-rpmio.patch
 Patch5:		%{name}-vrpmlog.patch
 Patch6:		%{name}-git.patch
+Patch7:		%{name}-db52.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -210,6 +211,7 @@ Moduły języka Python dla poldka.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
