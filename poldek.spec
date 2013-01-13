@@ -9,12 +9,13 @@
 %define		SNAP	2012
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
+%define		db_pkg		db5.2
 %define		ver_db		5.2
 %define		ver_db_rel	3
 %define		ver_rpm		5.4.10
 
 %define		snap	rc6
-%define		rel	6%{?with_snap:.%{SNAP}}
+%define		rel	7%{?with_snap:.%{SNAP}}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -51,7 +52,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
-BuildRequires:	db-devel >= %{ver_db}-%{ver_db_rel}
+BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
 BuildRequires:	libtool
@@ -70,7 +71,7 @@ BuildRequires:	xmlto
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
-BuildRequires:	db-static >= %{ver_db}-%{ver_db_rel}
+BuildRequires:	%{db_pkg}-static >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	glibc-static
 BuildRequires:	libselinux-static
 BuildRequires:	libxml2-static
@@ -85,7 +86,7 @@ BuildRequires:	zlib-static
 Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	db >= %{ver_db}-%{ver_db_rel}
+Requires:	%{db_pkg} >= %{ver_db}-%{ver_db_rel}
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-db-ver = %{ver_db}
 #Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
