@@ -487,3 +487,35 @@ index c1b94fa..c0d98c8 100644
 +<a href="http://gitorious.org/poldek/">Gitorious interface</a>
  <p>
  
+commit 4ae50361fe21302e22e50b0f8df4284cd0ec930b
+Author: Bartlomiej Zimon <uzi18@o2.pl>
+Date:   Fri Mar 8 19:21:21 2013 +0100
+
+    - proper type for size of read()
+    
+    http://lists.pld-linux.org/mailman/pipermail/pld-devel-pl/2013-March/156262.html
+    
+    Signed-off-by: Bartlomiej Zimon <uzi18@o2.pl>
+
+diff --git a/tndb/write.c b/tndb/write.c
+index 7b992b1..e1edfb6 100644
+--- a/tndb/write.c
++++ b/tndb/write.c
+@@ -178,7 +178,7 @@ static uint32_t htt_store_size(struct tndb *db)
+ 
+ static int htt_write(struct tndb *db)
+ {
+-    int i, j;
++    unsigned int i, j;
+     uint32_t data_offs, htt_size, ht_offs;
+ 
+     n_assert((db->hdr.flags & TNDB_NOHASH) == 0);
+@@ -263,7 +263,7 @@ static int htt_compute_digest(struct tndb *db)
+ 
+ static int tndbw_close(struct tndb *db)
+ {
+-    unsigned int nread, ntotal;
++    ssize_t nread, ntotal;
+     char   buf[1024 * 16];
+     int    fdin = -1, fdout = -1, type, rc;
+ 
