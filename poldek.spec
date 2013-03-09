@@ -14,19 +14,19 @@
 %define		ver_db_rel	3
 %define		ver_rpm		5.4.10
 
-%define		snap	rc6
-%define		rel	8%{?with_snap:.%{SNAP}}
+%define		snap	rc7
+%define		rel	1%{?with_snap:.%{SNAP}}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.30
+Version:	0.30.0
 Release:	1.%{snap}.%{rel}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	http://carme.pld-linux.org/~megabajt/snaps/poldek/%{name}-%{version}%{snap}.tar.xz
-# Source0-md5:	4b528ad356b02efdd72b81f1ecaceb83
+# Source0-md5:	56ba9e7b709a99965f42e24e65eb2d7f
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source5:	%{name}-aliases.conf
@@ -43,10 +43,6 @@ Patch0:		%{name}-vserver-packages.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-size-type.patch
 Patch3:		%{name}-Os-fail-workaround.patch
-Patch4:		%{name}-link-rpmio.patch
-Patch5:		%{name}-vrpmlog.patch
-Patch6:		%{name}-git.patch
-Patch7:		%{name}-db52.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -209,10 +205,6 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
@@ -508,6 +500,7 @@ fi
 %{_includedir}/trurl
 %{_includedir}/vfile
 %{_pkgconfigdir}/tndb.pc
+%{_pkgconfigdir}/trurlib.pc
 
 %files static
 %defattr(644,root,root,755)
