@@ -1,0 +1,41 @@
+commit 9ecd484cd077adba94649b83b3f3bfd639644056
+Author: Marcin Banasiak <marcin.banasiak@gmail.com>
+Date:   Wed Mar 20 00:09:57 2013 +0100
+
+    rpmvercmp: read macro configuration files before using rpmEVRparse()
+
+diff --git a/pm/rpm/rpmvercmp.c b/pm/rpm/rpmvercmp.c
+index 968489a..d83f26b 100644
+--- a/pm/rpm/rpmvercmp.c
++++ b/pm/rpm/rpmvercmp.c
+@@ -1,6 +1,6 @@
+ /*
+   Copyright (C) 2000 - 2008 Pawel A. Gajda <mis@pld-linux.org>
+-  Copyright (C) 2010 - 2012 Marcin Banasiak <marcin.banasiak@gmail.com>
++  Copyright (C) 2010 - 2013 Marcin Banasiak <marcin.banasiak@gmail.com>
+ 
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License, version 2 as
+@@ -20,7 +20,10 @@
+ #include <stdlib.h>
+ 
+ #ifdef HAVE_RPM_5
++# include <rpm/rpmrc.h>
+ # include <rpm/rpmtag.h>
++#else
++# include <rpm/rpmlib.h>
+ #endif
+ 
+ #define _RPMEVR_INTERNAL
+@@ -61,6 +64,11 @@ int main(int argc, char *argv[])
+         exit(1);
+     }
+ 
++    if (rpmReadConfigFiles(NULL, NULL) < 0) {
++	fprintf(stderr, "Failed to read configuration files\n");
++	exit(2);
++    }
++
+     evr1 = malloc(sizeof(struct EVR_s));
+     evr2 = malloc(sizeof(struct EVR_s));
+ 
