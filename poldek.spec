@@ -15,7 +15,7 @@
 %define		ver_rpm		5.4.10
 
 %define		snap	rc7
-%define		rel	3%{?with_snap:.%{SNAP}}
+%define		rel	4%{?with_snap:.%{SNAP}}
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -45,6 +45,7 @@ Patch2:		%{name}-size-type.patch
 Patch3:		%{name}-Os-fail-workaround.patch
 Patch4:		%{name}-git.patch
 Patch5:		%{name}-inherited-group.patch
+Patch6:		pkglibdir.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -92,6 +93,8 @@ Requires:	rpm-lib >= 5.4.10
 # vf* scripts use sed
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_libexecdir	%{_prefix}/lib/%{name}
 
 %description
 poldek is an RPM package management tool which allows you to easily
@@ -209,6 +212,7 @@ Moduły języka Python dla poldka.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
@@ -240,6 +244,7 @@ CPPFLAGS="%{rpmcppflags} -std=gnu99"
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
+	--with-pkglibdir=%{_libexecdir} \
 	--enable-nls \
 	%{?with_python:--with-python}
 %{__make} -j1
@@ -459,8 +464,8 @@ fi
 %attr(755,root,root) %{_bindir}/ipoldek
 %attr(755,root,root) %{_bindir}/poldek
 %attr(755,root,root) %{_bindir}/rpmvercmp
-%dir %{_libdir}/%{name}
-%attr(755,root,root) %{_libdir}/%{name}/*
+%dir %{_libexecdir}
+%attr(755,root,root) %{_libexecdir}/*
 %{_mandir}/man1/%{name}*.1*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
 %{_infodir}/poldek.info*
