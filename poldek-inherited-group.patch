@@ -1,0 +1,72 @@
+commit 84563d90b30b05d1705d84344f75aec5f7fd6f58
+Author: Kacper Kornet <draenog@pld-linux.org>
+Date:   Tue May 7 08:45:51 2013 +0100
+
+    Fix for crashes on subpackages with inherited group
+    
+    In normal case RPMTAG_GROUP is RPM_I18NSTRING_TYPE. However when group
+    is inherited from main package in some versions of rpm5 it is
+    RPM_STRING_TYPE. What's worse some versions of rpm5 returns
+    RPM_STRING_TYPE but report RPM_I18NSTRING_TYPE. However the last
+    behaviour is so buggy that we don't care about it.
+    
+    Reverts 810280a1e3be737bf074b536c414eadbb0f38596 and adds proper
+    fix for https://bugs.launchpad.net/poldek/+bug/966972 by reusing
+    existing code.
+
+diff --git a/pkgroup.c b/pkgroup.c
+index 9fdeaf9..cd8bf4d 100644
+--- a/pkgroup.c
++++ b/pkgroup.c
+@@ -470,21 +470,17 @@ int pkgroup_idx_update_rpmhdr(struct pkgroup_idx *idx, void *rpmhdr)
+ 
+     DBGF("ngroups %d, %d\n", ngroups, n_array_size(langs));
+     for (i=0; i < ngroups; i++) {
+-      const char *lang = n_array_nth(langs, i);
+-      
+-      const char *grp = groups;
+-      if (ngroups > 1) grp = groups[i];
+-      
+-      DBGF("   gr[%d of %d] %s\n", i, ngroups, grp);
+-      
+-      if (n_str_eq(lang, "C")) {
+-        if ((gr = n_hash_get(idx->ht, grp)) == NULL) {
+-          gr = pkgroup_new(n_array_size(idx->arr) + 1, grp);
+-          n_array_push(idx->arr, gr);
+-          n_hash_insert(idx->ht, gr->name, gr);
++        const char *lang = n_array_nth(langs, i);
++        DBGF("   gr[%d of %d] %s\n", i, ngroups, groups[i]);
++        
++        if (n_str_eq(lang, "C")) {
++            if ((gr = n_hash_get(idx->ht, groups[i])) == NULL) {
++                gr = pkgroup_new(n_array_size(idx->arr) + 1, groups[i]);
++                n_array_push(idx->arr, gr);
++                n_hash_insert(idx->ht, gr->name, gr);
++            }
++            break;
+         }
+-        break;
+-      }
+     }
+ 
+     if (gr != NULL) {
+diff --git a/pm/rpm/rpmhdr.c b/pm/rpm/rpmhdr.c
+index 817803c..dd24be5 100644
+--- a/pm/rpm/rpmhdr.c
++++ b/pm/rpm/rpmhdr.c
+@@ -121,7 +121,6 @@ int pm_rpmhdr_get_raw_entry(Header h, int32_t tag, void *buf, int32_t *cnt)
+     }
+ #endif
+ 
+-#ifndef HAVE_RPM_5
+     if (tag == RPMTAG_GROUP && type == RPM_STRING_TYPE) { // build by old rpm
+         char **g;
+ 	
+@@ -132,7 +131,6 @@ int pm_rpmhdr_get_raw_entry(Header h, int32_t tag, void *buf, int32_t *cnt)
+         g[1] = NULL;
+         *(char ***)buf = g;
+     }
+-#endif
+ 
+     DBGF("%d type=%d, cnt=%d\n", tag, type, *cnt);
+     return 1;
