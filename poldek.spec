@@ -47,11 +47,11 @@ Patch4:		%{name}-git.patch
 Patch5:		%{name}-inherited-group.patch
 Patch6:		pkglibdir.patch
 URL:		http://poldek.pld-linux.org/
+BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
-BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
 BuildRequires:	libtool
@@ -66,11 +66,13 @@ BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	swig-python
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	xmlto
+BuildRequires:	xz
 BuildRequires:	zlib-devel
 %if %{with static}
-BuildRequires:	bzip2-static
 BuildRequires:	%{db_pkg}-static >= %{ver_db}-%{ver_db_rel}
+BuildRequires:	bzip2-static
 BuildRequires:	glibc-static
 BuildRequires:	libselinux-static
 BuildRequires:	libxml2-static
@@ -84,8 +86,8 @@ BuildRequires:	zlib-static
 %endif
 Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
-Requires:	%{name}-libs = %{version}-%{release}
 Requires:	%{db_pkg} >= %{ver_db}-%{ver_db_rel}
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-db-ver = %{ver_db}
 #Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
@@ -193,7 +195,7 @@ Summary(hu.UTF-8):	Python modulok poldek-hez
 Summary(pl.UTF-8):	Moduły języka Python dla poldka
 Group:		Libraries/Python
 Requires:	%{name}-libs = %{version}-%{release}
-%pyrequires_eq	python-libs
+Requires:	python-libs
 
 %description -n python-poldek
 Python modules for poldek.
