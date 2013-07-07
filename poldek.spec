@@ -1,5 +1,3 @@
-# TODO:
-# - fails to build without poldek-devel - fix it !
 #
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
@@ -10,38 +8,33 @@
 %define	ver_db	4.5.20
 %define	ver_rpm	4.5-49
 
-%define		snap	rc5
-%define		rel	14
+%define		rel	2
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.30
-Release:	1.%{snap}.%{rel}
+Version:	0.30.0
+Release:	%{rel}
 License:	GPL v2
 Group:		Applications/System
-#Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	http://carme.pld-linux.org/~cactus/snaps/poldek/%{name}-%{version}%{snap}.tar.xz
-# Source0-md5:	ab89926c28cfb6b7d72497fc37c16ac4
+Source0:	http://carme.pld-linux.org/~megabajt/releases/poldek/%{name}-%{version}.tar.xz
+# Source0-md5:	392cfa125912fbedb6cc6d54dfbb80e3
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source5:	%{name}-aliases.conf
 Source6:	%{name}.desktop
 Source7:	%{name}.png
 Patch100:	%{name}-dirdeps.patch
-Patch0:		%{name}-vserver-packages.patch
-Patch1:		%{name}-config.patch
-Patch2:		%{name}-size-type.patch
-Patch3:		%{name}-Os-fail-workaround.patch
-Patch4:		%{name}-git.patch
-Patch6:		https://bugs.launchpad.net/poldek/+bug/1031767/+attachment/3252805/+files/%{name}-ls-space-lp1031767.patch
-# Patch6-md5:	9ba0f7abdb2ba1051e1a396f9daec606
+Patch0:		%{name}-size-type.patch
+Patch1:		%{name}-Os-fail-workaround.patch
+Patch2:		%{name}-config.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
 BuildRequires:	db-devel >= %{ver_db}
+BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-autopoint
 BuildRequires:	gettext-devel
 BuildRequires:	libtool
@@ -56,7 +49,9 @@ BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	sed >= 4.0
 BuildRequires:	swig-python
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	xmlto
+BuildRequires:	xz
 BuildRequires:	zlib-devel
 %if %{with static}
 BuildRequires:	bzip2-static
@@ -82,6 +77,8 @@ Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
 # vf* scripts use sed
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_libexecdir	%{_prefix}/lib/%{name}
 
 %description
 poldek is an RPM package management tool which allows you to easily
@@ -180,7 +177,7 @@ Summary(hu.UTF-8):	Python modulok poldek-hez
 Summary(pl.UTF-8):	Moduły języka Python dla poldka
 Group:		Libraries/Python
 Requires:	%{name}-libs = %{version}-%{release}
-%pyrequires_eq	python-libs
+Requires:	python-libs
 
 %description -n python-poldek
 Python modules for poldek.
@@ -197,9 +194,13 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch6 -p1
+
+# avoid man regeneration, broken on ac
+touch -r doc/poldek.conf.xml doc/*.1
+
+# ac gcc does not have -Wextra
+%{__sed} -i -e '/-Wextra/d' configure.ac
+%{__sed} -i -e '/AM_CFLAGS/ s/-Wextra//' trurlib/configure.ac
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
@@ -231,6 +232,7 @@ CPPFLAGS="%{rpmcppflags} -std=gnu99"
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
+	--with-pkglibdir=%{_libexecdir} \
 	--enable-nls \
 	%{?with_python:--with-python}
 %{__make} -j1
@@ -249,7 +251,7 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	libdir=%{py_sitedir}
 %endif
 
-%{?with_static:rm -f $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
+%{?with_static:%{__rm} $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
 %ifarch i386 i586 i686 ppc sparc alpha athlon
 %define		_ftp_arch	%{_target_cpu}
@@ -413,8 +415,8 @@ fi
 %attr(755,root,root) %{_bindir}/ipoldek
 %attr(755,root,root) %{_bindir}/poldek
 %attr(755,root,root) %{_bindir}/rpmvercmp
-%dir %{_libdir}/%{name}
-%attr(755,root,root) %{_libdir}/%{name}/*
+%dir %{_libexecdir}
+%attr(755,root,root) %{_libexecdir}/*
 %{_mandir}/man1/%{name}*.1*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
 %{_infodir}/poldek.info*
@@ -458,6 +460,7 @@ fi
 %{_includedir}/trurl
 %{_includedir}/vfile
 %{_pkgconfigdir}/tndb.pc
+%{_pkgconfigdir}/trurlib.pc
 
 %files static
 %defattr(644,root,root,755)
