@@ -1,0 +1,17 @@
+--- poldek-0.30.0/conf/poldek.conf	2013-07-08 14:19:35.294351501 +0300
++++ poldek-0.30.0/conf/poldek.conf	2013-07-08 14:06:38.722878665 +0300
+@@ -132,12 +132,11 @@
+ 
+ # Prevent package listed from being upgraded if they are already installed.
+ # hold = kernel* foo*.i686 th-test:* *-smp-* th-ready:bar*.x86_64
+-#hold = 
++hold = kernel*
+ 
+ # Ignore package list - packages fits given mask will be invisible.
+ # ignore = *-smp-* foo*
+-# ignore = vserver-packages
+-#ignore = vserver-packages
++ignore = vserver-packages
+ 
+ # Conflicts with already installed packages are treated as resolved
+ # if at least one of multiple-installed package satisfies conflict.
