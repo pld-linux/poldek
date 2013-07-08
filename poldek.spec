@@ -196,7 +196,7 @@ Moduły języka Python dla poldka.
 %patch2 -p1
 
 # avoid man regeneration, broken on ac
-touch -r doc/poldek.conf.xml doc/*.1
+touch doc/*.1
 
 # ac gcc does not have -Wextra
 %{__sed} -i -e '/-Wextra/d' configure.ac
