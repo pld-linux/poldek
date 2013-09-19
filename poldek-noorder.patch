@@ -1,0 +1,13 @@
+diff --git a/pm/rpm/rpminstall.c b/pm/rpm/rpminstall.c
+index c128216..7a77f2c 100644
+--- a/pm/rpm/rpminstall.c
++++ b/pm/rpm/rpminstall.c
+@@ -534,8 +534,6 @@ int pm_rpm_packages_uninstall(struct pkgdb *db, const tn_array *pkgs,
+         argv[nargs++] = (char*)ts->rootdir;
+     }
+     
+-    argv[nargs++] = "--noorder";
+-    
+     if (ts->rpmopts) 
+         for (i=0; i<n_array_size(ts->rpmopts); i++)
+             argv[nargs++] = n_array_nth(ts->rpmopts, i);
