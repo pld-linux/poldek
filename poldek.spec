@@ -4,14 +4,22 @@
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
+%bcond_with	db60	# DB 6.0 instead of 5.2
 
 # current snapshot name
 %define		SNAP	2012
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
+# NOTE: poldek links with "system db" (-ldb) anyway if it exists
+%if %{with db60}
+%define		db_pkg		db6.0
+%define		ver_db		6.0
+%define		ver_db_rel	1
+%else
 %define		db_pkg		db5.2
 %define		ver_db		5.2
 %define		ver_db_rel	3
+%endif
 %define		ver_rpm		5.4.10
 
 %define		rel	3
