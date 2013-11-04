@@ -5,6 +5,7 @@
 %bcond_without	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
 %bcond_with	db60	# DB 6.0 instead of 5.2
+%bcond_without	rpm4	# use rpm4/db4.7 instead of rpm5
 
 # current snapshot name
 %define		SNAP	2014
@@ -20,7 +21,14 @@
 %define		ver_db		5.2
 %define		ver_db_rel	3
 %endif
+
+%if %{with rpm4}
+%define		ver_db		4.7.25
+%define		ver_db_rel	1
+%define		ver_rpm		4.5-49
+%else
 %define		ver_rpm		5.4.10
+%endif
 
 %define		rel	2
 Summary:	RPM packages management helper tool
@@ -91,8 +99,7 @@ Requires:	%{db_pkg} >= %{ver_db}-%{ver_db_rel}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-db-ver = %{ver_db}
-#Requires:	rpm-lib = %(rpm -q --qf '%{V}' rpm-lib)
-Requires:	rpm-lib >= 5.4.10
+Requires:	rpm-lib >= %{ver_rpm}
 # vf* scripts use sed
 Requires:	sed
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
