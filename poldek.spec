@@ -30,7 +30,7 @@ Patch1:		%{name}-Os-fail-workaround.patch
 Patch2:		%{name}-config.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.11
 BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
 BuildRequires:	db-devel >= %{ver_db}
