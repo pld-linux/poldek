@@ -1,0 +1,63 @@
+commit 31658355f3937b67f265e45f70eccfe7af668a70
+Author: Marcin Banasiak <marcin.banasiak@gmail.com>
+Date:   Sun Mar 9 22:16:00 2014 +0100
+
+    Ignore paths longer than 255 characters (lp#1288989)
+    
+    Index format used by poldek prevents us from storing paths longer than
+    255 characters. Changing this behaviour would break backward
+    compatibility, so simply ignore them.
+
+diff --git a/pkgdir/pkgdir_dirindex.c b/pkgdir/pkgdir_dirindex.c
+index abfd05c..3437ee7 100644
+--- a/pkgdir/pkgdir_dirindex.c
++++ b/pkgdir/pkgdir_dirindex.c
+@@ -136,6 +136,9 @@ void add_to_path_index(tn_hash *path_index, const char *path, uint32_t package_n
+     unsigned khash = 0;
+     tn_array *keys;
+     
++    if (strlen(path) > 255)
++	return;
++    
+     if ((keys = n_hash_get_ex(path_index, path, &klen, &khash)) == NULL) {
+         keys = n_array_new(16, free, (tn_fn_cmp)strcmp);
+         n_hash_insert_ex(path_index, path, klen, khash, keys);
+diff --git a/pm/rpm/rpm_pkg_ld.c b/pm/rpm/rpm_pkg_ld.c
+index 5ae167a..3983693 100644
+--- a/pm/rpm/rpm_pkg_ld.c
++++ b/pm/rpm/rpm_pkg_ld.c
+@@ -259,8 +259,9 @@ static int valid_fname(const char *fname, mode_t mode, const char *pkgname)
+ #endif     
+ 
+     if (strlen(fname) > 255) {
+-        logn(LOGERR, _("%s: %s \"%s\" longer than 255 bytes"),
+-            pkgname, S_ISDIR(mode) ? _("dirname") : _("filename"), fname);
++	if (poldek_VERBOSE > 1)
++    	    logn(LOGWARN, _("%s: skipped %s \"%s\" longer than 255 bytes"),
++        	pkgname, S_ISDIR(mode) ? _("dirname") : _("filename"), fname);
+         return 0;
+     }
+     
+@@ -335,8 +336,11 @@ int pm_rpm_ldhdr_fl(tn_alloc *na, tn_tuple **fl,
+         struct pkgfl_ent *flent;
+ 
+         fentdirs_items[i] = 0;
+-        if (!valid_fname(dirs[i], 0, pkgname))
+-            nerr++;
++        if (!valid_fname(dirs[i], 0, pkgname)) {
++    	    skipdirs[i] = NULL;
++    	    fentdirs[i] = NULL;
++            continue;
++        }
+ 
+         if (which != PKGFL_ALL) {
+             int is_depdir;
+@@ -374,7 +378,7 @@ int pm_rpm_ldhdr_fl(tn_alloc *na, tn_tuple **fl,
+         int len;
+ 
+         if (!valid_fname(names[i], modes ? modes[i] : 0, pkgname))
+-            nerr++;
++            continue;
+         
+         msg(5, "  %d: %s %s/%s \n", i, skipdirs[j] ? "add " : "skip",
+             dirs[j], names[i]);
