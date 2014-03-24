@@ -47,7 +47,7 @@ Source100:	%{name}-snap.conf
 Source101:	%{name}-multilib-snap.conf
 Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-size-type.patch
-Patch1:		%{name}-Os-fail-workaround.patch
+Patch1:		%{name}-glibc-internal.patch
 Patch2:		%{name}-config.patch
 Patch3:		at-char-completion.patch
 Patch4:		%{name}-ignore-too-long-paths.patch
@@ -249,7 +249,7 @@ cd ../trurlib
 %{__automake}
 cd ..
 
-CPPFLAGS="%{rpmcppflags} -std=gnu99"
+CPPFLAGS="%{rpmcppflags} -std=gnu99 -fgnu89-inline"
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
