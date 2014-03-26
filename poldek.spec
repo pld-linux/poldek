@@ -230,6 +230,7 @@ find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 chmod u+x ./configure ./doc/conf-xml2.sh
 
 %build
+%{__gettextize}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoheader}
