@@ -80,8 +80,6 @@ BuildRequires:	zlib-devel
 BuildRequires:	%{db_pkg}-static >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	bzip2-static
 BuildRequires:	glibc-static
-BuildRequires:	libselinux-static
-BuildRequires:	libsemanage-static
 BuildRequires:	libxml2-static
 BuildRequires:	ncurses-static
 BuildRequires:	openssl-static
