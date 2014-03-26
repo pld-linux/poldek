@@ -60,7 +60,6 @@ BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
-BuildRequires:	libsemanage-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	neon-devel
