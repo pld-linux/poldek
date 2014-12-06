@@ -7,7 +7,7 @@
 %bcond_with	db60	# DB 6.0 instead of 5.2
 
 # current snapshot name
-%define		SNAP	2013
+%define		SNAP	2014
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 # NOTE: poldek links with "system db" (-ldb) anyway if it exists
