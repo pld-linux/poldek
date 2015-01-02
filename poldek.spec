@@ -277,6 +277,12 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 %ifarch %{x8664}
 	%define		_ftp_arch	x86_64
 	%define		_ftp_alt_arch	i686
+	%define		_ftp_alt2_arch	x32
+%endif
+%ifarch x32
+	%define		_ftp_arch	x32
+	%define		_ftp_alt_arch	x86_64
+	%define		_ftp_alt2_arch	i686
 %endif
 %ifarch i586
 	%define		_ftp_arch	i486
@@ -296,8 +302,9 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 %define	pld_debuginfo_conf %{SOURCE8}
 %define	pld_archive_conf %{SOURCE11}
 
-%ifarch %{x8664}
+%ifarch %{x8664} x32
 	%define	pld_multilib_conf %{SOURCE2}
+	%define	pld_multilib2_conf %{SOURCE2}
 %endif
 
 # aidath
@@ -315,6 +322,10 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	%{__sed} 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 %endif
 
+%if 0%{?pld_multilib2_conf:1}
+	%{__sed} 's|%%ARCH%%|%{_ftp_alt2_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib2.conf
+%endif
+
 %if 0%{?pld_debuginfo_conf:1}
 %{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
 %endif
@@ -328,9 +339,11 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE100} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
 %{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' \
 	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE102} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-debuginfo.conf
-%ifarch %{x8664}
+%ifarch %{x8664} x32
 	%{__sed} -e 's|%%ARCH%%|%{_ftp_alt_arch}|g' \
 		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf
+	%{__sed} -e 's|%%ARCH%%|%{_ftp_alt2_arch}|g' \
+		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib2.conf
 %endif
 
 %if %{with snap}
