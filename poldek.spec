@@ -8,17 +8,17 @@
 %define	ver_db	4.5.20
 %define	ver_rpm	4.5-49
 
-%define		rel	2
+%define		rel	1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.30.0
+Version:	0.30.1
 Release:	%{rel}
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://carme.pld-linux.org/~megabajt/releases/poldek/%{name}-%{version}.tar.xz
-# Source0-md5:	392cfa125912fbedb6cc6d54dfbb80e3
+# Source0-md5:	e569c8454df0932df53b09cee9998927
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source5:	%{name}-aliases.conf
@@ -209,6 +209,7 @@ find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 chmod u+x ./configure ./doc/conf-xml2.sh
 
 %build
+%{__gettextize}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoheader}
