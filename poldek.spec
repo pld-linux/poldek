@@ -5,7 +5,7 @@
 %bcond_without	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
 %bcond_with	db60	# DB 6.0 instead of 5.2
-%bcond_without	rpm4	# use rpm4/db4.7 instead of rpm5
+%bcond_with	rpm4	# use rpm4/db4.7 instead of rpm5
 
 # current snapshot name
 %define		SNAP	2014
