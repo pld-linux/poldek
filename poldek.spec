@@ -56,6 +56,7 @@ Source101:	%{name}-multilib-snap.conf
 Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-size-type.patch
 Patch1:		%{name}-config.patch
+Patch2:		%{name}-missing-include.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	autoconf
@@ -218,6 +219,7 @@ Moduły języka Python dla poldka.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
