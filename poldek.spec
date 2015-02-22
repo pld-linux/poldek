@@ -420,25 +420,25 @@ fi
 %{__sed} -i -e '/%%include %%{_distro}-multilib-source.conf/d' %{_sysconfdir}/%{name}/poldek.conf
 
 if [ -f %{_sysconfdir}/%{name}/pld-source.conf.rpmsave ]; then
-	cp -f %{_sysconfdir}/%{name}/repos.d/pld.conf{,.rpmnew}
-	cp -f %{_sysconfdir}/%{name}/pld-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld.conf
+	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld.conf{,.rpmnew}
+	%{__mv} -v %{_sysconfdir}/%{name}/pld-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld.conf
 fi
 
 %ifarch %{x8664}
 if [ -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave ]; then
-	cp -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf{,.rpmnew}
-	cp -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf{,.rpmnew}
+	%{__mv} -v %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 fi
 %endif
 
 %triggerpostun -- poldek < 0.30.1-3
 if [ -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave ]; then
-	cp -f %{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf{,.rpmnew}
-	cp -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf
+	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf{,.rpmnew}
+	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf
 fi
 if [ -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave ]; then
-	cp -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf{,.rpmnew}
-	cp -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf
+	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf{,.rpmnew}
+	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf
 fi
 
 %files -f %{name}.lang
