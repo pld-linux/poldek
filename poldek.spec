@@ -407,50 +407,6 @@ fi
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
-%triggerpostun -- poldek < 0.19.0-1.20050613.22.0
-if [ -f /etc/poldek.conf.rpmsave ]; then
-	awk '/^source/ {
-	name = $3;
-	path = $4;
-	auto = "yes";
-	autoup = "yes";
-	type = "pdir";
-	pri = "";
-
-	if (sub(",noauto", "", name)) {
-		auto = "no";
-	}
-
-	# process pri=\d+
-	if (match(name, /,pri=[0-9]+/)) {
-		pri = substr(name, RSTART + 5, RLENGTH - 5);
-		name = substr(name, 1, RSTART - 1) substr(name, RSTART + RLENGTH);
-	}
-
-	# skip ac sources. already in new config.
-	if (name !~ /^ac(-(ready|test|supported|updates-(general|security)))?$/) {
-		print "";
-		print "[source]";
-		print "name = " name;
-		print "type = " type;
-		print "path = " path;
-		print "auto = " auto;
-		print "autoup = " autoup;
-		if (pri) {
-			print "pri = " pri;
-		}
-	}
-
-	}' < /etc/poldek.conf.rpmsave >> /etc/poldek/source.conf
-	echo "Converted old custom sources from /etc/poldek.conf.rpmsave to new poldek format in /etc/poldek/source.conf"
-
-	# copy hold=
-	hold=$(grep ^hold /etc/poldek.conf.rpmsave)
-	if [ "$hold" ]; then
-		%{__sed} -i -e "/^#hold =/s/^.*/$hold/" /etc/poldek/poldek.conf
-	fi
-fi
-
 %triggerpostun -- poldek < 0.30-0.20080225.00.1
 if ! grep -q '^%%includedir repos.d' %{_sysconfdir}/%{name}/poldek.conf; then
 	%{__sed} -i -e '/^%%include source.conf/{
