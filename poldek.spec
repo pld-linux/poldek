@@ -321,11 +321,11 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 %{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 
 %if 0%{?pld_multilib_conf:1}
-	%{__sed} 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
+	%{__sed} 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf
 %endif
 
 %if 0%{?pld_multilib2_conf:1}
-	%{__sed} 's|%%ARCH%%|%{_ftp_alt2_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-multilib2.conf
+	%{__sed} 's|%%ARCH%%|%{_ftp_alt2_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt2_arch}.conf
 %endif
 
 %if 0%{?pld_debuginfo_conf:1}
@@ -343,9 +343,9 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE102} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-debuginfo.conf
 %ifarch %{x8664} x32
 	%{__sed} -e 's|%%ARCH%%|%{_ftp_alt_arch}|g' \
-		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf
+		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf
 	%{__sed} -e 's|%%ARCH%%|%{_ftp_alt2_arch}|g' \
-		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib2.conf
+		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt2_arch}.conf
 %endif
 
 %if %{with snap}
@@ -474,6 +474,16 @@ if [ -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave ]; then
 	cp -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 fi
 %endif
+
+%triggerpostun -- poldek < 0.30.1-3
+if [ -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave ]; then
+	cp -f %{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf{,.rpmnew}
+	cp -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf
+fi
+if [ -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave ]; then
+	cp -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf{,.rpmnew}
+	cp -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf
+fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
