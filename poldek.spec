@@ -356,6 +356,17 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 %{__sed} -i '/@@SNAP@@.*/d' $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 %endif
 
+# create "all" meta repo
+%if 0%{?ftp_alt_arch:1}%{?ftp_alt2_arch:1}
+cat <<'EOF' >  $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-all.conf
+# group source for referring th+th-multiarch sources together, i.e poldek -n th-all
+[source]
+type    = group
+name    = th-all
+sources = th %{?ftp_alt_arch:th-%{ftp_alt_arch}} %{?ftp_alt2_arch:th-%{ftp_alt2_arch}}
+EOF
+%endif
+
 # th-2014 snap does not exist for x32 yet
 %if "%{ftp_arch}" == "x32"
 rm $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
