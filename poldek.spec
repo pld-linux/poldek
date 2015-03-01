@@ -274,29 +274,29 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 %{?with_static:%{__rm} $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
 %ifarch i486 i686 ppc sparc alpha athlon
-	%define		_ftp_arch	%{_target_cpu}
+	%define		ftp_arch	%{_target_cpu}
 %endif
 %ifarch %{x8664}
-	%define		_ftp_arch	x86_64
-	%define		_ftp_alt_arch	i686
-	%define		_ftp_alt2_arch	x32
+	%define		ftp_arch	x86_64
+	%define		ftp_alt_arch	i686
+	%define		ftp_alt2_arch	x32
 %endif
 %ifarch x32
-	%define		_ftp_arch	x32
-	%define		_ftp_alt_arch	x86_64
-	%define		_ftp_alt2_arch	i686
+	%define		ftp_arch	x32
+	%define		ftp_alt_arch	x86_64
+	%define		ftp_alt2_arch	i686
 %endif
 %ifarch i586
-	%define		_ftp_arch	i486
+	%define		ftp_arch	i486
 %endif
 %ifarch pentium2 pentium3 pentium4
-	%define		_ftp_arch	i686
+	%define		ftp_arch	i686
 %endif
 %ifarch sparcv9 sparc64
-	%define		_ftp_arch	sparc
-	%define		_ftp_arch	%{_target_cpu}
+	%define		ftp_arch	sparc
+	%define		ftp_arch	%{_target_cpu}
 	%ifarch sparc64
-		%define		_ftp_alt_arch	sparcv9
+		%define		ftp_alt_arch	sparcv9
 	%endif
 %endif
 
@@ -318,34 +318,34 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 	%define pld_multilib_conf %{SOURCE10}
 %endif
 
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
+%{__sed} -e 's|%%ARCH%%|%{ftp_arch}|g' < %{pld_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld.conf
 
 %if 0%{?pld_multilib_conf:1}
-	%{__sed} 's|%%ARCH%%|%{_ftp_alt_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf
+	%{__sed} 's|%%ARCH%%|%{ftp_alt_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{ftp_alt_arch}.conf
 %endif
 
 %if 0%{?pld_multilib2_conf:1}
-	%{__sed} 's|%%ARCH%%|%{_ftp_alt2_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt2_arch}.conf
+	%{__sed} 's|%%ARCH%%|%{ftp_alt2_arch}|g' < %{pld_multilib_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{ftp_alt2_arch}.conf
 %endif
 
 %if 0%{?pld_debuginfo_conf:1}
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
+%{__sed} -e 's|%%ARCH%%|%{ftp_arch}|g' < %{pld_debuginfo_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-debuginfo.conf
 %endif
 
 %if 0%{?pld_archive_conf:1}
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' < %{pld_archive_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-archive.conf
+%{__sed} -e 's|%%ARCH%%|%{ftp_arch}|g' < %{pld_archive_conf} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-archive.conf
 %endif
 
 # Always install snapshot configs
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' \
+%{__sed} -e 's|%%ARCH%%|%{ftp_arch}|g' \
 	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE100} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
-%{__sed} -e 's|%%ARCH%%|%{_ftp_arch}|g' \
+%{__sed} -e 's|%%ARCH%%|%{ftp_arch}|g' \
 	-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE102} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-debuginfo.conf
 %ifarch %{x8664} x32
-	%{__sed} -e 's|%%ARCH%%|%{_ftp_alt_arch}|g' \
-		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf
-	%{__sed} -e 's|%%ARCH%%|%{_ftp_alt2_arch}|g' \
-		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt2_arch}.conf
+	%{__sed} -e 's|%%ARCH%%|%{ftp_alt_arch}|g' \
+		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{ftp_alt_arch}.conf
+	%{__sed} -e 's|%%ARCH%%|%{ftp_alt2_arch}|g' \
+		-e 's|%%SNAP%%|%{SNAP}|g' < %{SOURCE101} > $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{ftp_alt2_arch}.conf
 %endif
 
 %if %{with snap}
@@ -357,10 +357,10 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 %endif
 
 # th-2014 snap does not exist for x32 yet
-%if "%{_ftp_arch}" == "x32"
+%if "%{ftp_arch}" == "x32"
 rm $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
 %endif
-%if "%{_ftp_alt2_arch}" == "x32"
+%if "%{ftp_alt2_arch}" == "x32"
 rm $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-x32.conf
 %endif
 
@@ -441,12 +441,12 @@ fi
 
 %triggerpostun -- poldek < 0.30.1-3
 if [ -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave ]; then
-	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf{,.rpmnew}
-	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{_ftp_alt_arch}.conf
+	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-%{ftp_alt_arch}.conf{,.rpmnew}
+	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{ftp_alt_arch}.conf
 fi
 if [ -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave ]; then
-	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf{,.rpmnew}
-	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{_ftp_alt_arch}.conf
+	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{ftp_alt_arch}.conf{,.rpmnew}
+	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{ftp_alt_arch}.conf
 fi
 
 %files -f %{name}.lang
