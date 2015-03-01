@@ -357,7 +357,12 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
 %endif
 
 # th-2014 snap does not exist for x32 yet
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-x32.conf
+%if "%{_ftp_arch}" == "x32"
+rm $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
+%endif
+%if "%{_ftp_alt2_arch}" == "x32"
+rm $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-x32.conf
+%endif
 
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
 
