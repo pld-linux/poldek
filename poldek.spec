@@ -471,7 +471,11 @@ fi
 %attr(755,root,root) %{_bindir}/poldek
 %attr(755,root,root) %{_bindir}/rpmvercmp
 %dir %{_libexecdir}
-%attr(755,root,root) %{_libexecdir}/*
+%attr(755,root,root) %{_libexecdir}/poldekuser-setup.sh
+%attr(755,root,root) %{_libexecdir}/vfcompr
+%attr(755,root,root) %{_libexecdir}/vfjuggle
+%attr(755,root,root) %{_libexecdir}/vfsmb
+%attr(755,root,root) %{_libexecdir}/zlib-in-rpm.sh
 %{_mandir}/man1/%{name}*.1*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
 %{_infodir}/poldek.info*
