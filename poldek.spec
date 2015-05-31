@@ -30,7 +30,7 @@
 %define		ver_rpm		5.4.10
 %endif
 
-%define		rel	7
+%define		rel	8
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -57,6 +57,7 @@ Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-size-type.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-missing-include.patch
+Patch3:		pm-hooks.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	autoconf
@@ -101,8 +102,8 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-db-ver = %{ver_db}
 Requires:	rpm-lib >= %{ver_rpm}
-# vf* scripts use sed
 Requires:	sed
+Conflicts:	etckeeper < 1.18-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_prefix}/lib/%{name}
@@ -220,6 +221,7 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
@@ -260,7 +262,7 @@ CPPFLAGS="%{rpmcppflags} -std=gnu99 -fgnu89-inline"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/%{name}/repos.d,/var/cache/%{name}}
+install -d $RPM_BUILD_ROOT/var/cache/%{name}
 
 %{__make} install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -460,10 +462,23 @@ if [ -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave ]; then
 	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{ftp_alt_arch}.conf
 fi
 
+%triggerpostun -- %{name} < 0.30.1-8
+if [ $1 -le 1 ]; then
+	# revert change on  --downgrade
+	%{__sed} -i -re 's,^pm command = %{_libexecdir}/pm-command.sh,#&,' /etc/poldek/poldek.conf
+else
+	# setup pm command
+	%{__sed} -i -re 's,#?(pm command =).*,\1 %{_libexecdir}/pm-command.sh,' /etc/poldek/poldek.conf
+fi
+
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc ChangeLog README* NEWS TODO configs
 %dir %{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}/pre-install.d
+%{_sysconfdir}/%{name}/pre-install.d/README
+%dir %{_sysconfdir}/%{name}/post-install.d
+%{_sysconfdir}/%{name}/post-install.d/README
 %dir %{_sysconfdir}/%{name}/repos.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/repos.d/*.conf
@@ -471,6 +486,7 @@ fi
 %attr(755,root,root) %{_bindir}/poldek
 %attr(755,root,root) %{_bindir}/rpmvercmp
 %dir %{_libexecdir}
+%attr(755,root,root) %{_libexecdir}/pm-command.sh
 %attr(755,root,root) %{_libexecdir}/poldekuser-setup.sh
 %attr(755,root,root) %{_libexecdir}/vfcompr
 %attr(755,root,root) %{_libexecdir}/vfjuggle

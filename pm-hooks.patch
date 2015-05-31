@@ -1,0 +1,61 @@
+this could be handled natively by poldek
+but implement as "pm command" hack for now
+
+--- /dev/null	2015-05-20 12:11:30.089022100 +0300
++++ poldek/pm-command.sh	2015-05-31 18:21:15.748917981 +0300
+@@ -0,0 +1,11 @@
++#!/bin/sh
++# wrapper to add pre-install.d and post-install.d support for pm command in poldek
++
++/bin/run-parts /etc/poldek/pre-install.d
++
++/bin/rpm "$@"
++rc=$?
++
++/bin/run-parts /etc/poldek/post-install.d
++
++exit $rc
+--- /dev/null	2015-05-20 12:11:30.089022100 +0300
++++ poldek/conf/pre-install.d/README	2015-05-31 18:18:35.539100326 +0300
+@@ -0,0 +1,2 @@
++Files in this directory are run before packages are installed, upgraded,
++etc.
+--- /dev/null	2015-05-20 12:11:30.089022100 +0300
++++ poldek/conf/post-install.d/README	2015-05-31 18:18:45.883922914 +0300
+@@ -0,0 +1 @@
++Files in this directory are run after packages are installed, upgraded, etc.
+--- poldek-0.30.1/conf/poldek.conf~	2015-05-31 18:25:35.000000000 +0300
++++ poldek-0.30.1/conf/poldek.conf	2015-05-31 18:26:28.410188923 +0300
+@@ -56,7 +56,7 @@
+ #exclude path = 
+ 
+ # Full path name to a PM (rpm for now) binary.
+-#pm command = /bin/rpm
++pm command = /usr/lib/poldek/pm-command.sh
+ 
+ # Full path name to sudo binary.
+ #sudo command = /usr/bin/sudo
+--- poldek-0.30.1/conf/Makefile.am	2015-05-31 18:28:29.319806773 +0300
++++ poldek-0.30.1/conf/Makefile.am	2015-05-31 19:12:22.206571793 +0300
+@@ -26,6 +26,10 @@
+ 
+ install-data-local: $(GENCONFIGS)
+ 	 $(MKDIR_P) $(DESTDIR)$(sysconfdir)/$(PACKAGE)/repos.d
++	 $(MKDIR_P) $(DESTDIR)$(sysconfdir)/$(PACKAGE)/pre-install.d
++	 $(INSTALL_DATA) pre-install.d/README $(DESTDIR)$(sysconfdir)/$(PACKAGE)/pre-install.d
++	 $(MKDIR_P) $(DESTDIR)$(sysconfdir)/$(PACKAGE)/post-install.d
++	 $(INSTALL_DATA) post-install.d/README $(DESTDIR)$(sysconfdir)/$(PACKAGE)/post-install.d
+ 	 for a in $(CONFIGS); do \
+ 	 	$(INSTALL_DATA) $(srcdir)/$$a $(DESTDIR)$(sysconfdir)/$(PACKAGE); \
+ 	 done
+--- poldek-0.30.1/Makefile.am~	2014-03-26 00:32:25.000000000 +0200
++++ poldek-0.30.1/Makefile.am	2015-05-31 19:10:22.240340180 +0300
+@@ -79,7 +79,7 @@
+ LDADD_              = @INTLLIBS@
+ 
+ vfscriptsdir = $(PKGLIBDIR)
+-vfscripts_SCRIPTS = zlib-in-rpm.sh vfjuggle vfcompr vfsmb poldekuser-setup.sh
++vfscripts_SCRIPTS = zlib-in-rpm.sh vfjuggle vfcompr vfsmb poldekuser-setup.sh pm-command.sh
+ 
+ EXTRA_DIST = \
+ 	     $(vfscripts_SCRIPTS) \
