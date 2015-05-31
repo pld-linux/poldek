@@ -465,10 +465,10 @@ fi
 %triggerpostun -- %{name} < 0.30.1-8
 if [ $1 -le 1 ]; then
 	# revert change on  --downgrade
-	%{__sed} -i -re 's,^pm command = %{_libexecdir}/pm-command.sh,#&,' /etc/poldek/poldek.conf
+	%{__sed} -i -re 's,^pm command = %{_libexecdir}/pm-command.sh,#&,' %{_sysconfdir}/%{name}/%{name}.conf
 else
 	# setup pm command
-	%{__sed} -i -re 's,#?(pm command =).*,\1 %{_libexecdir}/pm-command.sh,' /etc/poldek/poldek.conf
+	%{__sed} -i -re 's,#?(pm command =).*,\1 %{_libexecdir}/pm-command.sh,' %{_sysconfdir}/%{name}/%{name}.conf
 fi
 
 %files -f %{name}.lang
