@@ -99,6 +99,7 @@ Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
 Requires:	%{db_pkg} >= %{ver_db}-%{ver_db_rel}
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	/bin/run-parts
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-db-ver = %{ver_db}
 Requires:	rpm-lib >= %{ver_rpm}
