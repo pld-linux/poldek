@@ -59,7 +59,7 @@ Patch0:		%{name}-size-type.patch
 Patch1:		%{name}-config.patch
 Patch2:		%{name}-missing-include.patch
 Patch3:		pm-hooks.patch
-Patch4:		poldek-setenv-null.patch
+Patch4:		%{name}-setenv-null.patch
 Patch5:		%{name}-assert-sigint.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
@@ -69,6 +69,7 @@ BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools
+BuildRequires:	libgomp-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	neon-devel
