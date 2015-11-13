@@ -23,6 +23,7 @@
 %endif
 
 %if %{with rpm4}
+%define		db_pkg		db4.7
 %define		ver_db		4.7.25
 %define		ver_db_rel	1
 %define		ver_rpm		4.5-49
