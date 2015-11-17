@@ -72,7 +72,6 @@ BuildRequires:	gettext-tools
 BuildRequires:	libgomp-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
-BuildRequires:	neon-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	pkgconfig
@@ -81,7 +80,6 @@ BuildRequires:	popt-devel
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
-BuildRequires:	swig-python
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xmlto
 BuildRequires:	xz
