@@ -21,6 +21,9 @@ ignore [PACKAGE] [PACKAGE...]
 hold [PACKAGE] [PACKAGE...]
     Prevent package listed from being upgraded if they are already installed.
 
+keep_downloads yes|no
+    Do not remove downloaded packages after its successful installation.
+
 EOF
 }
 
@@ -31,7 +34,7 @@ die() {
 
 option_set() {
 	local option="$1"; shift
-	sed -i -e "/^$option/ s/.*/$option = $*/" "$poldek_conf"
+	sed -i -re "/^#?$option\s*=/ s/.*/$option = $*/" "$poldek_conf"
 }
 
 # parse command line args
@@ -72,6 +75,9 @@ main() {
 	case "$command" in
 		ignore|hold)
 			option_set "$command" "$arguments"
+			;;
+		keep_downloads)
+			option_set "keep downloads" "$arguments"
 			;;
 		*)
 			die "Unknown command: $command"
