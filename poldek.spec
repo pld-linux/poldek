@@ -31,7 +31,7 @@
 %define		ver_rpm		5.4.10
 %endif
 
-%define		rel	13
+%define		rel	14
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -45,6 +45,7 @@ Source0:	http://carme.pld-linux.org/~megabajt/releases/poldek/%{name}-%{version}
 # Source0-md5:	e569c8454df0932df53b09cee9998927
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
+Source3:	%{name}-config.sh
 Source5:	%{name}-aliases.conf
 Source6:	%{name}.desktop
 Source7:	%{name}.png
@@ -275,6 +276,8 @@ install -d $RPM_BUILD_ROOT/var/cache/%{name}
 %{__make} install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
 
+install -p %{SOURCE3} $RPM_BUILD_ROOT%{_bindir}/poldek-config
+
 %if %{with python}
 %{__make} -C python -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -492,6 +495,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/repos.d/*.conf
 %attr(755,root,root) %{_bindir}/ipoldek
 %attr(755,root,root) %{_bindir}/poldek
+%attr(755,root,root) %{_bindir}/poldek-config
 %attr(755,root,root) %{_bindir}/rpmvercmp
 %dir %{_libexecdir}
 %attr(755,root,root) %{_libexecdir}/pm-command.sh
