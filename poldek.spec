@@ -48,6 +48,7 @@ Source2:	%{name}-multilib.conf
 Source5:	%{name}-aliases.conf
 Source6:	%{name}.desktop
 Source7:	%{name}.png
+# Source7-md5:	ee487abede50874e9eceb6495d5ee150
 Source8:	%{name}-debuginfo.conf
 Source9:	%{name}-aidath.conf
 Source10:	%{name}-multilib-aidath.conf
