@@ -35,3 +35,16 @@ diff -urp poldek-0.30.1.org/trurlib/configure.ac poldek-0.30.1/trurlib/configure
  # Checks for programs.
  m4_ifdef([LT_INIT], [LT_INIT], [AC_PROG_LIBTOOL])
  AC_PROG_CC
+--- poldek-0.30.1/vfile/vfff/vfff.h~	2014-03-25 23:32:25.000000000 +0100
++++ poldek-0.30.1/vfile/vfff/vfff.h	2015-12-27 22:03:53.306854171 +0100
+@@ -13,6 +13,10 @@
+ #ifndef VFFF_VCN_H
+ #define VFFF_VCN_H
+ 
++#ifdef HAVE_CONFIG_H
++# include "config.h"
++#endif
++
+ #include <stdarg.h>
+ #include <sys/param.h>          /* for PATH_MAX */
+ #include <netinet/in.h>
