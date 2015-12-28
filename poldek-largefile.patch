@@ -48,3 +48,70 @@ diff -urp poldek-0.30.1.org/trurlib/configure.ac poldek-0.30.1/trurlib/configure
  #include <stdarg.h>
  #include <sys/param.h>          /* for PATH_MAX */
  #include <netinet/in.h>
+--- poldek-0.30.1/vfile/vfff/ftp.c.dd	2015-12-28 16:29:34.793238446 +0000
++++ poldek-0.30.1/vfile/vfff/ftp.c	2015-12-28 16:29:47.105324341 +0000
+@@ -10,6 +10,10 @@
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+ 
++#ifdef HAVE_CONFIG_H
++# include "config.h"
++#endif
++
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+--- poldek-0.30.1/vfile/vfff/http.c.dd	2015-12-28 16:28:59.848990134 +0000
++++ poldek-0.30.1/vfile/vfff/http.c	2015-12-28 16:29:25.201170973 +0000
+@@ -10,6 +10,10 @@
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+ 
++#ifdef HAVE_CONFIG_H
++# include "config.h"
++#endif
++
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+--- poldek-0.30.1/vfile/vfff/vfff.h.dd	2015-12-28 16:30:06.337456985 +0000
++++ poldek-0.30.1/vfile/vfff/vfff.h	2015-12-28 16:30:46.305727157 +0000
+@@ -22,6 +22,9 @@
+ #include <netinet/in.h>
+ #include <time.h>
+ 
++#include <sys/types.h>
++#include <unistd.h>
++
+ #ifndef IPPORT_HTTP
+ # define IPPORT_HTTP 80
+ #endif
+--- poldek-0.30.1/vfile/vfreq.h.dd	2014-03-25 22:32:25.000000000 +0000
++++ poldek-0.30.1/vfile/vfreq.h	2015-12-28 16:27:45.504435535 +0000
+@@ -13,6 +13,13 @@
+ #ifndef POLDEK_VFILE_VFREQ_H
+ #define POLDEK_VFILE_VFREQ_H
+ 
++#ifdef HAVE_CONFIG_H
++# include "config.h"
++#endif
++
++#include <sys/types.h>
++#include <unistd.h>
++
+ #include <time.h>
+ 
+ void *vf_progress_new(const char *label);
+--- poldek-0.30.1/vfile/vfff/vfff.c.dd	2014-03-25 22:32:25.000000000 +0000
++++ poldek-0.30.1/vfile/vfff/vfff.c	2015-12-28 16:59:18.775511542 +0000
+@@ -10,6 +10,10 @@
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+ 
++#ifdef HAVE_CONFIG_H
++# include "config.h"
++#endif
++
+ #include <arpa/inet.h>
+ #include <ctype.h>
+ #include <errno.h>
