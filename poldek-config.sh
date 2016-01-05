@@ -24,6 +24,9 @@ hold [PACKAGE] [PACKAGE...]
 keep_downloads yes|no
     Do not remove downloaded packages after its successful installation.
 
+cachedir /var/cache/poldek
+    Cache directory for downloaded files. NOTE that parent directory of cachedir must exist.
+
 EOF
 }
 
@@ -34,7 +37,7 @@ die() {
 
 option_set() {
 	local option="$1"; shift
-	sed -i -re "/^#?$option\s*=/ s/.*/$option = $*/" "$poldek_conf"
+	sed -i -re "/^#?$option\s*=/ s#.*#$option = $*#" "$poldek_conf"
 }
 
 # parse command line args
@@ -78,6 +81,9 @@ main() {
 			;;
 		keep_downloads)
 			option_set "keep downloads" "$arguments"
+			;;
+		cachedir|cache_dir)
+			option_set "cachedir" "$arguments"
 			;;
 		*)
 			die "Unknown command: $command"
