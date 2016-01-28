@@ -1,4 +1,7 @@
-#
+# TODO
+# - fix config having escaped html entities:
+#   # package A requires capability foo &gt;= 1.0 while package B provides "foo"
+
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
