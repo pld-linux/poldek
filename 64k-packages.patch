@@ -1,0 +1,26 @@
+From a46a0bc806331e419207ae951864243946892b9a Mon Sep 17 00:00:00 2001
+From: Marcin Banasiak <marcin.banasiak@gmail.com>
+Date: Wed, 20 Apr 2016 19:56:34 +0200
+Subject: Fix crash when loading more than 64k packages (lp#1571324)
+
+
+diff --git a/capreqidx.h b/capreqidx.h
+index 0311e76..327e1f4 100644
+--- a/capreqidx.h
++++ b/capreqidx.h
+@@ -28,8 +28,10 @@ struct capreq_idx {
+ 
+ struct pkg;
+ struct capreq_idx_ent {
+-    int16_t items;
+-    int32_t _size;
++
++    unsigned int items;		/* number of elements stored in this entry */
++    unsigned int _size;		/* number of elements for which memory is already allocated */
++
+     union {
+         struct pkg *pkg;
+         struct pkg **pkgs;       /* pkgs list */
+-- 
+cgit v0.10.2
+
