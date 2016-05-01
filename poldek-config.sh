@@ -42,7 +42,7 @@ option_set() {
 
 # parse command line args
 parse_arguments() {
-	t=$(getopt -o h --long help -n "$PROGRAM" -- "$@")
+	t=$(getopt -o hc: --long help -n "$PROGRAM" -- "$@")
 	[ $? != 0 ] && exit $?
 	eval set -- "$t"
 
@@ -51,6 +51,10 @@ parse_arguments() {
 		-h|--help)
 			usage
 			exit 0
+		;;
+		-c)
+			shift
+			poldek_conf=$1
 		;;
 		--)
 			shift
