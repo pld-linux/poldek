@@ -34,18 +34,18 @@
 %define		ver_rpm		5.4.10
 %endif
 
-%define		rel	3
+%define		rel	1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.32.1
+Version:	0.32.2
 Release:	%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	https://launchpad.net/poldek/0.32/%{version}/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	24794243d0d4573d7159bd924080c83c
+# Source0-md5:	60b964723880569531f88f084cd3ae65
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -63,7 +63,6 @@ Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-size-type.patch
 Patch1:		%{name}-config.patch
 Patch2:		pm-hooks.patch
-Patch3:		64k-packages.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	autoconf
@@ -227,7 +226,6 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
