@@ -1,0 +1,11 @@
+--- poldek-0.32.2/vfile/vopen3.c~	2016-01-30 15:05:57.000000000 +0100
++++ poldek-0.32.2/vfile/vopen3.c	2016-10-18 08:14:09.638596140 +0200
+@@ -347,7 +347,7 @@
+     } else if (WIFSIGNALED(status)) {
+ #ifdef HAVE_STRSIGNAL
+         st_seterr(st, _("%s terminated by signal %d (%s)"),
+-                   st->cmd, WTERMSIG(status), strsignal(WTERMSIG(st)));
++                   st->cmd, WTERMSIG(status), strsignal(WTERMSIG(status)));
+ #else
+         st_seterr(st, _("%s terminated by signal %d"),
+                    st->cmd, WTERMSIG(status));
