@@ -34,7 +34,7 @@
 %define		ver_rpm		5.4.10
 %endif
 
-%define		rel	3
+%define		rel	4
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
