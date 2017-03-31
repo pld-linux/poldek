@@ -1,0 +1,12 @@
+diff -ur -x .svn -x .git -x .bzr -x CVS -ruNp poldek-0.32.2.orig/conf_sections.c poldek-0.32.2/conf_sections.c
+--- poldek-0.32.2.orig/conf_sections.c	2016-01-30 18:21:06.000000000 +0100
++++ poldek-0.32.2/conf_sections.c	2017-03-31 20:34:21.955834004 +0200
+@@ -362,7 +362,7 @@ static struct poldek_conf_tag fetcher_ta
+              0, { 0 } },
+              
+    { "proto", 
+-     CONF_TYPE_STRING | CONF_TYPE_F_REQUIRED,
++     CONF_TYPE_STRING | CONF_TYPE_F_REQUIRED | CONF_TYPE_F_LIST,
+              NULL,
+              0, { 0 } },
+              
