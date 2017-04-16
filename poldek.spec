@@ -65,6 +65,7 @@ Patch1:		%{name}-config.patch
 Patch2:		pm-hooks.patch
 Patch3:		WTERMSIG.patch
 Patch4:		%{name}-multiproto.patch
+Patch5:		python-fix.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	autoconf
@@ -230,6 +231,7 @@ Moduły języka Python dla poldka.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
@@ -268,6 +270,10 @@ CPPFLAGS="%{rpmcppflags} -std=gnu99 -fgnu89-inline"
 %{__make} -j1
 #	--enable-trace
 
+%if %{with python}
+%{__make} -C python
+%endif
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/var/cache/%{name}
@@ -280,7 +286,7 @@ install -p %{SOURCE3} $RPM_BUILD_ROOT%{_bindir}/poldek-config
 %if %{with python}
 %{__make} -C python -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	libdir=%{py_sitedir}
+	py_sitedir=%{py_sitedir}
 %endif
 
 %{?with_static:%{__rm} $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
@@ -405,7 +411,7 @@ cp -a conf configs
 
 %if %{with python}
 %py_postclean
-%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/_poldekmod.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/_poldekmod.{la,so}
 %endif
 
 %find_lang %{name}

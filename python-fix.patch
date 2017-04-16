@@ -1,0 +1,66 @@
+In file included from /usr/include/stdint.h:27:0,
+                 from /usr/lib64/gcc/x86_64-pld-linux/6.3.0/include/stdint.h:9,
+                 from local_stdint.c:2,
+                 from wrap_poldekmod.c:3066:
+/usr/include/bits/types.h:143:34: error: conflicting types for ‘__fsid_t’
+ __STD_TYPE __FSID_T_TYPE __fsid_t; /* Type of file system IDs.  */
+                                  ^~~~~~~~
+In file included from /usr/include/stdio.h:36:0,
+                 from /usr/include/python2.7/Python.h:33,
+                 from wrap_poldekmod.c:149:
+/usr/include/bits/types.h:143:26: note: previous declaration of ‘__fsid_t’ was here
+ __STD_TYPE __FSID_T_TYPE __fsid_t; /* Type of file system IDs.  */
+                          ^~~~~~~~
+make: *** [Makefile:487: wrap_poldekmod.lo] Error 1
+
+--- poldek-0.32.2/python/Makefile.am~	2016-01-30 15:05:57.000000000 +0100
++++ poldek-0.32.2/python/Makefile.am	2017-04-16 14:28:51.269840377 +0200
+@@ -3,8 +3,8 @@
+ py_prefix  = $(shell python -c "import sys; print sys.prefix")
+ py_incdir  = $(py_prefix)/include/python$(py_ver)
+ 
+-EXTRA_DIST = poldekmod.i local_stdint.c pyldek.py run.sh
+-CLEANFILES = wrap_* poldekmod.py local_stdint.h
++EXTRA_DIST = poldekmod.i pyldek.py run.sh
++CLEANFILES = wrap_* poldekmod.py
+ 
+ AM_CPPFLAGS = @TRURL_INCLUDE@ @TNDB_INCLUDE@ -I$(top_srcdir) -I$(py_incdir) -I.
+ 
+@@ -21,16 +21,12 @@
+ CFLAGS=
+ CPPFLAGS += -DSWIG -DPOCLIDEK_ITSELF 
+ 
+-poldekmod.i: local_stdint.h
+-
+-#install-exec-hook:
+-#	$(mkinstalldirs) "$(DESTDIR)$(py_sitedir)"
++install-exec-hook:
++	$(mkinstalldirs) "$(DESTDIR)$(py_sitedir)"
++	$(install_sh) .libs/_poldekmod.so "$(DESTDIR)$(py_sitedir)"
+ 
+ poldekmod.py: wrap_poldekmod.c
+ 
+-local_stdint.h: local_stdint.c
+-	$(CPP) $< > $@
+-
+ #wrap_poldekmod.c: poldekmod.i
+ #	$(SWIG) $(SWIG_PYTHON_OPT) $(INCLUDES) -I/usr/include -o $@ $<
+ 
+--- poldek-0.32.2/python/poldekmod.i~	2016-01-30 15:05:57.000000000 +0100
++++ poldek-0.32.2/python/poldekmod.i	2017-04-16 14:27:50.169060494 +0200
+@@ -1,7 +1,6 @@
+ %module poldekmod
+ 
+ %{
+-#include "local_stdint.h"
+ #include "poldek.h"
+ #include "trurl/narray.h"
+ #include "trurl/nhash.h"
+@@ -32,7 +32,6 @@
+ %}
+ 
+ %include exception.i
+-%include "local_stdint.h"
+ %include "trurl/narray.h"
+ %include "capreq.h"
+ %include "pkg.h"
