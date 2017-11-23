@@ -18,7 +18,7 @@ diff -urN poldek-0.32.2.org/vfile/fetch.c poldek-0.32.2/vfile/fetch.c
              path = p;
          else {
 -            vf_logerr("%s: command not found\n", path);
-+            if (*vfile_verbose > 0) {
++            if (*vfile_verbose > 1) {
 +                vf_logerr("%s: command not found\n", path);
 +            }
              return NULL;
@@ -29,7 +29,7 @@ diff -urN poldek-0.32.2.org/vfile/fetch.c poldek-0.32.2/vfile/fetch.c
      
      if ((ftch = ffetcher_new(name, protocols, cmd)) == NULL) {
 -        vf_logerr("External downloader '%s': registration failed\n", cmd);
-+        if (*vfile_verbose > 0) {
++        if (*vfile_verbose > 1) {
 +            vf_logerr("External downloader '%s': registration failed\n", cmd);
 +        }
          
