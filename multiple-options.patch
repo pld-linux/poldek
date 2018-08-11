@@ -1,0 +1,16 @@
+--- poldek-0.32.2/conf.c~	2016-01-30 15:05:57.000000000 +0100
++++ poldek-0.32.2/conf.c	2018-08-11 18:43:17.635821800 +0200
+@@ -1226,8 +1226,12 @@ tn_hash *poldek_conf_addlines(tn_hash *h
+         n_strdupap(line, &tmp);
+         
+         if (split_option_line(tmp, &name, &value, NULL, 0)) {
++            unsigned add_flags = ADD_PARAM_VALIDATE;
++            // allow multiple rpmdef values
++            if (strcmp(name, "rpmdef") != 0)
++                add_flags |= ADD_PARAM_OVERWRITE;
+             if (!add_param(ht_sect, sectnam, name, value,
+-                           ADD_PARAM_VALIDATE | ADD_PARAM_OVERWRITE, NULL, 0))
++                           add_flags, NULL, 0))
+                 nerr++;
+         }
+     }
