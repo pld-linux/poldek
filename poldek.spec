@@ -262,7 +262,7 @@ cd ../trurlib
 %{__automake}
 cd ..
 
-CPPFLAGS="%{rpmcppflags} -std=gnu99 -fgnu89-inline"
+CPPFLAGS="%{rpmcppflags} -std=gnu99 -fgnu89-inline -D_GNU_SOURCE=1"
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
