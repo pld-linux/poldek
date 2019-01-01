@@ -11,7 +11,7 @@
 %bcond_with	rpm4	# use rpm4/db4.7 instead of rpm5
 
 # current snapshot name
-%define		SNAP	2017
+%define		SNAP	2018
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 # NOTE: poldek links with "system db" (-ldb) anyway if it exists
