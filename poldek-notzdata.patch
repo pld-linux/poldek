@@ -1,0 +1,12 @@
+--- poldek-0.32.2/vfile/vfff/ftp.c~	2016-01-30 14:05:57.000000000 +0000
++++ poldek-0.32.2/vfile/vfff/ftp.c	2019-10-02 08:50:20.832444438 +0000
+@@ -654,6 +654,9 @@
+         tm.tm_year -= 1900;
+         tm.tm_mon -=  1;
+         ts = mktime(&tm);
++        /* We can't do much if time can't be represented */
++        if (ts < 0)
++            return 0;
+     }
+     return ts;
+ }
