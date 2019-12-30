@@ -10,28 +10,3 @@ diff -urN poldek-0.32.2.org/conf/poldek.conf poldek-0.32.2/conf/poldek.conf
  
  [global]
  
-diff -urN poldek-0.32.2.org/vfile/fetch.c poldek-0.32.2/vfile/fetch.c
---- poldek-0.32.2.org/vfile/fetch.c	2016-01-30 15:05:57.000000000 +0100
-+++ poldek-0.32.2/vfile/fetch.c	2017-11-23 09:38:01.044442691 +0100
-@@ -163,7 +163,9 @@
-         if (vf_find_external_command(p, PATH_MAX, path, NULL))
-             path = p;
-         else {
--            vf_logerr("%s: command not found\n", path);
-+            if (*vfile_verbose > 1) {
-+                vf_logerr("%s: command not found\n", path);
-+            }
-             return NULL;
-         }
-     }
-@@ -494,7 +496,9 @@
-     }
-     
-     if ((ftch = ffetcher_new(name, protocols, cmd)) == NULL) {
--        vf_logerr("External downloader '%s': registration failed\n", cmd);
-+        if (*vfile_verbose > 1) {
-+            vf_logerr("External downloader '%s': registration failed\n", cmd);
-+        }
-         
-     } else {
-         if (ffetchers == NULL) {
