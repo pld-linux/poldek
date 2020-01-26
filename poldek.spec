@@ -7,30 +7,22 @@
 %bcond_without	imode	# don't build interactive mode
 %bcond_without	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
-%bcond_with	db61	# DB 6.1 instead of 5.2
-%bcond_with	rpm4	# use rpm4/db4.7 instead of rpm5
+%bcond_with	rpm4	# use rpm4 instead of rpm5
 
 # current snapshot name
 %define		SNAP	2019
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-# NOTE: poldek links with "system db" (-ldb) anyway if it exists
-%if %{with db61}
-%define		db_pkg		db6.1
-%define		ver_db		6.1
-%define		ver_db_rel	1
+%if %{with rpm4}
+%define		db_pkg		db
+%define		ver_db		5.3
+%define		ver_db_rel	3
+%define		ver_rpm		1:4.14
+%define		ver_db_devel	%(rpm -q --qf '%|E?{%{E}:}|%{V}-%{R}' --what-provides db-devel)
 %else
 %define		db_pkg		db5.2
 %define		ver_db		5.2
 %define		ver_db_rel	3
-%endif
-
-%if %{with rpm4}
-%define		db_pkg		db4.7
-%define		ver_db		4.7.25
-%define		ver_db_rel	1
-%define		ver_rpm		4.5-49
-%else
 %define		ver_rpm		5.4.10
 %endif
 
@@ -64,6 +56,7 @@ Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		poldek-ext-down-enable.patch
 Patch3:		multiple-options.patch
+Patch4:		rpm.org-system-db.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	autoconf
@@ -104,11 +97,15 @@ BuildRequires:	zstd-static
 %endif
 Requires(triggerpostun):	awk
 Requires(triggerpostun):	sed >= 4.0
+%if %{with rpm4}
+Requires:	%{db_pkg} >= %{ver_db_devel}
+%else
 Requires:	%{db_pkg} >= %{ver_db}-%{ver_db_rel}
+Requires:	rpm-db-ver = %{ver_db}
+%endif
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	/bin/run-parts
 Requires:	rpm >= %{ver_rpm}
-Requires:	rpm-db-ver = %{ver_db}
 Requires:	rpm-lib >= %{ver_rpm}
 Requires:	sed
 Conflicts:	etckeeper < 1.18-2
@@ -230,6 +227,7 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
