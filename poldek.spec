@@ -26,18 +26,18 @@
 %define		ver_rpm		5.4.10
 %endif
 
-%define		rel	3
+%define		rel	1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.40.0
+Version:	0.42.0
 Release:	%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	https://launchpad.net/poldek/master/head/+download/%{name}-%{version}.tar.xz
-# Source0-md5:	c88f3ada99799d0e1af78aeda428d041
+Source0:	https://github.com/poldek-pm/poldek/releases/download/v%{version}/%{name}-%{version}.tar.xz
+# Source0-md5:	f224a4f62cdedf0d8bcfe0ce6dd533b2
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -55,8 +55,6 @@ Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		poldek-ext-down-enable.patch
-Patch3:		multiple-options.patch
-Patch4:		rpm.org-system-db.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
 BuildRequires:	autoconf
@@ -226,8 +224,6 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
@@ -485,7 +481,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc ChangeLog README* NEWS TODO configs
+%doc ChangeLog README* NEWS configs
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/pre-install.d
 %{_sysconfdir}/%{name}/pre-install.d/README
@@ -522,8 +518,8 @@ fi
 %attr(755,root,root) %{_libdir}/libtndb.so.*.*.*
 %attr(755,root,root) %{_libdir}/libtrurl.so.*.*.*
 %attr(755,root,root) %{_libdir}/libvfile.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libpoclidek.so.0
-%attr(755,root,root) %ghost %{_libdir}/libpoldek.so.2
+%attr(755,root,root) %ghost %{_libdir}/libpoclidek.so.1
+%attr(755,root,root) %ghost %{_libdir}/libpoldek.so.3
 %attr(755,root,root) %ghost %{_libdir}/libtndb.so.0
 %attr(755,root,root) %ghost %{_libdir}/libtrurl.so.0
 %attr(755,root,root) %ghost %{_libdir}/libvfile.so.0
