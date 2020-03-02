@@ -8,6 +8,7 @@
 %bcond_without	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
 %bcond_with	rpm4	# use rpm4 instead of rpm5
+%bcond_without	tests	# tests
 
 # current snapshot name
 %define		SNAP	2019
@@ -264,6 +265,10 @@ CPPFLAGS="%{rpmcppflags} -std=gnu99 -fgnu89-inline -D_GNU_SOURCE=1"
 
 %if %{with python}
 %{__make} -C python
+%endif
+
+%if %{with tests}
+%{__make} check
 %endif
 
 %install
