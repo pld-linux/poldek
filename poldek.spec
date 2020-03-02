@@ -260,7 +260,7 @@ CPPFLAGS="%{rpmcppflags} -std=gnu99 -fgnu89-inline -D_GNU_SOURCE=1"
 	--with-pkglibdir=%{_libexecdir} \
 	--enable-nls \
 	%{?with_python:--with-python}
-%{__make} -j1
+%{__make}
 #	--enable-trace
 
 %if %{with python}
@@ -275,13 +275,13 @@ CPPFLAGS="%{rpmcppflags} -std=gnu99 -fgnu89-inline -D_GNU_SOURCE=1"
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/var/cache/%{name}
 
-%{__make} install -j1 \
+%{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -p %{SOURCE3} $RPM_BUILD_ROOT%{_bindir}/poldek-config
 
 %if %{with python}
-%{__make} -C python -j1 install \
+%{__make} -C python install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	py_sitedir=%{py_sitedir}
 %endif
