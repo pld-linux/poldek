@@ -17,13 +17,11 @@
 %if %{with rpm4}
 %define		db_pkg		db
 %define		ver_db		5.3
-%define		ver_db_rel	3
 %define		ver_rpm		1:4.14
 %define		ver_db_devel	%(rpm -q --qf '%|E?{%{E}:}|%{V}-%{R}' --what-provides db-devel)
 %else
-%define		db_pkg		db5.2
-%define		ver_db		5.2
-%define		ver_db_rel	3
+%define		ver_db		%(rpm -q --provides rpm | %{__sed} -ne 's/^rpm-db-ver = \\([.0-9]*\\)$/\\1/p')
+%define		db_pkg		db%{ver_db}
 %define		ver_rpm		5.4.10
 %endif
 
@@ -55,24 +53,27 @@ Source101:	%{name}-multilib-snap.conf
 Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
-Patch2:		poldek-ext-down-enable.patch
+Patch2:		%{name}-ext-down-enable.patch
+Patch3:		%{name}-pc.patch
 URL:		http://poldek.pld-linux.org/
-BuildRequires:	%{db_pkg}-devel >= %{ver_db}-%{ver_db_rel}
-BuildRequires:	autoconf
+BuildRequires:	%{db_pkg}-devel >= %{ver_db}
+BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
 BuildRequires:	docbook-dtd412-xml
-BuildRequires:	gettext-tools
+BuildRequires:	gettext-tools >= 0.11.5
 BuildRequires:	libgomp-devel
 BuildRequires:	libtool
-BuildRequires:	libxml2-devel
+BuildRequires:	libxml2-devel >= 2
+BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 BuildRequires:	pkgconfig
 BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
 BuildRequires:	readline-devel >= 5.0
+BuildRequires:	rpm >= %{ver_rpm}
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	tar >= 1:1.22
@@ -81,7 +82,7 @@ BuildRequires:	xz
 BuildRequires:	zlib-devel
 BuildRequires:	zstd-devel
 %if %{with static}
-BuildRequires:	%{db_pkg}-static >= %{ver_db}-%{ver_db_rel}
+BuildRequires:	%{db_pkg}-static >= %{ver_db}
 BuildRequires:	bzip2-static
 BuildRequires:	glibc-static
 BuildRequires:	libxml2-static
@@ -99,7 +100,7 @@ Requires(triggerpostun):	sed >= 4.0
 %if %{with rpm4}
 Requires:	%{db_pkg} >= %{ver_db_devel}
 %else
-Requires:	%{db_pkg} >= %{ver_db}-%{ver_db_rel}
+Requires:	%{db_pkg} >= %{ver_db}
 Requires:	rpm-db-ver = %{ver_db}
 %endif
 Requires:	%{name}-libs = %{version}-%{release}
@@ -225,6 +226,7 @@ Moduły języka Python dla poldka.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
@@ -253,7 +255,6 @@ cd ../trurlib
 %{__automake}
 cd ..
 
-CPPFLAGS="%{rpmcppflags} -std=gnu99 -fgnu89-inline -D_GNU_SOURCE=1"
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
