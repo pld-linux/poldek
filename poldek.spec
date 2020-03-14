@@ -111,7 +111,8 @@ Requires:	sed
 Conflicts:	etckeeper < 1.18-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_libexecdir	%{_prefix}/lib/%{name}
+# it could be %{_libexecdir}/%{name}, but beware of compatibility (path hardcoded in configurations)
+%define		pkglibexecdir	%{_prefix}/lib/%{name}
 
 %description
 poldek is an RPM package management tool which allows you to easily
@@ -258,7 +259,7 @@ cd ..
 %configure \
 	%{?with_static:--enable-static --disable-shared} \
 	%{!?with_imode:--disable-imode} \
-	--with-pkglibdir=%{_libexecdir} \
+	--with-pkglibdir=%{pkglibexecdir} \
 	--enable-nls \
 	%{?with_python:--with-python}
 %{__make}
@@ -479,10 +480,10 @@ fi
 %triggerpostun -- %{name} < 0.30.1-8
 if [ $1 -le 1 ]; then
 	# revert change on  --downgrade
-	%{__sed} -i -re 's,^pm command = %{_libexecdir}/pm-command.sh,#&,' %{_sysconfdir}/%{name}/%{name}.conf
+	%{__sed} -i -re 's,^pm command = %{pkglibexecdir}/pm-command.sh,#&,' %{_sysconfdir}/%{name}/%{name}.conf
 else
 	# setup pm command
-	%{__sed} -i -re 's,#?(pm command =).*,\1 %{_libexecdir}/pm-command.sh,' %{_sysconfdir}/%{name}/%{name}.conf
+	%{__sed} -i -re 's,#?(pm command =).*,\1 %{pkglibexecdir}/pm-command.sh,' %{_sysconfdir}/%{name}/%{name}.conf
 fi
 
 %files -f %{name}.lang
@@ -500,13 +501,13 @@ fi
 %attr(755,root,root) %{_bindir}/poldek
 %attr(755,root,root) %{_bindir}/poldek-config
 %attr(755,root,root) %{_bindir}/rpmvercmp
-%dir %{_libexecdir}
-%attr(755,root,root) %{_libexecdir}/pm-command.sh
-%attr(755,root,root) %{_libexecdir}/poldekuser-setup.sh
-%attr(755,root,root) %{_libexecdir}/vfcompr
-%attr(755,root,root) %{_libexecdir}/vfjuggle
-%attr(755,root,root) %{_libexecdir}/vfsmb
-%attr(755,root,root) %{_libexecdir}/zlib-in-rpm.sh
+%dir %{pkglibexecdir}
+%attr(755,root,root) %{pkglibexecdir}/pm-command.sh
+%attr(755,root,root) %{pkglibexecdir}/poldekuser-setup.sh
+%attr(755,root,root) %{pkglibexecdir}/vfcompr
+%attr(755,root,root) %{pkglibexecdir}/vfjuggle
+%attr(755,root,root) %{pkglibexecdir}/vfsmb
+%attr(755,root,root) %{pkglibexecdir}/zlib-in-rpm.sh
 %{_mandir}/man1/%{name}*.1*
 %lang(pl) %{_mandir}/pl/man1/%{name}*
 %{_infodir}/poldek.info*
