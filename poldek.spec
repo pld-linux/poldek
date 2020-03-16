@@ -8,7 +8,7 @@
 %bcond_without	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
 %bcond_with	rpm4	# use rpm4 instead of rpm5
-%bcond_without	tests	# tests
+%bcond_with	tests	# tests
 
 # current snapshot name
 %define		SNAP	2019
@@ -25,18 +25,18 @@
 %define		ver_rpm		5.4.10
 %endif
 
-%define		rel	2
+%define		rel	1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.42.0
+Version:	0.42.1
 Release:	%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	https://github.com/poldek-pm/poldek/releases/download/v%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	f224a4f62cdedf0d8bcfe0ce6dd533b2
+# Source0-md5:	528a7678db243f4e09fa77682d00852a
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -55,7 +55,6 @@ Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		%{name}-ext-down-enable.patch
 Patch3:		%{name}-pc.patch
-Patch4:		uniqe-package-names.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}
 BuildRequires:	autoconf >= 2.63
@@ -229,7 +228,6 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
@@ -265,7 +263,6 @@ cd ..
 	--enable-nls \
 	%{?with_python:--with-python}
 %{__make}
-#	--enable-trace
 
 %if %{with python}
 %{__make} -C python
