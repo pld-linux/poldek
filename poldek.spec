@@ -73,7 +73,6 @@ BuildRequires:	pkgconfig
 BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
 BuildRequires:	readline-devel >= 5.0
-BuildRequires:	rpm >= %{ver_rpm}
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	tar >= 1:1.22
