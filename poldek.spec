@@ -55,6 +55,7 @@ Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		%{name}-ext-down-enable.patch
 Patch3:		%{name}-pc.patch
+Patch4:		%{name}-info.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}
 BuildRequires:	autoconf >= 2.63
@@ -227,7 +228,9 @@ Moduły języka Python dla poldka.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
+%{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
 
 # cleanup backups after patching
@@ -262,6 +265,8 @@ cd ..
 	--enable-nls \
 	%{?with_python:--with-python}
 %{__make}
+
+%{__make} -C doc poldek.info
 
 %if %{with python}
 %{__make} -C python
