@@ -20,7 +20,7 @@
 %define		ver_rpm		1:4.14
 %define		ver_db_devel	%(rpm -q --qf '%|E?{%{E}:}|%{V}-%{R}' --what-provides db-devel)
 %else
-%define		ver_db		%(rpm -q --provides rpm-lib | %{__sed} -ne 's/^rpm-db-ver = \\([.0-9]*\\)$/\\1/p')
+%define		ver_db		%(rpm -q --provides rpm-lib | awk 'BEGIN { v="RPM_TOO_OLD" } /^rpm-db-ver = \\([.0-9]*\\)$/ { v=$1 } END { print v }')
 %define		db_pkg		db%{ver_db}
 %define		ver_rpm		5.4.10
 %endif
