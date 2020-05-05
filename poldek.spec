@@ -64,6 +64,7 @@ BuildRequires:	automake >= 1:1.11
 BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
 BuildRequires:	docbook-dtd412-xml
+BuildRequires:	docbook2X
 BuildRequires:	gettext-tools >= 0.11.5
 BuildRequires:	libgomp-devel
 BuildRequires:	libtool
