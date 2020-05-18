@@ -72,6 +72,9 @@ BuildRequires:	libxml2-devel >= 2
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
+BuildRequires:	perl-XML-Simple
+BuildRequires:	perl-base
+BuildRequires:	perl-modules
 BuildRequires:	pkgconfig
 BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
@@ -79,6 +82,7 @@ BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	tar >= 1:1.22
+BuildRequires:	texinfo
 BuildRequires:	xmlto
 BuildRequires:	xz
 BuildRequires:	zlib-devel
