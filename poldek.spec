@@ -57,6 +57,7 @@ Patch2:		%{name}-ext-down-enable.patch
 Patch3:		%{name}-pc.patch
 Patch4:		%{name}-info.patch
 Patch5:		%{name}-multiarch-x32.patch
+Patch6:		rpm-4.15.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}
 BuildRequires:	autoconf >= 2.63
@@ -236,6 +237,7 @@ Moduły języka Python dla poldka.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
