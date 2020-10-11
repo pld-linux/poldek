@@ -27,12 +27,12 @@ but implement as "pm command" hack for now
 --- poldek-0.30.1/conf/poldek.conf~	2015-05-31 18:25:35.000000000 +0300
 +++ poldek-0.30.1/conf/poldek.conf	2015-05-31 18:26:28.410188923 +0300
 @@ -56,7 +56,7 @@
- #exclude path =
-
+ #exclude path = 
+ 
  # Full path name to a PM (rpm for now) binary.
 -#pm command = /bin/rpm
 +pm command = /usr/lib/poldek/pm-command.sh
-
+ 
  # Full path name to sudo binary.
  #sudo command = /usr/bin/sudo
 --- poldek-0.30.1/conf/Makefile.am	2015-05-31 18:28:29.319806773 +0300
