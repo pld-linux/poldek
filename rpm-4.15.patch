@@ -48,22 +48,35 @@
              n += n_snprintf(&signam[n], sizeof(signam) - n, "pgp/");
  
          n_assert(n > 0);
-@@ -163,12 +163,12 @@
+@@ -163,29 +163,27 @@
+              signam);
+         return 0;
      }
-     unsigned qva_flags = RPMVSF_DEFAULT;
+-    unsigned qva_flags = RPMVSF_DEFAULT;
++    unsigned vfyflags = RPMVSF_DEFAULT;
  
 -    if ((flags & (VRFYSIG_SIGNPGP | VRFYSIG_SIGNGPG)) == 0) {
+-        qva_flags |= RPMVSF_MASK_NOSIGNATURES;
 +    if ((flags & (PKGVERIFY_PGP | PKGVERIFY_GPG)) == 0) {
-         qva_flags |= RPMVSF_MASK_NOSIGNATURES;
++        vfyflags |= RPMVSF_MASK_NOSIGNATURES;
      }
  
      // always check digests - without them rpmVerifySignature returns error
 -    //if ((flags & VRFYSIG_DGST) == 0)
+-    //   qva_flags |= RPMVSF_MASK_NODIGESTS;
+-
+-    memset(&qva, '\0', sizeof(qva));
+-    qva.qva_flags = qva_flags;
 +    //if ((flags & PKGVERIFY_MD) == 0)
-     //   qva_flags |= RPMVSF_MASK_NODIGESTS;
++    //   vfyflags |= RPMVSF_MASK_NODIGESTS;
  
-     memset(&qva, '\0', sizeof(qva));
-@@ -183,7 +183,7 @@
+     rc = -1;
+     fdt = Fopen(path, "r.ufdio");
+ 
+     if (fdt != NULL && Ferror(fdt) == 0) {
+         ts = rpmtsCreate();
++        rpmtsSetVfyFlags(ts, vfyflags);
+         rc = rpmVerifySignatures(&qva, ts, fdt, n_basenam(path));
          rpmtsFree(ts);
  
          DBGF("rpmVerifySignatures[md=%d, sign=%d] %s %s\n",
