@@ -456,6 +456,7 @@ fi
 %postun	libs -p /sbin/ldconfig
 
 %triggerpostun -- poldek < 0.30.1-8
+# poldek < 0.30-0.20080225.00.1
 if ! grep -q '^%%includedir repos.d' %{_sysconfdir}/%{name}/poldek.conf; then
 	%{__sed} -i -e '/^%%include source.conf/{
 		a
@@ -478,7 +479,7 @@ if [ -f %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave ]; then
 	%{__mv} -v %{_sysconfdir}/%{name}/pld-multilib-source.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf
 fi
 %endif
-
+# poldek < 0.30.1-3
 if [ -f %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave ]; then
 	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-%{ftp_alt_arch}.conf{,.rpmnew}
 	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{ftp_alt_arch}.conf
@@ -487,7 +488,7 @@ if [ -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave ]; then
 	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{ftp_alt_arch}.conf{,.rpmnew}
 	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{ftp_alt_arch}.conf
 fi
-
+# poldek < 0.30.1-8
 if [ $1 -le 1 ]; then
 	# revert change on  --downgrade
 	%{__sed} -i -re 's,^pm command = %{pkglibexecdir}/pm-command.sh,#&,' %{_sysconfdir}/%{name}/%{name}.conf
