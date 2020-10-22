@@ -1,0 +1,12 @@
+--- poldek-0.42.2/pm/rpmorg/misc.c~	2020-01-25 22:59:59.000000000 +0100
++++ poldek-0.42.2/pm/rpmorg/misc.c	2020-10-22 08:56:32.637093626 +0200
+@@ -76,6 +76,9 @@
+     int       i;
+     rpmcap_fn functions[] = {
+         rpmdsRpmlib,
++#ifdef HAVE_RPMDSUNAME
++        (rpmcap_fn)rpmdsUname,
++#endif
+         NULL,
+     };
+ 
