@@ -1,0 +1,13 @@
+--- poldek-0.42.2/pm/rpmorg/rpm.c.orig	2020-01-25 22:59:59.000000000 +0100
++++ poldek-0.42.2/pm/rpmorg/rpm.c	2020-11-01 10:11:24.892206997 +0100
+@@ -286,6 +286,10 @@
+ 
+     pm_rpm = pm_rpm;
+ 
++    char *backend = rpmExpand("%{_db_backend}", NULL);
++    if (backend != NULL && strncmp(backend, "sqlite", 6) == 0) {
++        file = "rpmdb.sqlite";
++    }
+     snprintf(path, sizeof(path), "%s/%s", dbpath, file);
+ 
+     if (stat(path, &st) != 0)
