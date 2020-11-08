@@ -5,7 +5,7 @@
 # Conditional build:
 %bcond_with	static	# don't use shared libraries
 %bcond_without	imode	# don't build interactive mode
-%bcond_without	python	# don't build python bindings
+%bcond_with	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
 %bcond_with	rpm4	# use rpm4 instead of rpm5
 %bcond_with	tests	# tests
