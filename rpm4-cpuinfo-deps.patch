@@ -1,0 +1,12 @@
+--- poldek-0.42.2/pm/rpmorg/misc.c~	2020-11-01 10:27:32.000000000 +0100
++++ poldek-0.42.2/pm/rpmorg/misc.c	2020-11-15 10:30:02.296719845 +0100
+@@ -79,6 +79,9 @@
+ #ifdef HAVE_RPMDSUNAME
+         (rpmcap_fn)rpmdsUname,
+ #endif
++#ifdef HAVE_RPMDSCPUINFO
++        (rpmcap_fn)rpmdsCpuinfo,
++#endif
+         NULL,
+     };
+ 

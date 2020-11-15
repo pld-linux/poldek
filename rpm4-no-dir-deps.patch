@@ -1,0 +1,21 @@
+--- poldek-0.42.2/pm/rpmorg/Makefile.am~	2020-01-25 23:03:28.000000000 +0100
++++ poldek-0.42.2/pm/rpmorg/Makefile.am	2020-11-15 10:28:44.040052400 +0100
+@@ -8,7 +8,6 @@
+ libpm_rpm_la_SOURCES =			\
+ 	mod.c				\
+ 	rpmdb_it.c			\
+-	rpmdb_depdirs.c			\
+ 	install.c			\
+ 	signature.c			\
+ 	misc.c				\
+--- poldek-0.42.2/pm/rpmorg/mod.c~	2020-01-25 22:59:59.000000000 +0100
++++ poldek-0.42.2/pm/rpmorg/mod.c	2020-11-15 10:28:21.190049426 +0100
+@@ -26,7 +26,7 @@
+     pm_rpm_satisfies,
+     pm_rpm_dbpath, 
+     pm_rpm_dbmtime,
+-    pm_rpm_dbdepdirs,
++    NULL,                       /* pm_rpm_dbdepdirs */
+     
+ (void *(*)(void *, void *, const char *, const char *, mode_t, tn_hash *))pm_rpm_opendb,
+     (void (*)(void *))pm_rpm_closedb,

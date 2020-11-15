@@ -61,6 +61,8 @@ Patch6:		rpm-4.15.patch
 Patch7:		db-index-format.patch
 Patch8:		rpm4-uname-deps.patch
 Patch9:		sqlite-rpmdb.patch
+Patch10:	rpm4-cpuinfo-deps.patch
+Patch11:	rpm4-no-dir-deps.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}
 BuildRequires:	autoconf >= 2.63
