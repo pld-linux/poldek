@@ -246,6 +246,8 @@ Moduły języka Python dla poldka.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
+%patch11 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
