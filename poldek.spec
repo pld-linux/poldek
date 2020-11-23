@@ -63,6 +63,8 @@ Patch8:		rpm4-uname-deps.patch
 Patch9:		sqlite-rpmdb.patch
 Patch10:	rpm4-cpuinfo-deps.patch
 Patch11:	rpm4-no-dir-deps.patch
+Patch12:	rpm4-rpmvercmp.patch
+Patch13:	trurlib-shared.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}
 BuildRequires:	autoconf >= 2.63
@@ -248,6 +250,10 @@ Moduły języka Python dla poldka.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
+cd trurlib
+%patch13 -p1
+cd ..
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
