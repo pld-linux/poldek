@@ -1,0 +1,17 @@
+--- poldek-0.42.2/pm/rpmorg/rpm_pkg_ld.c~	2020-03-26 16:54:55.000000000 +0100
++++ poldek-0.42.2/pm/rpmorg/rpm_pkg_ld.c	2021-01-11 00:29:34.123702919 +0100
+@@ -71,12 +71,13 @@
+ 
+     else
+ #endif
++/*
+         if (isInstallPreReq(rpmflags))
+             rflags |= CAPREQ_PREREQ;
+ 
+     if (isErasePreReq(rpmflags))
+         rflags |= CAPREQ_PREREQ_UN;
+-
++*/
+     DBGFIF(rflags & (CAPREQ_PREREQ | CAPREQ_PREREQ_UN),
+            "(%s, %s)\n",
+            rflags & CAPREQ_PREREQ ? "pre":"",
