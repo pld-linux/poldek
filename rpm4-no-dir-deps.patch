@@ -19,3 +19,16 @@
      
  (void *(*)(void *, void *, const char *, const char *, mode_t, tn_hash *))pm_rpm_opendb,
      (void (*)(void *))pm_rpm_closedb,
+--- poldek-0.42.2/lib_init.c.orig	2020-03-16 21:23:10.000000000 +0100
++++ poldek-0.42.2/lib_init.c	2021-02-12 19:32:47.579273016 +0100
+@@ -1433,8 +1433,9 @@
+                     break;
+ 
+                 case POLDEK_OP_AUTODIRDEP:
++#if !defined(HAVE_RPMDSUNAME) || defined(HAVE_RPMORG)
+                     v = 0;
+-#ifdef HAVE_RPMDSUNAME          /* rpmdsUname - rpm 4.4.6  */
++#else          /* rpmdsUname - rpm 4.4.6  */
+                     v = 1;
+ #endif
+                     break;
