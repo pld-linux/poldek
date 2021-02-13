@@ -32,3 +32,19 @@
                      v = 1;
  #endif
                      break;
+--- poldek-0.42.2/conf_sections.c~	2020-01-25 23:10:38.000000000 +0100
++++ poldek-0.42.2/conf_sections.c	2021-02-13 18:32:16.569364907 +0100
+@@ -214,9 +214,13 @@
+              0, { 0 } },
+              
+    { "auto directory dependencies", 
++#if defined(HAVE_RPMORG)
++     CONF_TYPE_BOOLEAN3 | CONF_TYPE_F_OBSL, NULL, 0, { 0 } },
++#else
+      CONF_TYPE_BOOLEAN3,
+              "auto",
+              POLDEK_OP_AUTODIRDEP, { 0 } },
++#endif
+              
+    { "follow", 
+      CONF_TYPE_BOOLEAN,
