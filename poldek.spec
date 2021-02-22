@@ -7,14 +7,14 @@
 %bcond_without	imode	# don't build interactive mode
 %bcond_with	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
-%bcond_with	rpm4	# use rpm4 instead of rpm5
+%bcond_with	rpm5	# use rpm5 instead of rpm4
 %bcond_with	tests	# tests
 
 # current snapshot name
 %define		SNAP	2020
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%if %{with rpm4}
+%if %{without rpm5}
 %define		db_pkg		db
 %define		ver_db		5.3
 %define		ver_rpm		1:4.14
@@ -25,7 +25,7 @@
 %define		ver_rpm		5.4.10
 %endif
 
-%define		rel	4
+%define		rel	5
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -112,7 +112,7 @@ BuildRequires:	zstd-static
 %endif
 Requires(postun):	awk
 Requires(postun):	sed >= 4.0
-%if %{with rpm4}
+%if %{without rpm5}
 Requires:	%{db_pkg} >= %{ver_db_devel}
 %else
 Requires:	%{db_pkg} >= %{ver_db}
