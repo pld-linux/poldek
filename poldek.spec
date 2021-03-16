@@ -66,6 +66,7 @@ Patch11:	rpm4-no-dir-deps.patch
 Patch12:	rpm4-rpmvercmp.patch
 Patch13:	trurlib-shared.patch
 Patch14:	rpm4-script-req-workaround.patch
+Patch15:	skip-buildid-obsoletes.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}
 BuildRequires:	autoconf >= 2.63
@@ -256,6 +257,7 @@ cd trurlib
 %patch13 -p1
 cd ..
 %patch14 -p1
+%patch15 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4

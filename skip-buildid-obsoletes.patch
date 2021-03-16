@@ -1,0 +1,11 @@
+--- poldek-0.42.2/install3/obsoletes.c.orig	2020-01-25 22:59:59.000000000 +0100
++++ poldek-0.42.2/install3/obsoletes.c	2021-03-16 13:14:05.667576984 +0100
+@@ -188,6 +188,8 @@
+         "/usr/share/doc/*",
+         "/usr/share/man/*.[0-9]",
+         "/usr/src/examples/*",
++        "/usr/lib/.build-id",
++        "/usr/lib/.build-id/*",
+         "*.desktop",
+         "*.mo",
+         "*.gz",
