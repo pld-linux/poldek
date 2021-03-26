@@ -25,7 +25,7 @@
 %define		ver_rpm		5.4.10
 %endif
 
-%define		rel	6
+%define		rel	7
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -67,6 +67,7 @@ Patch12:	rpm4-rpmvercmp.patch
 Patch13:	trurlib-shared.patch
 Patch14:	rpm4-script-req-workaround.patch
 Patch15:	skip-buildid-obsoletes.patch
+Patch16:	verify-signature.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}
 BuildRequires:	autoconf >= 2.63
@@ -79,6 +80,7 @@ BuildRequires:	gettext-tools >= 0.11.5
 BuildRequires:	libgomp-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel >= 2
+BuildRequires:	lua54-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
@@ -258,6 +260,7 @@ cd trurlib
 cd ..
 %patch14 -p1
 %patch15 -p1
+%patch16 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
