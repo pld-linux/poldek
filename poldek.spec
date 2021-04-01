@@ -325,7 +325,7 @@ install -p %{SOURCE3} $RPM_BUILD_ROOT%{_bindir}/poldek-config
 
 %{?with_static:%{__rm} $RPM_BUILD_ROOT%{_bindir}/rpmvercmp}
 
-%ifarch i486 i686 ppc sparc alpha athlon aarch64
+%ifarch i486 i686 ppc sparc alpha athlon aarch64 %{arm}
 	%define		ftp_arch	%{_target_cpu}
 %endif
 %ifarch %{x8664}
