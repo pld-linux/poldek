@@ -68,6 +68,7 @@ Patch13:	trurlib-shared.patch
 Patch14:	rpm4-script-req-workaround.patch
 Patch15:	skip-buildid-obsoletes.patch
 Patch16:	verify-signature.patch
+Patch17:	%{name}-rsa_sig_rpmorg.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	%{db_pkg}-devel >= %{ver_db}
 BuildRequires:	autoconf >= 2.63
@@ -261,6 +262,7 @@ cd ..
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
