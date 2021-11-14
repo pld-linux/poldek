@@ -14,15 +14,12 @@
 %define		SNAP	2020
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%if %{without rpm5}
-%define		db_pkg		db
-%define		ver_db		5.3
-%define		ver_rpm		1:4.14
-%define		ver_db_devel	%(rpm -q --qf '%|E?{%{E}:}|%{V}-%{R}' --what-provides db-devel)
-%else
+%if %{with rpm5}
 %define		ver_db		%(rpm -q --provides rpm-lib | awk 'BEGIN { v="RPM_TOO_OLD" } /^rpm-db-ver = [.0-9]+$/ { v=$3 } END { print v }')
 %define		db_pkg		db%{ver_db}
 %define		ver_rpm		5.4.10
+%else
+%define		ver_rpm		1:4.14
 %endif
 
 %define		rel	8
@@ -71,7 +68,7 @@ Patch16:	verify-signature.patch
 Patch17:	%{name}-rsa_sig_rpmorg.patch
 Patch18:	no-bdb-for-rpm-org.patch
 URL:		http://poldek.pld-linux.org/
-BuildRequires:	%{db_pkg}-devel >= %{ver_db}
+%{?with_rpm5:BuildRequires:	%{db_pkg}-devel >= %{ver_db}}
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	bzip2-devel
@@ -102,7 +99,7 @@ BuildRequires:	xz
 BuildRequires:	zlib-devel
 BuildRequires:	zstd-devel
 %if %{with static}
-BuildRequires:	%{db_pkg}-static >= %{ver_db}
+%{?with_rpm5:BuildRequires:	%{db_pkg}-static >= %{ver_db}}
 BuildRequires:	bzip2-static
 BuildRequires:	glibc-static
 BuildRequires:	libxml2-static
@@ -117,9 +114,7 @@ BuildRequires:	zstd-static
 %endif
 Requires(postun):	awk
 Requires(postun):	sed >= 4.0
-%if %{without rpm5}
-Requires:	%{db_pkg} >= %{ver_db_devel}
-%else
+%if %{with rpm5}
 Requires:	%{db_pkg} >= %{ver_db}
 Requires:	rpm-db-ver = %{ver_db}
 %endif
