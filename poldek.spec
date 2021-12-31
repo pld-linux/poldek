@@ -11,7 +11,7 @@
 %bcond_with	tests	# tests
 
 # current snapshot name
-%define		SNAP	2020
+%define		SNAP	2021
 
 # required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
 %if %{with rpm5}
