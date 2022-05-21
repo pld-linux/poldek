@@ -207,7 +207,7 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
  static int process_req(int indent, struct i3ctx *ictx,
                         struct i3pkg *i3pkg, const struct capreq *req)
  {
-@@ -653,6 +806,46 @@
+@@ -653,6 +806,49 @@
      return rc;
  }
  
@@ -219,27 +219,30 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
 +        rcl = process_req(indent, ictx, i3pkg, breq->req);
 +    else
 +        rcl = process_boolean_req(indent, ictx, i3pkg, breq->left);
-+    if (breq->right)
-+        rcr = process_boolean_req(indent, ictx, i3pkg, breq->right);
-+    else
-+        return rcl;
++    if (breq->op != CAPREQ_BOOL_OP_OR)
++        if (breq->right)
++            rcr = process_boolean_req(indent, ictx, i3pkg, breq->right);
++        else
++            return rcl;
 +    switch (breq->op) {
 +        case CAPREQ_BOOL_OP_AND:
 +            return (rcl > 0 && rcr > 0) ? 1 : -1;
 +        case CAPREQ_BOOL_OP_OR:
-+            return (rcl > 0 || rcr > 0) ? 1 : -1;
++            if (rcl <= 0 && breq->right)
++                return process_boolean_req(indent, ictx, i3pkg, breq->right);
++            return rcl;
 +        case CAPREQ_BOOL_OP_IF:
 +            if (rcr > 0)
 +                return rcl;
 +            if (breq->leftn)
 +                return process_boolean_req(indent, ictx, i3pkg, breq->leftn);
-+            return -1;
++            return 1;
 +        case CAPREQ_BOOL_OP_UNLESS:
 +            if (rcr <= 0)
 +                return rcl;
 +            if (breq->leftn)
 +                return process_boolean_req(indent, ictx, i3pkg, breq->leftn);
-+            return -1;
++            return 1;
 +        case CAPREQ_BOOL_OP_WITH:
 +	    // TODO: check that both deps are stisfied by the same package
 +            return (rcl > 0 && rcr > 0) ? 1 : -1;
