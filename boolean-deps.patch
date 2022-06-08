@@ -1,6 +1,6 @@
-diff -ur poldek-0.42.2-orig/capreq.h poldek-0.42.2/capreq.h
---- poldek-0.42.2-orig/capreq.h	2020-01-25 22:59:59.000000000 +0100
-+++ poldek-0.42.2/capreq.h	2022-05-20 16:50:58.746605571 +0200
+diff -ur poldek-0.42.2/capreq.h poldek-0.42.2-boolean-deps/capreq.h
+--- poldek-0.42.2/capreq.h	2020-01-25 22:59:59.000000000 +0100
++++ poldek-0.42.2-boolean-deps/capreq.h	2022-06-08 20:48:12.797280673 +0200
 @@ -58,6 +58,22 @@
      char    _buff[0];            /* for evr, first byte is always '\0' */
  };
@@ -24,9 +24,9 @@ diff -ur poldek-0.42.2-orig/capreq.h poldek-0.42.2/capreq.h
  /* CAUTION: side effects! */
  #define capreq_name(cr)     (cr)->name
  #define capreq_name_len(cr)     (cr)->namelen
-diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requirements.c
---- poldek-0.42.2-orig/install3/requirements.c	2020-04-06 14:24:18.000000000 +0200
-+++ poldek-0.42.2/install3/requirements.c	2022-05-20 17:05:57.456189112 +0200
+diff -ur poldek-0.42.2/install3/requirements.c poldek-0.42.2-boolean-deps/install3/requirements.c
+--- poldek-0.42.2/install3/requirements.c	2020-04-06 14:24:18.000000000 +0200
++++ poldek-0.42.2-boolean-deps/install3/requirements.c	2022-06-08 20:48:12.797280673 +0200
 @@ -16,13 +16,163 @@
  
  #include "ictx.h"
@@ -142,7 +142,8 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
 +        if (len)
 +            *len = q - cap;
 +        return breq;
-+    }
+     }
+-    return 0;
 +
 +    for (o = BooleanOps; o->n; o++)
 +        if (!strncmp(q, o->n, o->l))
@@ -182,8 +183,7 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
 +		breq->leftn->req = parse_single_dep(q, &parsed_len);
 +	    }
 +	}
-     }
--    return 0;
++    }
 +    while (*q == ' ')
 +        q++;
 +    if (*q != ')' && op != CAPREQ_BOOL_OP_AND && op != CAPREQ_BOOL_OP_OR) {
@@ -197,7 +197,7 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
  }
  
  static
-@@ -553,6 +703,9 @@
+@@ -553,8 +703,11 @@
  
  }
  
@@ -205,9 +205,22 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
 +// i3pkg - package to be installed
 +// req - dependency we are looking for
  static int process_req(int indent, struct i3ctx *ictx,
-                        struct i3pkg *i3pkg, const struct capreq *req)
+-                       struct i3pkg *i3pkg, const struct capreq *req)
++                       struct i3pkg *i3pkg, const struct capreq *req, int boolean)
  {
-@@ -653,6 +806,49 @@
+     struct poldek_ts *ts = ictx->ts; /* just for short */
+     struct pkg       *pkg, *tomark = NULL;
+@@ -644,7 +797,8 @@
+     else
+         errfmt = _("%s: req %s not found");
+ 
+-    i3_error(ictx, pkg, I3ERR_NOTFOUND, errfmt, pkg_id(pkg), strreq);
++    if (boolean == 0)
++        i3_error(ictx, pkg, I3ERR_NOTFOUND, errfmt, pkg_id(pkg), strreq);
+     rc = 0;
+ 
+  l_end:
+@@ -653,6 +807,49 @@
      return rc;
  }
  
@@ -216,7 +229,7 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
 +{
 +    int rcl, rcr, rce;
 +    if (breq->req)
-+        rcl = process_req(indent, ictx, i3pkg, breq->req);
++        rcl = process_req(indent, ictx, i3pkg, breq->req, 1);
 +    else
 +        rcl = process_boolean_req(indent, ictx, i3pkg, breq->left);
 +    if (breq->op != CAPREQ_BOOL_OP_OR)
@@ -257,7 +270,7 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
  
  static tn_array *with_suggests(int indent, struct i3ctx *ictx, struct pkg *pkg)
  {
-@@ -660,6 +853,7 @@
+@@ -660,6 +857,7 @@
      struct pkg *oldpkg = NULL;
      char *autochoice = NULL;    /* testing only */
      int i;
@@ -265,7 +278,7 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
  
      if (pkg->sugs == NULL)
          return NULL;
-@@ -693,8 +887,14 @@
+@@ -693,8 +891,14 @@
  
          //trace(indent, "%d) suggested %s", i, reqstr);
  
@@ -281,7 +294,7 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
  
          if (iset_provides(ictx->inset, req)) {
              trace(indent, "- %s: already marked", reqstr);
-@@ -791,6 +991,7 @@
+@@ -791,6 +995,7 @@
      const struct capreq *req = NULL;
      unsigned            itflags = PKG_ITER_REQIN;
      int                 nerrors = 0, backtrack = 0;
@@ -289,7 +302,7 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
  
      pkg = i3pkg->pkg;
      n_assert(pkg);
-@@ -806,10 +1007,16 @@
+@@ -806,10 +1011,18 @@
      while ((req = pkg_req_iter_get(it))) {
          int rc;
  
@@ -300,8 +313,10 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
 +                   capreq_stra(req), pkg->name ? pkg->name : "(null)");
 +            breq = parse_boolean_dep(capreq_name(req), 0, NULL);
 +            rc = process_boolean_req(indent + 2, ictx, i3pkg, breq);
++            if (rc <= 0)
++                i3_error(ictx, i3pkg->pkg, I3ERR_NOTFOUND, _("%s: req %s not found"), pkg_id(i3pkg->pkg), capreq_stra(req));
 +        } else {
-+            rc = process_req(indent, ictx, i3pkg, req);
++            rc = process_req(indent, ictx, i3pkg, req, 0);
 +        }
  
 -        if ((rc = process_req(indent, ictx, i3pkg, req)) <= 0) {
@@ -309,3 +324,12 @@ diff -ur poldek-0.42.2-orig/install3/requirements.c poldek-0.42.2/install3/requi
              nerrors++;
              if (rc < 0) {
                  backtrack = 1;
+@@ -836,7 +1049,7 @@
+ 
+ 		req = n_array_nth(suggests, i);
+ 
+-		if ((rc = process_req(indent, ictx, i3pkg, req)) <= 0) {
++		if ((rc = process_req(indent, ictx, i3pkg, req, 0)) <= 0) {
+         	    nerrors++;
+         	    if (rc < 0) {
+             		backtrack = 1;
