@@ -1,0 +1,53 @@
+From b7c0f1246788d1716c519387d75d7920ef59865a Mon Sep 17 00:00:00 2001
+From: Jan Palus <jpalus@fastmail.com>
+Date: Tue, 30 Aug 2022 16:32:24 +0200
+Subject: [PATCH] cli/ls: sort entries just before listing (after filtering)
+
+fixes global entries order being broken after doing `ls -ut`.
+"upgradable" listing overrides `ls_ents` and hence sort order
+restoration operates on wrong array. observed broken beavior:
+
+- invoking:
+  (1) ls -u
+  (2) ls -ut
+  (3) ls -u
+
+  should result in (1) and (3) being the same while in fact (2) and (3)
+  are the same
+
+- after invoking `ls -ut` package name completion is broken since it
+  uses binary search and therefore relies on correct order
+
+also doing `ls -u` might get marginally faster since it no longer needs
+to sort all available packages, but only those which are upgradable.
+---
+ cli/ls.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/cli/ls.c b/cli/ls.c
+index 1808f43..5a94374 100644
+--- a/cli/ls.c
++++ b/cli/ls.c
+@@ -368,9 +368,6 @@ static int ls(struct cmdctx *cmdctx)
+         goto l_end;
+     }
+ 
+-    if ((cmpf = select_cmpf(cmdctx->_flags)))
+-         n_array_sort_ex(ls_ents, cmpf);
+-
+     if (cmdctx->_flags & OPT_LS_UPGRADEABLE) {
+         tn_array *tmp;
+ 
+@@ -386,6 +383,9 @@ static int ls(struct cmdctx *cmdctx)
+     }
+ 
+     if (n_array_size(ls_ents)) {
++        if ((cmpf = select_cmpf(cmdctx->_flags)))
++            n_array_sort_ex(ls_ents, cmpf);
++
+         rc = do_ls(ls_ents, cmdctx, evrs);
+ 
+         if (cmpf)
+-- 
+2.37.2
+
