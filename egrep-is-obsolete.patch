@@ -1,0 +1,107 @@
+--- poldek-0.42.2/scripts/vfcompr~	2020-01-25 22:59:59.000000000 +0100
++++ poldek-0.42.2/scripts/vfcompr	2022-09-11 12:57:50.696482611 +0200
+@@ -11,7 +11,7 @@
+     typeset dest=$2
+ 
+     cmd="bzip2 --stdout ${src}"
+-    if echo ${dest} | egrep ".gz" >/dev/null; then
++    if echo ${dest} | grep -E ".gz" >/dev/null; then
+         cmd="gzip -9nf --stdout ${src}"
+     fi
+     echo "$cmd > $dest"
+@@ -34,7 +34,7 @@
+     fi
+ 
+     cmd="bunzip2 --keep --stdout ${src}"
+-    if echo ${src} | egrep ".gz" >/dev/null; then
++    if echo ${src} | grep -E ".gz" >/dev/null; then
+         cmd="gunzip --stdout ${src}"
+     fi
+     rm -f "$dest"
+--- poldek-0.42.2/Makefile.extra~	2020-01-25 22:59:59.000000000 +0100
++++ poldek-0.42.2/Makefile.extra	2022-09-11 12:59:01.885518021 +0200
+@@ -72,7 +72,7 @@
+ 
+ POTFILES_in:
+ 	-rm -f poldek-git*
+-	-find . -type f -name \*.c | egrep -v '(poldek-.*/|Cellar/|intl/|trurlib/|tndb/|python/|tests/|conf_sections.c)'  | sed 's|^\./||' | LC_ALL=C sort > po/POTFILES.in
++	-find . -type f -name \*.c | grep -E -v '(poldek-.*/|Cellar/|intl/|trurlib/|tndb/|python/|tests/|conf_sections.c)'  | sed 's|^\./||' | LC_ALL=C sort > po/POTFILES.in
+ 
+ misarch: mclean
+ 	$(MAKE) -C . backup cparch=1 backupdir=/z
+--- poldek-0.42.2/tests/sh/03-up-loop~	2020-04-09 12:53:57.000000000 +0200
++++ poldek-0.42.2/tests/sh/03-up-loop	2022-09-11 13:00:01.988044987 +0200
+@@ -15,10 +15,10 @@
+ 
+ load() {
+   $POLDEK_UP -q --skip-installed -Osource="test,type=pndir $REPOURL" -n test \
+-           --cmd 'desc -al *' | egrep -v '^Path:' > $TMPDIR/local-dump
++           --cmd 'desc -al *' | grep -E -v '^Path:' > $TMPDIR/local-dump
+ 
+   $POLDEK_NOCONF -q --skip-installed --st pndir -s $REPO \
+-           --cmd 'desc -al *' | egrep -v '^Path:' > $TMPDIR/remote-dump
++           --cmd 'desc -al *' | grep -E -v '^Path:' > $TMPDIR/remote-dump
+ 
+   #less         $TMPDIR/remote-dump
+   #ls -l $TMPDIR/remote-dump $TMPDIR/local-dump
+--- poldek-0.42.2/tests/sh/lib/setup~	2020-03-27 08:50:43.000000000 +0100
++++ poldek-0.42.2/tests/sh/lib/setup	2022-09-11 13:00:26.557717267 +0200
+@@ -56,7 +56,7 @@
+ while test $# -gt 0 ; do
+     case "${1}" in
+         -l)
+-           egrep -B 1 ^test $0 | sed 's|()||g;s|{||g'; exit; shift ;;
++           grep -E -B 1 ^test $0 | sed 's|()||g;s|{||g'; exit; shift ;;
+ 
+         --source-repo)
+             shift; SOURCE_REPO="${1}"; shift ;;
+--- poldek-0.42.2/tests/sh/lib/solver-setup~	2020-03-31 11:46:23.000000000 +0200
++++ poldek-0.42.2/tests/sh/lib/solver-setup	2022-09-11 13:00:42.930832785 +0200
+@@ -8,7 +8,7 @@
+     [ $# -gt 0 ] && version="$1";
+     #echo "v $version"
+     if [ -n "$version" ]; then
+-        if echo "$version" | egrep -qv -- '^-'; then
++        if echo "$version" | grep -E -qv -- '^-'; then
+             shift
+         else
+             version="1-1"
+@@ -85,17 +85,17 @@
+     fi
+ 
+     # run again to check installation results
+-    typeset out=$($POLDEK_INSTALL $cmd --parsable-tr-summary | egrep "^%[IDR]")
++    typeset out=$($POLDEK_INSTALL $cmd --parsable-tr-summary | grep -E "^%[IDR]")
+     if [ -n "$expected" ]; then
+-        typeset n_all=$(echo $out | sed 's|%|\n%|g' | egrep '^%[ID]' | wc -l)
+-        typeset n=$(echo $out | sed 's|%|\n%|g' | egrep "^%[ID] ($regexp)" | wc -l)
++        typeset n_all=$(echo $out | sed 's|%|\n%|g' | grep -E '^%[ID]' | wc -l)
++        typeset n=$(echo $out | sed 's|%|\n%|g' | grep -E "^%[ID] ($regexp)" | wc -l)
+         assertEquals "unexpected ($n_all) number of packages (expected $n)" "$n_all" "$n"
+         assertEquals "not all or non expected packages installed (expected $expected)" "$n" "$n_expected"
+     fi
+ 
+     if [ -n "$rm_expected" ]; then
+-        typeset n_all=$(echo $out | sed 's|%|\n%|g' | egrep '^%R' | wc -l)
+-        typeset n=$(echo  $out | sed 's|%|\n%|g' | egrep "^%R ($rm_regexp)" | wc -l)
++        typeset n_all=$(echo $out | sed 's|%|\n%|g' | grep -E '^%R' | wc -l)
++        typeset n=$(echo  $out | sed 's|%|\n%|g' | grep -E "^%R ($rm_regexp)" | wc -l)
+         assertEquals "unexpected ($n_all) number of packages removed (expected $n)" "$n_all" "$n"
+         assertEquals "not all or non expected packages removed (expected $rm_expected)" "$n" "$rm_n_expected"
+     fi
+@@ -127,12 +127,12 @@
+         $POLDEK_UNINSTALL $cmd --test
+     fi
+ 
+-    typeset out=$($POLDEK_UNINSTALL $cmd --parsable-tr-summary | egrep "^%[DR]")
++    typeset out=$($POLDEK_UNINSTALL $cmd --parsable-tr-summary | grep -E "^%[DR]")
+     [ $? -eq 0 ] || fail "$POLDEK_INSTALL $cmd failed"
+ 
+     if [ -n "$expected" ]; then
+-        typeset n_all=$(echo $out | sed 's|%|\n%|g' | egrep '^%[RD]' | wc -l)
+-        typeset n=$(echo $out | sed 's|%|\n%|g' | egrep "^%[RD] ($regexp)" | wc -l)
++        typeset n_all=$(echo $out | sed 's|%|\n%|g' | grep -E '^%[RD]' | wc -l)
++        typeset n=$(echo $out | sed 's|%|\n%|g' | grep -E "^%[RD] ($regexp)" | wc -l)
+         assertEquals "unexpected ($n_all) number of packages (expected $n)" "$n_all" "$n"
+         assertEquals "not all or non expected packages uninstalled (expected $expected)" "$n" "$n_expected"
+     fi
