@@ -22,7 +22,7 @@
 %define		ver_rpm		1:4.14
 %endif
 
-%define		rel	15
+%define		rel	16
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -71,6 +71,7 @@ Patch19:	more-trace.patch
 Patch20:	boolean-deps.patch
 Patch21:	sorted-ls-upgradable.patch
 Patch22:	egrep-is-obsolete.patch
+Patch23:	minus.patch
 URL:		http://poldek.pld-linux.org/
 %{?with_rpm5:BuildRequires:	%{db_pkg}-devel >= %{ver_db}}
 BuildRequires:	autoconf >= 2.63
@@ -268,6 +269,7 @@ cd ..
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
+%patch23 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
