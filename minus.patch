@@ -1,0 +1,12 @@
+diff -up poldek-0.42.2/ts_summary.c.rel poldek-0.42.2/ts_summary.c
+--- poldek-0.42.2/ts_summary.c.rel
++++ poldek-0.42.2/ts_summary.c
+@@ -202,7 +202,7 @@
+         poldek_term_snprintf_c(old_color, old, sizeof(old), "%s", old_pkg->rel);
+         poldek_term_snprintf_c(new_color, new, sizeof(new), "%s", pkg->rel);
+ 
+-        n = n_snprintf(line, size, "%s-%s.(%s => %s).%s",
++        n = n_snprintf(line, size, "%s-%s-(%s => %s).%s",
+                    pkg->name, pkg->ver, old, new, arch);
+ 
+     } else if (!eq_ver && !eq_rel) {
