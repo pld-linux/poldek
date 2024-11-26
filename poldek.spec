@@ -73,6 +73,7 @@ Patch21:	sorted-ls-upgradable.patch
 Patch22:	egrep-is-obsolete.patch
 Patch23:	minus.patch
 Patch24:	%{name}-https-redirect.patch
+Patch25:	gcc14.patch
 URL:		http://poldek.pld-linux.org/
 %{?with_rpm5:BuildRequires:	%{db_pkg}-devel >= %{ver_db}}
 BuildRequires:	autoconf >= 2.63
@@ -272,6 +273,7 @@ cd ..
 %patch22 -p1
 %patch23 -p1
 %patch24 -p1
+%patch25 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
