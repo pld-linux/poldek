@@ -22,7 +22,7 @@
 %define		ver_rpm		1:4.14
 %endif
 
-%define		rel	22
+%define		rel	23
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -247,35 +247,35 @@ Moduły języka Python dla poldka.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
+%patch -P 4 -p1
+%patch -P 5 -p1
+%patch -P 6 -p1
+%patch -P 7 -p1
+%patch -P 8 -p1
+%patch -P 9 -p1
+%patch -P 10 -p1
+%patch -P 11 -p1
+%patch -P 12 -p1
 cd trurlib
-%patch13 -p1
+%patch -P 13 -p1
 cd ..
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
-%patch26 -p1
+%patch -P 14 -p1
+%patch -P 15 -p1
+%patch -P 16 -p1
+%patch -P 17 -p1
+%patch -P 18 -p1
+%patch -P 19 -p1
+%patch -P 20 -p1
+%patch -P 21 -p1
+%patch -P 22 -p1
+%patch -P 23 -p1
+%patch -P 24 -p1
+%patch -P 25 -p1
+%patch -P 26 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
