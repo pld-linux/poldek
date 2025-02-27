@@ -22,18 +22,18 @@
 %define		ver_rpm		1:4.14
 %endif
 
-%define		rel	24
+%define		rel	1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.42.2
+Version:	0.44.0
 Release:	%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	https://github.com/poldek-pm/poldek/releases/download/v%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	2759fe45bc50efb6084d5338d725411a
+# Source0-md5:	cd0eab5e6fe2ac6995c03541506561fc
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -51,30 +51,6 @@ Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		%{name}-ext-down-enable.patch
-Patch3:		%{name}-pc.patch
-Patch4:		%{name}-info.patch
-Patch5:		%{name}-multiarch-x32.patch
-Patch6:		rpm-4.15.patch
-Patch7:		db-index-format.patch
-Patch8:		rpm4-uname-deps.patch
-Patch9:		sqlite-rpmdb.patch
-Patch10:	rpm4-cpuinfo-deps.patch
-Patch11:	rpm4-no-dir-deps.patch
-Patch12:	rpm4-rpmvercmp.patch
-Patch13:	trurlib-shared.patch
-Patch14:	rpm4-script-req-workaround.patch
-Patch15:	skip-buildid-obsoletes.patch
-Patch16:	verify-signature.patch
-Patch17:	%{name}-rsa_sig_rpmorg.patch
-Patch18:	no-bdb-for-rpm-org.patch
-Patch19:	more-trace.patch
-Patch20:	boolean-deps.patch
-Patch21:	sorted-ls-upgradable.patch
-Patch22:	egrep-is-obsolete.patch
-Patch23:	minus.patch
-Patch24:	%{name}-https-redirect.patch
-Patch25:	gcc14.patch
-Patch26:	rpm-4.18.patch
 URL:		http://poldek.pld-linux.org/
 %{?with_rpm5:BuildRequires:	%{db_pkg}-devel >= %{ver_db}}
 BuildRequires:	autoconf >= 2.63
@@ -104,7 +80,7 @@ BuildRequires:	tar >= 1:1.22
 BuildRequires:	texinfo
 BuildRequires:	xmlto
 BuildRequires:	xz
-BuildRequires:	zlib-devel
+BuildRequires:	zlib-ng-devel
 BuildRequires:	zstd-devel
 %if %{with static}
 %{?with_rpm5:BuildRequires:	%{db_pkg}-static >= %{ver_db}}
@@ -117,7 +93,7 @@ BuildRequires:	pcre-static
 BuildRequires:	popt-static
 BuildRequires:	readline-static
 BuildRequires:	rpm-static
-BuildRequires:	zlib-static
+BuildRequires:	zlib-ng-static
 BuildRequires:	zstd-static
 %endif
 Requires(postun):	awk
@@ -250,32 +226,6 @@ Moduły języka Python dla poldka.
 %patch -P 0 -p1
 %patch -P 1 -p1
 %patch -P 2 -p1
-%patch -P 3 -p1
-%patch -P 4 -p1
-%patch -P 5 -p1
-%patch -P 6 -p1
-%patch -P 7 -p1
-%patch -P 8 -p1
-%patch -P 9 -p1
-%patch -P 10 -p1
-%patch -P 11 -p1
-%patch -P 12 -p1
-cd trurlib
-%patch -P 13 -p1
-cd ..
-%patch -P 14 -p1
-%patch -P 15 -p1
-%patch -P 16 -p1
-%patch -P 17 -p1
-%patch -P 18 -p1
-%patch -P 19 -p1
-%patch -P 20 -p1
-%patch -P 21 -p1
-%patch -P 22 -p1
-%patch -P 23 -p1
-%patch -P 24 -p1
-%patch -P 25 -p1
-%patch -P 26 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
@@ -537,7 +487,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc ChangeLog README* NEWS configs
+%doc README* NEWS.md doc/NEWS.old configs
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/pre-install.d
 %{_sysconfdir}/%{name}/pre-install.d/README
@@ -574,10 +524,10 @@ fi
 %attr(755,root,root) %{_libdir}/libtndb.so.*.*.*
 %attr(755,root,root) %{_libdir}/libtrurl.so.*.*.*
 %attr(755,root,root) %{_libdir}/libvfile.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libpoclidek.so.1
-%attr(755,root,root) %ghost %{_libdir}/libpoldek.so.3
+%attr(755,root,root) %ghost %{_libdir}/libpoclidek.so.2
+%attr(755,root,root) %ghost %{_libdir}/libpoldek.so.4
 %attr(755,root,root) %ghost %{_libdir}/libtndb.so.0
-%attr(755,root,root) %ghost %{_libdir}/libtrurl.so.0
+%attr(755,root,root) %ghost %{_libdir}/libtrurl.so.1
 %attr(755,root,root) %ghost %{_libdir}/libvfile.so.0
 %endif
 
