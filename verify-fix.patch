@@ -72,3 +72,51 @@ index 84ea6f4..9845bce 100644
      while ((m = n_hash_it_get(&it, NULL)) != NULL) {
          if (set)
              m->flags |= flag;
+diff --git a/cli/dent.c b/cli/dent.c
+index b24a723..f4cd4bb 100644
+--- a/cli/dent.c
++++ b/cli/dent.c
+@@ -36,13 +36,14 @@ struct pkg_dent *pkg_dent_new(struct poclidek_ctx *cctx, const char *name,
+                               struct pkg *pkg, int flags, const char *dirpath)
+ {
+     struct pkg_dent *ent;
+-    int dirpath_at = 0, dirpath_len = 0, len = 0;
++    int name_len = 0, dirpath_at = 0, dirpath_len = 0, len = 0;
+ 
+     if (name) {
+         while (*name == '/')
+             name++;
+ 
+-        len += strlen(name) + 1;
++        name_len = strlen(name);
++        len += name_len + 1;
+         n_assert(flags & PKG_DENT_DIR);
+         n_assert(dirpath);
+ 
+@@ -60,7 +61,7 @@ struct pkg_dent *pkg_dent_new(struct poclidek_ctx *cctx, const char *name,
+     if (name) {
+         char *p;
+ 
+-        memcpy(ent->_buf, name, len);
++        memcpy(ent->_buf, name, name_len + 1);
+         ent->name = ent->_buf;
+ 
+         if (dirpath) {
+diff --git a/cli/ls.c b/cli/ls.c
+index 0027ee0..e2bc01d 100644
+--- a/cli/ls.c
++++ b/cli/ls.c
+@@ -585,9 +585,10 @@ int do_ls(const tn_array *ents, struct cmdctx *cmdctx, const tn_array *evrs)
+             cmdctx_printf(cmdctx, "%-*s %-*s\n",
+ 			  term_width_div2 + term_width_div2/10 - 1, pkg_name,
+ 			  (term_width/7), group ? group : "(unset)");
+-	}
+-        else if (flags & OPT_LS_SOURCERPM) {
+-            const char *srcrpm = pkg_srcfilename_s(pkg);
++	} else if (flags & OPT_LS_SOURCERPM) {
++            char buf[512];
++            const char *srcrpm = pkg_srcfilename(pkg, buf, sizeof(buf));
++
+             cmdctx_printf(cmdctx, "%-*s %-*s\n",
+ 			  term_width_div2 + term_width_div2/10 - 1, pkg_name,
+ 			  (term_width/7), srcrpm ? srcrpm : "(unset)");
