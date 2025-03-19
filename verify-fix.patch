@@ -1,0 +1,74 @@
+diff --git a/trurlib/include/trurl/nhash.h b/trurlib/include/trurl/nhash.h
+index e03fa9c..3ffe267 100644
+--- a/trurlib/include/trurl/nhash.h
++++ b/trurlib/include/trurl/nhash.h
+@@ -104,6 +104,7 @@ uint32_t n_hash_compute_index_hash(const tn_hash *ht, uint32_t raw_hash);
+ struct trurl_hash_iterator {
+     tn_hash *ht;
+     int pos;
++    int bpos;
+ };
+ 
+ typedef struct trurl_hash_iterator tn_hash_it;
+diff --git a/trurlib/n_hash_get.c b/trurlib/n_hash_get.c
+index 81c612b..48f0897 100644
+--- a/trurlib/n_hash_get.c
++++ b/trurlib/n_hash_get.c
+@@ -8,21 +8,39 @@ void n_hash_it_init(tn_hash_it *hi, tn_hash *ht)
+ {
+     hi->ht = ht;
+     hi->pos = 0;
++    hi->bpos = 0;
+ }
+ 
+ void *n_hash_it_get(tn_hash_it *hi, const char **key) {
+     struct hash_bucket **tbl = hi->ht->table;
+     size_t i = hi->pos;
+ 
+-    while (tbl[i] == NULL && i < hi->ht->size)
++    while (i < hi->ht->size && tbl[i] == NULL)
+         i++;
+ 
+     if (i >= hi->ht->size)
+         return NULL;
+ 
+-    struct hash_bucket *ptr = tbl[i];
++    struct hash_bucket *ptr;
++    int j = 0;
++
++    ptr = tbl[i];
++    while (ptr != NULL) {
++        if (j == hi->bpos)
++            break;
++        ptr = ptr->next;
++        j++;
++    }
++
++    n_assert(ptr);
++
++    if (ptr->next == NULL) {
++        hi->pos = i + 1;
++        hi->bpos = 0;
++    } else {
++        hi->bpos++;
++    }
+ 
+-    hi->pos = i + 1;
+     if (key)
+         *key = ptr->key;
+ 
+diff --git a/pkgmark.c b/pkgmark.c
+index 84ea6f4..9845bce 100644
+--- a/pkgmark.c
++++ b/pkgmark.c
+@@ -351,8 +351,9 @@ void pkgmark_massset(struct pkgmark_set *pms, int set, uint32_t flag)
+         return;
+ 
+     tn_hash_it it;
+-    struct pkg_mark *m;
++    n_hash_it_init(&it, pms->ht);
+ 
++    struct pkg_mark *m;
+     while ((m = n_hash_it_get(&it, NULL)) != NULL) {
+         if (set)
+             m->flags |= flag;
