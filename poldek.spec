@@ -22,7 +22,7 @@
 %define		ver_rpm		1:4.14
 %endif
 
-%define		rel	7
+%define		rel	8
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -495,7 +495,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc README* NEWS.md doc/NEWS.old configs
+%doc README* NEWS.md doc/NEWS.old doc/manual.{css,html} configs
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/pre-install.d
 %{_sysconfdir}/%{name}/pre-install.d/README
