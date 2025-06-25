@@ -1,0 +1,25 @@
+From cfb03a18a51ed409a143ef56624fc67b12b58073 Mon Sep 17 00:00:00 2001
+From: Jan Palus <jpalus@fastmail.com>
+Date: Wed, 25 Jun 2025 22:11:12 +0200
+Subject: [PATCH] pkgiter: don't skip reqs which are both pre and preun
+
+---
+ pkgiter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pkgiter.c b/pkgiter.c
+index bc085a4..4e0b810 100644
+--- a/pkgiter.c
++++ b/pkgiter.c
+@@ -147,7 +147,7 @@ const struct capreq *pkg_req_iter_get(struct pkg_req_iter *it)
+         if ((it->flags & PKG_ITER_REQUN) && !capreq_is_prereq_un(req))
+             return pkg_req_iter_get(it);
+ 
+-        else if ((it->flags & PKG_ITER_REQUN) == 0 && capreq_is_prereq_un(req))
++        else if ((it->flags & PKG_ITER_REQUN) == 0 && !capreq_is_prereq(req) && capreq_is_prereq_un(req))
+             return pkg_req_iter_get(it);
+ 
+         /* set type of returned (current) req */
+-- 
+2.50.0
+

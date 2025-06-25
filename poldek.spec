@@ -22,7 +22,7 @@
 %define		ver_rpm		1:4.14
 %endif
 
-%define		rel	8
+%define		rel	9
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -56,6 +56,7 @@ Patch4:		restore-verify-all.patch
 Patch5:		proxy-fix.patch
 Patch6:		verify-fix.patch
 Patch7:		linguas.patch
+Patch8:		pkgiter-preun-req-skip.patch
 URL:		http://poldek.pld-linux.org/
 %{?with_rpm5:BuildRequires:	%{db_pkg}-devel >= %{ver_db}}
 BuildRequires:	autoconf >= 2.63
@@ -236,6 +237,7 @@ Moduły języka Python dla poldka.
 %patch -P 5 -p1
 %patch -P 6 -p1
 %patch -P 7 -p1
+%patch -P 8 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
