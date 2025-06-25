@@ -55,6 +55,7 @@ Patch3:		fix-reinstall-sigsev.patch
 Patch4:		restore-verify-all.patch
 Patch5:		proxy-fix.patch
 Patch6:		verify-fix.patch
+Patch7:		linguas.patch
 URL:		http://poldek.pld-linux.org/
 %{?with_rpm5:BuildRequires:	%{db_pkg}-devel >= %{ver_db}}
 BuildRequires:	autoconf >= 2.63
@@ -234,6 +235,7 @@ Moduły języka Python dla poldka.
 %patch -P 4 -p1
 %patch -P 5 -p1
 %patch -P 6 -p1
+%patch -P 7 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
