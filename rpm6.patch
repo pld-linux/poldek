@@ -1,0 +1,19 @@
+--- poldek-0.44.0/configure.ac~	2025-10-01 02:10:00.000000000 +0200
++++ poldek-0.44.0/configure.ac	2025-10-01 02:11:00.383330658 +0200
+@@ -273,6 +273,7 @@
+ 
+ AC_MSG_CHECKING([for rpmorg (>= 4.14)])
+ PKG_CHECK_EXISTS([rpm >= 4.14 rpm < 5.0], [is_rpmorg=yes], [is_rpmorg=no])
++PKG_CHECK_EXISTS([rpm >= 6.0], [is_rpmorg=yes], [is_rpmorg=no])
+ if test "${is_rpmorg}." = "yes."; then
+     AC_MSG_RESULT(yes)
+     AM_CONDITIONAL(WITH_RPMORG, true)
+@@ -287,7 +287,7 @@
+ fi
+ 
+ AC_MSG_CHECKING([for rpm5])
+-PKG_CHECK_EXISTS([rpm >= 5.0], [is_rpm5=yes], [is_rpm5=no])
++PKG_CHECK_EXISTS([rpm >= 5.0 rpm < 6.0], [is_rpm5=yes], [is_rpm5=no])
+ 
+ if test "${is_rpm5}." = "yes."; then
+     AC_DEFINE([HAVE_RPM_5], [1], [])
