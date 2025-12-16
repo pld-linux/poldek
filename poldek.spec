@@ -22,18 +22,18 @@
 %define		ver_rpm		1:4.14
 %endif
 
-%define		rel	12
+%define		rel	1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.44.0
+Version:	0.45.0
 Release:	%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 #Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
 Source0:	https://github.com/poldek-pm/poldek/releases/download/v%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	cd0eab5e6fe2ac6995c03541506561fc
+# Source0-md5:	445033ef4d1312718d27b4b7fc197643
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -51,13 +51,6 @@ Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		%{name}-ext-down-enable.patch
-Patch3:		fix-reinstall-sigsev.patch
-Patch4:		restore-verify-all.patch
-Patch5:		proxy-fix.patch
-Patch6:		verify-fix.patch
-Patch7:		linguas.patch
-Patch8:		pkgiter-preun-req-skip.patch
-Patch9:		rpm6.patch
 URL:		http://poldek.pld-linux.org/
 %{?with_rpm5:BuildRequires:	%{db_pkg}-devel >= %{ver_db}}
 BuildRequires:	autoconf >= 2.63
@@ -233,13 +226,6 @@ Moduły języka Python dla poldka.
 %patch -P 0 -p1
 %patch -P 1 -p1
 %patch -P 2 -p1
-%patch -P 3 -p1
-%patch -P 4 -p1
-%patch -P 5 -p1
-%patch -P 6 -p1
-%patch -P 7 -p1
-%patch -P 8 -p1
-%patch -P 9 -p1
 
 %{__rm} doc/poldek.info
 %{__rm} m4/libtool.m4 m4/lt*.m4
@@ -541,7 +527,7 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libpoclidek.so.2
 %attr(755,root,root) %ghost %{_libdir}/libpoldek.so.4
 %attr(755,root,root) %ghost %{_libdir}/libtndb.so.0
-%attr(755,root,root) %ghost %{_libdir}/libtrurl.so.1
+%attr(755,root,root) %ghost %{_libdir}/libtrurl.so.10
 %attr(755,root,root) %ghost %{_libdir}/libvfile.so.0
 %endif
 
