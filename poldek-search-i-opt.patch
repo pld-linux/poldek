@@ -1,0 +1,138 @@
+diff --git a/cli/search.c b/cli/search.c
+index 4d6f06a..6db2ebc 100644
+--- a/cli/search.c
++++ b/cli/search.c
+@@ -61,6 +61,7 @@ static int                    pcre_established = 0;
+ struct pattern {
+     int              type;
+     char             *regexp;
++    int              ignore_case;
+     int              fnmatch_flags;
+     unsigned         pcre_flags;
+     pcre             *pcre;
+@@ -71,6 +72,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state);
+ static int search(struct cmdctx *cmdctx);
+ 
+ #define OPT_PATTERN_PCRE     (1 << 10)
++#define OPT_PATTERN_ICASE    (1 << 11)
+ 
+ #define OPT_SEARCH_CAP       (1 << 0)
+ #define OPT_SEARCH_REQ       (1 << 1)
+@@ -95,7 +97,7 @@ static int search(struct cmdctx *cmdctx);
+ 			    OPT_SEARCH_CHANGELOG)
+ 
+ 
+-#define OPT_NO_SEARCHSW    OPT_PATTERN_PCRE
++#define OPT_NO_SEARCHSW    (OPT_PATTERN_PCRE | OPT_PATTERN_ICASE)
+ 
+ static struct argp_option options[] = {
+     { "provides",    'p', 0, 0, N_("Search capabilities"), 1},
+@@ -106,6 +108,7 @@ static struct argp_option options[] = {
+     { "summary",     's', 0, 0, N_("Search summaries, urls and license"), 1},
+     { "description", 'd', 0, 0, N_("Search descriptions"), 1},
+     { "group",       'g', 0, 0, N_("Search groups"), 1 },
++    { "ignore-case", 'i', 0, 0, N_("Ignore case when matching"), 1},
+     { "files",       'f', 0, 0, N_("Search file list"), 1},
+     { NULL,          'l', 0,  OPTION_ALIAS, 0, 1},
+     { "changelog",   'L', 0, 0, N_("Search changelogs"), 1},
+@@ -124,7 +127,10 @@ struct poclidek_cmd command_search = {
+     options, parse_opt,
+     NULL, search,
+     NULL, NULL,
+-    N_("With --perlre pattern must be supplied as:\n"
++    N_("Patterns are matched case-sensitively by default.\n"
++       "Use -i, --ignore-case to ignore case.\n"
++       "\n"
++       "With --perlre pattern must be supplied as:\n"
+        "     <delimiter>perl-regexp<delimiter>[imsx]\n"
+        "  For example to find the packages containing foo.bar do:\n"
+        "     search --perlre /foo\\.bar/\n"
+@@ -204,10 +210,15 @@ static struct pattern *build_pattern(struct cmdctx *cmdctx, char *arg)
+         pt->type = PATTERN_FMASK;
+ 
+     pt->regexp = n_strdup(regexp);
++    pt->ignore_case = ((cmdctx->_flags & OPT_PATTERN_ICASE) != 0);
+     pt->fnmatch_flags = 0;
+     pt->pcre_flags = flags;
+     pt->pcre = NULL;
+     pt->pcre_extra = NULL;
++
++    if (pt->ignore_case && pt->type == PATTERN_PCRE)
++        pt->pcre_flags |= PCRE_CASELESS;
++
+     return pt;
+ }
+ 
+@@ -237,6 +248,10 @@ error_t parse_opt(int key, char *arg, struct argp_state *state)
+             cmdctx->_flags |= OPT_SEARCH_GROUP;
+             break;
+ 
++        case 'i':
++            cmdctx->_flags |= OPT_PATTERN_ICASE;
++            break;
++
+         case 'o':
+             cmdctx->_flags |= OPT_SEARCH_OBSL;
+             break;
+@@ -322,7 +337,13 @@ int pattern_compile(struct pattern *pt, int ntimes)
+     n_assert(pt->pcre_extra == NULL);
+ 
+ #ifdef FNM_CASEFOLD
+-    pt->fnmatch_flags |= FNM_CASEFOLD;
++    if (pt->ignore_case)
++        pt->fnmatch_flags |= FNM_CASEFOLD;
++#else
++    if (pt->ignore_case && pt->type == PATTERN_FMASK) {
++        logn(LOGERR, _("search: case-insensitive glob matching is not supported on this platform"));
++        return 0;
++    }
+ #endif
+ 
+     if (pt->type != PATTERN_PCRE)
+diff --git a/doc/manual.xml b/doc/manual.xml
+index 9d8923c..6c4fcdc 100644
+--- a/doc/manual.xml
++++ b/doc/manual.xml
+@@ -846,7 +846,9 @@ Syntax of command is:
+ search [OPTION...] PATTERN [PACKAGE...]
+ </screen>
+ Where <emphasis>PATTERN</emphasis> is a glob or, with <option>--perlre</option>, 
+-Perl regular expression.  
++Perl regular expression. Matching is case-sensitive by default; use
++<option>-i</option>, <option>--ignore-case</option> for case-insensitive
++matching.
+ 
+ For instance to find the packages that contains <filename>/usr/sbin/ab</filename> file:
+ <screen>
+diff --git a/doc/poldek.1 b/doc/poldek.1
+index fd7982e..273e100 100644
+--- a/doc/poldek.1
++++ b/doc/poldek.1
+@@ -51,6 +51,12 @@ is a full\-featured packages management utility, basically designed to work with
+ This manual page covers command line option reference, the full documentation for poldek is available as a Texinfo manual\&. Do
+ \fBinfo poldek\fR
+ to get it\&.
++.PP
++In shell mode, the
++\fBsearch\fR
++command matches case\-sensitively by default; use
++\fBsearch \-i\fR
++for case\-insensitive matching\&.
+ .SH "OPTIONS REFERENCE"
+ .SS "Repository index creation"
+ .PP
+diff --git a/doc/poldek.1.xml b/doc/poldek.1.xml
+index e1a923a..a7eeff1 100644
+--- a/doc/poldek.1.xml
++++ b/doc/poldek.1.xml
+@@ -44,6 +44,10 @@ tasks like installation, upgrading or removal.
+ <para>
+ This manual page covers command line option reference, the full documentation
+ for poldek is available as a Texinfo manual. Do <command>info poldek</command> to get it.
++</para>
++<para>
++In shell mode, the <command>search</command> command matches case-sensitively
++by default; use <command>search -i</command> for case-insensitive matching.
+ </para>
+   </refsect1>
+ 
