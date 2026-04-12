@@ -1,0 +1,56 @@
+    fix: do not treat uncolored packages from different architectures as interchangeable
+    
+    -devel packages typically have HEADERCOLOR=0 (no ELF binaries, only
+    headers, symlinks, pkg-config and libtool files). pkg_is_colored_like()
+    was returning 1 ("same kind") whenever at least one package had color 0,
+    causing poldek to incorrectly obsolete e.g. xz-devel.x32 when installing
+    xz-devel.x86_64, even though they install to different paths
+    (/usr/libx32 vs /usr/lib64) and are not interchangeable.
+    
+    The uncolored fallback was changed to a blanket "return 1" in commit
+    dad87fe8 (LP#299685, 2010). The earlier commit 1fd8aa21 (2008) disabled
+    arch-based fallback with the comment "rpm relies on colors only".
+    
+    Regardless of what older RPM versions did, RPM 6.0.1's checkAdded() and
+    rpmtsTeIterator() (lib/depends.cc) use arch string matching as a second
+    layer alongside colors in multilib transactions.
+    
+    Fix pkg_is_colored_like() to fall back to arch comparison when at least
+    one package is uncolored, and remove the redundant "any uncolored"
+    bypass in obs_filter() which was a second path for the same bug.
+
+diff --git a/install3/obsoletes.c b/install3/obsoletes.c
+index c70c04da..d137aeac 100644
+--- a/install3/obsoletes.c
++++ b/install3/obsoletes.c
+@@ -132,10 +132,6 @@ int obs_filter(struct pkgdb *db, const struct pm_dbrec *dbrec, void *apkg)
+     if (pkg_is_colored_like(&dbpkg, pkg))
+         return 1;
+ 
+-    /* any uncolored -> rpm allows upgrade */
+-    if (dbpkg.color == 0 || pkg->color == 0)
+-        return 1;
+-
+     return 0;
+ }
+ 
+diff --git a/pkgcmp.c b/pkgcmp.c
+index aa8af162..e75ddf5b 100644
+--- a/pkgcmp.c
++++ b/pkgcmp.c
+@@ -80,8 +80,13 @@ int pkg_is_colored_like(const struct pkg *candidate, const struct pkg *pkg)
+     if (pkg->color && candidate->color)
+         return (pkg->color & candidate->color) > 0;
+ 
+-    /* either new or old package contains no binary files, let it happen */
+-    return 1;
++    /* When at least one package has no ELF binaries (color 0), fall back
++       to arch comparison. This prevents treating uncolored packages from
++       different architectures (e.g. x32 vs x86_64 -devel packages) as
++       interchangeable. RPM 6.0.1 itself uses arch string matching as a
++       second layer alongside colors (see checkAdded() and
++       rpmtsTeIterator() in rpm's lib/depends.cc). */
++    return pkg_cmp_same_arch(candidate, pkg);
+ }
+ 
+ /* ret : 1 if pkg is cappable to upgrade arch<=>arch, arch<=>noarch */
