@@ -1,0 +1,247 @@
+From 3d5addaec1f408f389f66e3ded712315f734158b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Arkadiusz=20Mi=C5=9Bkiewicz?= <arekm@maven.pl>
+Date: Tue, 14 Apr 2026 13:59:26 +0200
+Subject: [PATCH 1/2] fix: in multilib mode, bare-name install should only
+ install native arch
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Problem: on a multilib system with multiple architecture repos (e.g.
+th, th-i686, th-x86_64), running "install curl" resolves curl from ALL
+architectures and pulls in a massive foreign-arch dependency chain
+(40+ packages). It also emits a misleading "ambiguous name" warning.
+The user only wanted the native-arch package.
+
+Solution: add ARG_PACKAGES_RESOLV_PREFER_NATIVE flag and filter in
+resolve_masks() — the resolution layer where user masks are matched
+to packages. When the flag is set (install path only, not ls/search):
+
+- Bare-name matches (strcmp with pkg->name) skip non-native, non-noarch
+  packages via the multilib_skip_foreign() helper
+- Glob/fnmatch matches are unaffected — "install curl*" installs all
+- Explicit names like "install curl-8.19.0-1.i686" go through fnmatch
+  and are also unaffected
+
+This eliminates the false "ambiguous name" warning (matches_bycmp now
+only counts native-arch matches) and produces a helpful suggestion when
+no native arch exists at all. The no-native-arch case sets rc=0 (fails
+the transaction) like "no such package" does — the user must use an
+explicit name.
+
+The install validation function (poldek_ts_validate_args_with_stubs)
+has no multilib awareness — arch policy lives entirely in the
+resolution layer where it belongs.
+
+Examples:
+  install curl                -> installs only curl.x86_64 (native)
+  install curl-8.19.0-1.i686 -> installs curl.i686 (explicit)
+  install curl*               -> installs all matching arches (glob)
+  ls curl                     -> shows all arches (no PREFER_NATIVE)
+---
+ arg_packages.c | 68 +++++++++++++++++++++++++++++++++++++++++++++-----
+ arg_packages.h |  4 +++
+ 2 files changed, 66 insertions(+), 6 deletions(-)
+
+diff --git a/arg_packages.c b/arg_packages.c
+index 8b2d2cdb..d8def6b9 100644
+--- a/arg_packages.c
++++ b/arg_packages.c
+@@ -457,6 +457,31 @@ tn_array *resolve_bycap(struct arg_packages *aps, struct pkgset *ps,
+     return pkgs;
+ }
+ 
++/*
++  multilib: should this package be skipped for a bare-name mask match?
++
++  Problem: "install curl" on a multilib system resolves to curl.x86_64,
++  curl.i686, curl.x32 — pulling in a massive foreign-arch dependency
++  chain.  The user just wanted the native-arch package.
++
++  This only applies to bare-name matches (strcmp with pkg->name).
++  Explicit names ("install curl-1.0-1.i686") and globs ("install curl*")
++  go through the fnmatch path and are not affected.
++
++  Returns true if the package should be skipped:
++  - caller asked for PREFER_NATIVE (install path, not ls/search)
++  - multilib mode is on
++  - package is not noarch (noarch is always installable)
++  - package arch score != 1 (not the native/base architecture)
++*/
++static int multilib_skip_foreign(const struct pkg *pkg, unsigned flags)
++{
++    return (flags & ARG_PACKAGES_RESOLV_PREFER_NATIVE) &&
++           poldek_conf_MULTILIB &&
++           !pkg_is_noarch(pkg) &&
++           pkg_arch_score(pkg) != 1;
++}
++
+ static
+ int resolve_masks(tn_array *re,
+                   struct arg_packages *aps, tn_array *avpkgs,
+@@ -465,6 +490,7 @@ int resolve_masks(tn_array *re,
+ {
+     int i, j, nmasks, rc = 1;
+     int *matches, *matches_bycmp;
++    const char **first_foreign_id;
+ 
+     nmasks = n_array_size(aps->package_masks);
+ 
+@@ -474,6 +500,12 @@ int resolve_masks(tn_array *re,
+     matches_bycmp = alloca(nmasks * sizeof(*matches_bycmp));
+     memset(matches_bycmp, 0, nmasks * sizeof(*matches_bycmp));
+ 
++    /* first_foreign_id[j]: when a bare-name mask skips a foreign-arch
++       package, remember its pkg_id (e.g. "curl-8.19.0-1.i686") so we
++       can suggest it in the warning if no native arch exists at all */
++    first_foreign_id = alloca(nmasks * sizeof(*first_foreign_id));
++    memset(first_foreign_id, 0, nmasks * sizeof(*first_foreign_id));
++
+     for (i=0; i < n_array_size(avpkgs); i++) {
+         struct pkg *pkg = n_array_nth(avpkgs, i);
+ 
+@@ -494,11 +526,16 @@ int resolve_masks(tn_array *re,
+ 
+             DBGF("%s cmp %s or %s\n", mask, pkg->name, pkg_id(pkg));
+             if (strcmp(mask, pkg->name) == 0) {
+-                if (re)
+-                    n_array_push(re, pkg_link(pkg));
+-
+-                matches_bycmp[j]++;
+-                matches[j]++;
++                if (multilib_skip_foreign(pkg, flags)) {
++                    if (!first_foreign_id[j])
++                        first_foreign_id[j] = pkg_id(pkg);
++                } else {
++                    if (re)
++                        n_array_push(re, pkg_link(pkg));
++
++                    matches_bycmp[j]++;
++                    matches[j]++;
++                }
+ 
+             } else if (fnmatch(mask, pkg_id(pkg), 0) == 0) {
+                 if (re)
+@@ -521,6 +558,17 @@ int resolve_masks(tn_array *re,
+             }
+         }
+ 
++        /* multilib: bare name matched only foreign-arch packages;
++           fail like "no such package" — the user must be explicit */
++        if (unmatched && first_foreign_id[j]) {
++            if (!quiet)
++                logn(LOGWARN, _("%s: no native arch package available;"
++                     " to install use explicit name, e.g.: %s"),
++                     mask, first_foreign_id[j]);
++            rc = 0;
++            continue;
++        }
++
+         if (unmatched && (flags & ARG_PACKAGES_RESOLV_MISSINGOK) == 0) {
+             if (!quiet)
+                 logn(LOGERR, _("%s: no such package"), mask);
+@@ -698,7 +746,15 @@ int arg_packages__validate_with_stubs(struct arg_packages *aps, tn_array *stubpk
+         re = *resolved;
+     }
+ 
+-    if (!resolve_masks(re, aps, stubpkgs, NULL, 0, quiet))
++    /* install path: in multilib mode, bare package names (e.g. "install curl")
++       should resolve only to native-arch packages.  The ls/search path
++       (arg_packages_resolve) does not set this flag, so "ls curl" still
++       shows all architectures. */
++    unsigned resolve_flags = 0;
++    if (poldek_conf_MULTILIB)
++        resolve_flags |= ARG_PACKAGES_RESOLV_PREFER_NATIVE;
++
++    if (!resolve_masks(re, aps, stubpkgs, NULL, resolve_flags, quiet))
+         return 0;
+ 
+     if (n_array_size(aps->packages) > 0) {
+diff --git a/arg_packages.h b/arg_packages.h
+index cbeb163a..2de984c4 100644
+--- a/arg_packages.h
++++ b/arg_packages.h
+@@ -50,6 +50,10 @@ EXPORT int arg_packages_setup(struct arg_packages *aps, struct pm_ctx *ctx);
+ #define ARG_PACKAGES_RESOLV_CAPSINLINE  (1 << 4)/* add packages found by caps
+                                                    to resolved packages */
+ #define ARG_PACKAGES_RESOLV_WARN_ONLY   (1 << 5)/* warn only*/
++#define ARG_PACKAGES_RESOLV_PREFER_NATIVE (1 << 6)/* multilib: "install curl"
++                                                      resolves only to native arch;
++                                                      "install curl-1.0-1.i686" and
++                                                      "install curl*" still match all */
+ 
+ int arg_packages__validate_with_stubs(struct arg_packages *aps, tn_array *stubpkgs,
+                                       tn_array **resolved, int quiet);
+-- 
+2.53.0
+
+From e924bff4180e6fcba25d8c8d6e12ef5fbe582f52 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Arkadiusz=20Mi=C5=9Bkiewicz?= <arekm@maven.pl>
+Date: Tue, 14 Apr 2026 13:03:34 +0200
+Subject: [PATCH 2/2] test: add multilib bare-name vs explicit arch install
+ tests
+
+Verify that bare-name install picks only native arch, explicit
+name-version.arch installs foreign arch, and glob patterns install
+all matching architectures.
+---
+ tests/sh/07-depsolver | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+
+diff --git a/tests/sh/07-depsolver b/tests/sh/07-depsolver
+index 5c95e6b0..a4ca2d85 100755
+--- a/tests/sh/07-depsolver
++++ b/tests/sh/07-depsolver
+@@ -965,6 +965,49 @@ xtestUninstallHold() {
+     try_uninstall a "a-1-1,a-devel-1-1"
+ }
+ 
++# bare-name install in multilib should only install native arch
++testInstallBareNameMultilibNativeOnly() {
++    ORIG_POLDEK_INSTALL="$POLDEK_INSTALL"
++    POLDEK_INSTALL="$POLDEK_INSTALL -Omultilib=1"
++
++    msgn "Preparing repositories..."
++    build a 1-1 -a x86_64 -f "/hello.x86_64"
++    build a 1-1 -a i686 -f "/hello.i686"
++
++    msgn "Bare-name install should pick only native arch"
++    try_install a "a-1-1.x86_64"
++
++    POLDEK_INSTALL="$ORIG_POLDEK_INSTALL"
++}
++
++# explicit name-version.arch should install that specific arch
++testInstallExplicitArchMultilib() {
++    ORIG_POLDEK_INSTALL="$POLDEK_INSTALL"
++    POLDEK_INSTALL="$POLDEK_INSTALL -Omultilib=1"
++
++    msgn "Preparing repositories..."
++    build a 1-1 -a x86_64 -f "/hello.x86_64"
++    build a 1-1 -a i686 -f "/hello.i686"
+ 
++    msgn "Explicit arch should install that specific arch"
++    try_install a-1-1.i686 "a-1-1.i686"
++
++    POLDEK_INSTALL="$ORIG_POLDEK_INSTALL"
++}
++
++# glob pattern should install all matching arches
++testInstallGlobMultilibAllArches() {
++    ORIG_POLDEK_INSTALL="$POLDEK_INSTALL"
++    POLDEK_INSTALL="$POLDEK_INSTALL -Omultilib=1"
++
++    msgn "Preparing repositories..."
++    build a 1-1 -a x86_64 -f "/hello.x86_64"
++    build a 1-1 -a i686 -f "/hello.i686"
++
++    msgn "Glob should install all matching arches"
++    try_install_with_ask_allowed "a*" "a-1-1.x86_64,a-1-1.i686"
++
++    POLDEK_INSTALL="$ORIG_POLDEK_INSTALL"
++}
+ 
+ . ./sh/lib/shunit2
+-- 
+2.53.0
+
