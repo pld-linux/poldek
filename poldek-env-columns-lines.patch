@@ -1,0 +1,65 @@
+commit bcf31cc1653155c93ad4b2b1a17d2301ac70d36b
+Author: Arkadiusz Miśkiewicz <arekm@maven.pl>
+Date:   Tue Apr 14 17:45:51 2026 +0200
+
+    Use $COLUMNS as fallback when ioctl fails to get terminal width
+    
+    When stdout is not a tty (e.g. piped output), ioctl TIOCGWINSZ fails
+    and terminal width falls back to 80 columns, causing unnecessary URL
+    truncation. Check $COLUMNS environment variable before falling back
+    to the default.
+
+diff --git a/poldek_term.c b/poldek_term.c
+index 9d4f9a87..6fbf7d82 100644
+--- a/poldek_term.c
++++ b/poldek_term.c
+@@ -245,15 +245,34 @@ static void update_term_width(void)
+ 
+     if (winch_reached) {
+         char tmp[256];
++        term_width  = TERM_DEFAULT_WIDTH;
++        term_height = TERM_DEFAULT_HEIGHT;
++
+         if (ioctl(1, TIOCGWINSZ, &ws) == 0) {
+             term_width  = ws.ws_col;
+             term_height = ws.ws_row;
+ 
+         } else {
+-            term_width  = TERM_DEFAULT_WIDTH;
+-            term_height = TERM_DEFAULT_HEIGHT;
++            const char *cols = getenv("COLUMNS");
++            if (cols) {
++                int n = atoi(cols);
++                if (n > 0)
++                    term_width = n;
++            }
++
++            const char *rows = getenv("LINES");
++            if (rows) {
++                int n = atoi(rows);
++                if (n > 0)
++                    term_height = n;
++            }
+         }
+ 
++        if (term_width < TERM_MIN_WIDTH)
++            term_width = TERM_MIN_WIDTH;
++        if (term_height < TERM_MIN_HEIGHT)
++            term_height = TERM_MIN_HEIGHT;
++
+         //https://www.gnu.org/software/libc/manual/html_node/Argp-User-Customization.html
+         snprintf(tmp, sizeof(tmp), "no-dup-args-note,rmargin=%d", term_width - 1);
+         setenv("ARGP_HELP_FMT", tmp, 1);
+diff --git a/poldek_term.h b/poldek_term.h
+index 80e6d5a6..2b1db740 100644
+--- a/poldek_term.h
++++ b/poldek_term.h
+@@ -25,6 +25,8 @@
+ 
+ #define TERM_DEFAULT_WIDTH  80
+ #define TERM_DEFAULT_HEIGHT 24
++#define TERM_MIN_WIDTH      40
++#define TERM_MIN_HEIGHT      4
+ 
+ #include <stddef.h>           /* for size_t     */
+ 
