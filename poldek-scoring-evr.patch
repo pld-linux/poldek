@@ -1,0 +1,62 @@
+commit cdbf6653459064d782fbc310bdffb59495fbb106
+Author: Arkadiusz Miśkiewicz <arekm@maven.pl>
+Date:   Wed Apr 15 21:29:46 2026 +0200
+
+    Break ties between equivalent providers by preferring highest EVR
+    
+    When multiple packages provide the same capability and all score
+    equally on every signal (satisfiability, name-prefix match, arch,
+    conflicts, upgrade), the winner was determined by alphabetical sort
+    order of the package name. This systematically picked the oldest
+    available version — e.g. php4-program over php85-program when 23
+    packages provide /usr/bin/php.
+    
+    Add an EVR (epoch-version-release) comparison as a tiebreaker in
+    do_select_best_pkg(). When two candidates have identical scores,
+    the one with the higher EVR wins. This only fires when all other
+    scoring signals are equal — it never overrides a score-based
+    preference. Version constraints from the requirement are enforced
+    before candidates reach scoring, so the tiebreaker can only choose
+    among packages that already satisfy the requirement.
+    
+    Tested on 133 PHP packages and 49 non-PHP packages against a
+    builder-like chroot (base system, no PHP installed):
+    
+    PHP: Before the fix, 44 out of 133 packages pulled in a mix of
+    PHP versions (e.g. php4 + php52 + php53 + php74 simultaneously).
+    After the fix, all 133 resolve to a single consistent version
+    (php85), except 2 packages that depend on extensions only available
+    for old PHP (php-mnogosearch, php-xcache).
+    
+    Java: openjdk8-jre (epoch=1) now selected over icedtea8-jre
+    (no epoch) for ant and maven.
+    
+    Init system: systemd-init (epoch=1) now selected over SysVinit
+    (no epoch) for packages requiring an init daemon.
+
+diff --git a/install3/misc.c b/install3/misc.c
+index b1940972..a80ad5d2 100644
+--- a/install3/misc.c
++++ b/install3/misc.c
+@@ -370,6 +370,21 @@ static int do_select_best_pkg(int indent, struct i3ctx *ictx,
+         if (sc->score > best_score) {
+             best_score = sc->score;
+             i_best = i;
++        } else if (sc->score == best_score) {
++            /* EVR tiebreaker: when scores are tied, prefer the
++               candidate with the highest epoch-version-release.
++               Without this, the winner is the first candidate in
++               alphabetical name order, which systematically picks
++               the oldest version (e.g. php4-program over
++               php85-program when 23 packages provide /usr/bin/php).
++               This is safe because version constraints are enforced
++               before candidates reach scoring — only packages that
++               satisfy the requirement are considered here. */
++            struct pkg *pbest = n_array_nth(candidates, i_best);
++            struct pkg *pcand = n_array_nth(candidates, i);
++            if (pkg_cmp_evr(pcand, pbest) > 0) {
++                i_best = i;
++            }
+         }
+ 
+         if (sc->satscore > best_satscore) {
