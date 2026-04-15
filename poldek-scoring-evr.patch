@@ -1,4 +1,4 @@
-commit cdbf6653459064d782fbc310bdffb59495fbb106
+commit 2d65d2e1063e0f9c7d2196eb9170cd3426192462
 Author: Arkadiusz Miśkiewicz <arekm@maven.pl>
 Date:   Wed Apr 15 21:29:46 2026 +0200
 
@@ -19,6 +19,10 @@ Date:   Wed Apr 15 21:29:46 2026 +0200
     before candidates reach scoring, so the tiebreaker can only choose
     among packages that already satisfy the requirement.
     
+    Apply the same tiebreaker in prepare_icap() for the --caplookup
+    path: when no provider is installed, pick highest EVR instead of
+    alphabetically first.
+    
     Tested on 133 PHP packages and 49 non-PHP packages against a
     builder-like chroot (base system, no PHP installed):
     
@@ -35,10 +39,10 @@ Date:   Wed Apr 15 21:29:46 2026 +0200
     (no epoch) for packages requiring an init daemon.
 
 diff --git a/install3/misc.c b/install3/misc.c
-index b1940972..a80ad5d2 100644
+index b1940972..c6b7c0cb 100644
 --- a/install3/misc.c
 +++ b/install3/misc.c
-@@ -370,6 +370,21 @@ static int do_select_best_pkg(int indent, struct i3ctx *ictx,
+@@ -370,6 +370,22 @@ static int do_select_best_pkg(int indent, struct i3ctx *ictx,
          if (sc->score > best_score) {
              best_score = sc->score;
              i_best = i;
@@ -51,7 +55,8 @@ index b1940972..a80ad5d2 100644
 +               php85-program when 23 packages provide /usr/bin/php).
 +               This is safe because version constraints are enforced
 +               before candidates reach scoring — only packages that
-+               satisfy the requirement are considered here. */
++               satisfy the requirement are considered here.
++               See also prepare_icap() for the --caplookup path. */
 +            struct pkg *pbest = n_array_nth(candidates, i_best);
 +            struct pkg *pcand = n_array_nth(candidates, i);
 +            if (pkg_cmp_evr(pcand, pbest) > 0) {
@@ -60,3 +65,37 @@ index b1940972..a80ad5d2 100644
          }
  
          if (sc->satscore > best_satscore) {
+diff --git a/install3/preinstall.c b/install3/preinstall.c
+index b237c1b4..1e7e5934 100644
+--- a/install3/preinstall.c
++++ b/install3/preinstall.c
+@@ -90,8 +90,16 @@ int prepare_icap(struct poldek_ts *ts, const char *capname, tn_array *pkgs)
+             }
+         }
+ 
+-        if (pkg == NULL)
++        if (pkg == NULL) {
++            /* EVR tiebreaker: pick highest EVR instead of
++               alphabetically first; see also do_select_best_pkg() */
+             pkg = n_array_nth(pkgs, 0);
++            for (i = 1; i < n_array_size(pkgs); i++) {
++                struct pkg *p = n_array_nth(pkgs, i);
++                if (pkg_cmp_evr(p, pkg) > 0)
++                    pkg = p;
++            }
++        }
+ 
+         pkg_hand_mark(ts->pms, pkg);
+         return 1;
+diff --git a/pkgcmp.c b/pkgcmp.c
+index e75ddf5b..05fce886 100644
+--- a/pkgcmp.c
++++ b/pkgcmp.c
+@@ -170,7 +170,6 @@ int pkg_cmp_evr(const struct pkg *p1, const struct pkg *p2)
+     return rc;
+ }
+ 
+-
+ int pkg_cmp_name_evr(const struct pkg *p1, const struct pkg *p2)
+ {
+     register int rc;
