@@ -1,16 +1,24 @@
-commit 3c95e64a0da01ebb1ab8ac5eb296317806af784f
+commit aea999f2f1cb86579bc8fef9f5393120d12f863b
 Author: Arkadiusz Miśkiewicz <arekm@maven.pl>
 Date:   Wed Apr 22 09:50:32 2026 +0200
 
-    fix: merge [global] ignore patterns into per-source lists
+    fix: apply [global] + per-source ignore across all pkg paths
     
-    Previously a per-source `ignore = ...` entry silently replaced the
-    [global] ignore list for that source, so global patterns were dropped
-    whenever a source had any ignore line of its own. With
-    /etc/poldek/repos.d/*.conf shipping per-source `ignore = kernel-*`
-    lines by default, any [global] ignore (e.g. openjdk*-jdk) was dead.
+    [global] ignore = ... was silently replaced by any per-source
+    ignore = ... entry rather than extended, so global patterns were
+    lost on every source with its own ignore line. And the stub-index
+    load path (poldek --cmd "ls", search, etc.) bypassed ignore
+    filtering entirely for PKGDIR_CAP_HANDLEIGNORE modules -- that cap
+    only covers the full do_load path, not the separate stub .zst
+    cache loaded by load_stubindex.
     
-    Always concatenate the global list into each source's ign_patterns.
+    - lib_init.c: always concat [global] ign_patterns into src's.
+    - lib_pkgset.c: in poldek_load_stubs, post-filter per-source stubs
+      via src->ign_patterns, symmetric with the full-load path and
+      gated by POLDEK_OP_IGNORE.
+    - pkgdir/pkgdir_stubindex.c: source_stubload is now a pure loader;
+      the HANDLEIGNORE guard there was dropping filtering entirely for
+      pndir sources in the stub path.
 
 diff --git a/doc/poldek.conf.xml b/doc/poldek.conf.xml
 index 86cb545b..828bb683 100644
@@ -61,6 +69,46 @@ index 297ec37e..88684654 100644
      }
  
      return src;
+diff --git a/lib_pkgset.c b/lib_pkgset.c
+index 1b19752e..0b676fc9 100644
+--- a/lib_pkgset.c
++++ b/lib_pkgset.c
+@@ -129,6 +129,7 @@ tn_array *poldek_load_stubs(struct poldek_ctx *ctx)
+ 
+     n_array_isort_ex(sources, (tn_fn_cmp)source_cmp_pri);
+     tn_array *stubpkgs = pkgs_array_new(4096);
++    int do_ignore = ctx->ts->getop(ctx->ts, POLDEK_OP_IGNORE);
+ 
+     for (i=0; i < n_array_size(sources); i++) {
+         struct source *src = n_array_nth(sources, i);
+@@ -145,6 +146,9 @@ tn_array *poldek_load_stubs(struct poldek_ctx *ctx)
+             return 0;
+         }
+ 
++        if (do_ignore && n_array_size(src->ign_patterns) > 0)
++            packages_score_ignore(pkgs, src->ign_patterns, 1);
++
+         while (n_array_size(pkgs) > 0) {
+             struct pkg *pkg = n_array_shift(pkgs);
+ 
+diff --git a/pkgdir/pkgdir_stubindex.c b/pkgdir/pkgdir_stubindex.c
+index 7707378b..a7532896 100644
+--- a/pkgdir/pkgdir_stubindex.c
++++ b/pkgdir/pkgdir_stubindex.c
+@@ -204,13 +204,6 @@ tn_array *source_stubload(struct source *src)
+     if (pkgs == NULL)
+         return NULL;
+ 
+-    if (src->ign_patterns) {
+-        const struct pkgdir_module *mod = pkgdir_mod_find(src->type);
+-        /* module does not handle "ignore" itself  */
+-        if (mod && (mod->cap_flags & PKGDIR_CAP_HANDLEIGNORE) == 0)
+-            packages_score_ignore(pkgs, src->ign_patterns, 1);
+-    }
+-
+     return pkgs;
+ }
+ 
 diff --git a/tests/Makefile.am b/tests/Makefile.am
 index 04654c67..ff08ccb9 100644
 --- a/tests/Makefile.am
