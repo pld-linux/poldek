@@ -1,0 +1,50 @@
+    fix: keep an explicit port in redirect targets
+
+    Two places dropped it:
+
+    - vf_request_new() reassembled req->url without the port, so everything
+      that re-parses that string - the redirect retries in vf_stat() and
+      vfile__vf_fetch(), and the absolute URI sent to a proxy - silently
+      went to the protocol default port.
+    - do_vfn() resolves a relative Location against the request itself and
+      built that URL from req->host alone, so a repository on a
+      non-default port reconnected to 80 or 443.
+
+diff --git a/vfile/vfreq.c b/vfile/vfreq.c
+--- a/vfile/vfreq.c
++++ b/vfile/vfreq.c
+@@ -278,8 +278,12 @@
+     else 
+         req->uri = n_strdupl(tmp, len);
+ 
+-    len = n_snprintf(tmp, sizeof(tmp), "%s://%s%s", rreq.proto, rreq.host,
+-                     req->uri);
++    if (rreq.port > 0)
++        len = n_snprintf(tmp, sizeof(tmp), "%s://%s:%d%s", rreq.proto, rreq.host,
++                         rreq.port, req->uri);
++    else
++        len = n_snprintf(tmp, sizeof(tmp), "%s://%s%s", rreq.proto, rreq.host,
++                         req->uri);
+     req->url = n_strdupl(tmp, len);
+     req->port = rreq.port;
+ 
+diff --git a/vfile/vfffmod.c b/vfile/vfffmod.c
+--- a/vfile/vfffmod.c
++++ b/vfile/vfffmod.c
+@@ -280,8 +280,14 @@
+         n_assert(cn->proto == VCN_PROTO_HTTP || cn->proto == VCN_PROTO_HTTPS);
+ 
+         if (*vreq.redirected_to == '/') {
+-            snprintf(topath, sizeof(topath), "http%s://%s%s", cn->proto == VCN_PROTO_HTTPS ? "s" : "" , req->host,
+-                     vreq.redirected_to);
++            char portstr[16] = "";
++
++            if (req->port > 0)
++                snprintf(portstr, sizeof(portstr), ":%d", req->port);
++
++            snprintf(topath, sizeof(topath), "http%s://%s%s%s",
++                     cn->proto == VCN_PROTO_HTTPS ? "s" : "", req->host,
++                     portstr, vreq.redirected_to);
+             topathp = topath;
+         } else if (strncmp(vreq.redirected_to, "http://", 7) != 0)
+             foreign_proto = 1;

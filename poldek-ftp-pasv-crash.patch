@@ -1,0 +1,47 @@
+    fix: do not crash when the FTP PASV reply cannot be read
+
+    vftpcn_pasv() handed the server's response text to vfff_set_err() as the
+    printf format string.  When the reply cannot be read at all - a timeout
+    or a reset control connection, which is exactly what a flaky link
+    produces - vftpcn_resp() fails and resp_msg() is NULL, so vsnprintf()
+    gets a NULL format and the process dies with SIGSEGV.  A server that
+    answers PASV with a message containing conversions is a format string
+    bug on its own.
+
+    Bail out on an unreadable response and keep the error readresp() has
+    already set instead of overwriting it with a bare EIO, and print a
+    non-conforming reply through "%s".
+
+    Annotate vfff_set_err() as printf-like so -Wformat-security, already a
+    build error here, rejects the next such call at compile time.
+
+diff --git a/vfile/vfff/ftp.c b/vfile/vfff/ftp.c
+--- a/vfile/vfff/ftp.c
++++ b/vfile/vfff/ftp.c
+@@ -556,8 +556,11 @@
+     if (!vftpcn_cmd(cn, cmd))
+         return 0;
+ 
+-    if (!vftpcn_resp(cn) || resp_code(cn) != req_code) {
+-        vfff_set_err(EIO, resp_msg(cn));
++    if (!vftpcn_resp(cn))       /* no response at all; readresp() set the cause */
++        return 0;
++
++    if (resp_code(cn) != req_code) {
++        vfff_set_err(EIO, "%s", resp_msg(cn));
+         return 0;
+     }
+ 
+diff --git a/vfile/vfff/vfff.h b/vfile/vfff/vfff.h
+--- a/vfile/vfff/vfff.h
++++ b/vfile/vfff/vfff.h
+@@ -39,7 +39,8 @@
+ extern void (*vfff_vlog_cb)(const char *fmt, va_list ap);
+ 
+ const char *vfff_errmsg(void);
+-void vfff_set_err(int err_no, const char *fmt, ...);
++void vfff_set_err(int err_no, const char *fmt, ...)
++    __attribute__((format(printf, 2, 3)));
+ void vfff_log(const char *fmt, ...);
+ int vfff_sigint_reached(void);
+ int vfff_to_connect(const char *host, const char *service, int *af);

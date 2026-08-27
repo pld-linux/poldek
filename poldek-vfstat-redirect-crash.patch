@@ -1,0 +1,27 @@
+    fix: do not use the request after freeing it in vf_stat()
+
+    The redirect branch freed the request, set the pointer to NULL and then
+    read req->url from it - a guaranteed SIGSEGV whenever a HEAD gets a
+    protocol-changing redirect that afterwards fails.  The arguments were
+    swapped too; vf_stat() takes (url, destdir).
+
+    Copy the URL out before the free, the way vfile__vf_fetch() already
+    handles its own redirect retry.
+
+diff --git a/vfile/vfetch.c b/vfile/vfetch.c
+--- a/vfile/vfetch.c
++++ b/vfile/vfetch.c
+@@ -407,9 +407,12 @@
+             vfstat->vf_mtime = req->st_remote_mtime > 0 ? req->st_remote_mtime : 0;
+ 
+         } else if (req->flags & VF_REQ_INT_REDIRECTED) {
++            char redir_url[PATH_MAX];
++
++            snprintf(redir_url, sizeof(redir_url), "%s", req->url);
+             vf_request_free(req);
+             req = NULL;
+-            rc = vf_stat(destdir, req->url, vfstat, NULL);
++            rc = vf_stat(redir_url, destdir, vfstat, NULL);
+ 
+         } else {
+             vfile_set_errno(mod->vfmod_name, req->req_errno);

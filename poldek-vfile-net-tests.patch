@@ -1,0 +1,603 @@
+    tests: network fault tests for the vfile fixes
+
+    Covers the crashes and the connection reuse bugs fixed by the patches
+    above: an unreadable PASV reply, a 227 with no address, an aborted data
+    transfer leaving the control connection desynchronized, a stat over a
+    failing protocol-changing redirect, and absolute and relative redirect
+    retries that have to keep the port.
+
+    net_servers.py is a minimal FTP server plus an HTTP redirector, both on
+    loopback, with the faults selected by the requested path.  test_vfnet is
+    built by "make check" but deliberately not run by it - it needs those
+    servers, so it is wired to its own target and started with "make check-net".
+
+diff --git a/vfile/tests/Makefile.am b/vfile/tests/Makefile.am
+--- a/vfile/tests/Makefile.am
++++ b/vfile/tests/Makefile.am
+@@ -1,10 +1,15 @@
+ CPPFLAGS = @CPPFLAGS@ @CHECK_CFLAGS@
+ LDADD = @CHECK_LIBS@ $(top_builddir)/vfile/libvfile.la
+ 
+-check_PROGRAMS = test_vfile test_vopen3
++check_PROGRAMS = test_vfile test_vopen3 test_vfnet
+ 
+-TESTS = $(check_PROGRAMS)
+-EXTRA_DIST = test.h
++TESTS = test_vfile test_vopen3
++EXTRA_DIST = test.h net_servers.py run_net_tests.sh
++
++# test_vfnet needs the helper servers, so it is not part of "make check";
++# run it with: make check-net
++check-net: test_vfnet$(EXEEXT)
++	$(SHELL) $(srcdir)/run_net_tests.sh ./test_vfnet$(EXEEXT)
+ 
+ clean-local:
+ 	-rm -f *.tmp core *.o *.bak *~ *% *\# TAGS gmon.out \#*\# dupa*
+diff --git a/vfile/tests/net_servers.py b/vfile/tests/net_servers.py
+new file mode 100644
+--- /dev/null
++++ b/vfile/tests/net_servers.py
+@@ -0,0 +1,250 @@
++#!/usr/bin/env python3
++"""
++Network fault-injection servers for the vfile tests.
++
++Runs a minimal FTP server and a minimal HTTP redirector on loopback.  Both
++are only good enough to drive vfile; the point is the faults they can inject.
++
++FTP faults are selected by the requested path (the server learns it from
++SIZE/MDTM, which poldek sends before PASV):
++  /pasv-drop/<name>     - abort the control connection when PASV arrives
++  /pasv-nodigits/<name> - answer PASV with a 227 carrying no address at all
++  /data-reset/<name>    - reset the data connection during RETR and leave
++                          the reply to the aborted transfer unread
++
++HTTP serves nothing but redirects:
++  /to-ftp/<name>        - 302 to ftp://127.0.0.1:<ftp port>/<name>
++  /to-dead-https/<name> - 302 to https://127.0.0.1:1/<name>
++  /rel-to-ftp/<name>    - 302 to the relative path /to-ftp/<name>
++"""
++
++import argparse
++import os
++import socket
++import struct
++import sys
++import threading
++import time
++
++
++def log(verbose, msg):
++    if verbose:
++        print(msg, file=sys.stderr, flush=True)
++
++
++def listen(port):
++    sock = socket.socket()
++    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
++    sock.bind(('127.0.0.1', port))
++    sock.listen(16)
++    return sock
++
++
++def reset(sock):
++    """Close so that the peer sees RST instead of an orderly EOF"""
++    try:
++        sock.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER,
++                        struct.pack('ii', 1, 0))
++        sock.close()
++    except OSError:
++        pass
++
++
++class FTPSession:
++    def __init__(self, sock, data_dir, verbose):
++        self.sock = sock
++        self.data_dir = data_dir
++        self.verbose = verbose
++        self.stream = sock.makefile('rwb', buffering=0)
++        self.datasock = None
++        self.path = ''
++
++    def log(self, msg):
++        log(self.verbose, "ftpd: %s" % msg)
++
++    def send(self, line):
++        self.log("> %s" % line.strip())
++        self.stream.write(line.encode())
++
++    def abort(self):
++        """makefile() holds a reference, so the socket only really closes
++           once the stream is closed too"""
++        self.stream.close()
++        reset(self.sock)
++
++    def localpath(self):
++        return os.path.join(self.data_dir, os.path.basename(self.path))
++
++    def open_datasock(self):
++        self.datasock = listen(0)
++        return self.datasock.getsockname()[1]
++
++    def serve(self):
++        try:
++            self.run()
++        except OSError:         # client went away
++            pass
++
++    def run(self):
++        self.send("220 vfile test ftpd\r\n")
++        while True:
++            line = self.stream.readline()
++            if not line:
++                break
++            line = line.decode(errors='replace').strip()
++            self.log("< %s" % line)
++            parts = line.split(None, 1)
++            if not parts:
++                continue
++            cmd = parts[0].upper()
++            arg = parts[1] if len(parts) > 1 else ''
++
++            if cmd in ('SIZE', 'MDTM', 'RETR'):
++                self.path = arg
++
++            if cmd in ('PASV', 'EPSV') and 'pasv-drop' in self.path:
++                self.log("!! dropping control connection at %s" % cmd)
++                self.abort()
++                return
++
++            if cmd in ('PASV', 'EPSV') and 'pasv-nodigits' in self.path:
++                self.send("227 Entering Passive Mode\r\n")
++                continue
++
++            if cmd == 'USER':
++                self.send("331 password required\r\n")
++            elif cmd == 'PASS':
++                self.send("230 logged in\r\n")
++            elif cmd in ('TYPE', 'NOOP'):
++                self.send("200 ok\r\n")
++            elif cmd == 'SIZE':
++                if os.path.isfile(self.localpath()):
++                    self.send("213 %d\r\n" % os.path.getsize(self.localpath()))
++                else:
++                    self.send("550 no such file\r\n")
++            elif cmd == 'MDTM':
++                if os.path.isfile(self.localpath()):
++                    ts = time.gmtime(os.path.getmtime(self.localpath()))
++                    self.send("213 %s\r\n" % time.strftime("%Y%m%d%H%M%S", ts))
++                else:
++                    self.send("550 no such file\r\n")
++            elif cmd == 'PASV':
++                port = self.open_datasock()
++                self.send("227 Entering Passive Mode (127,0,0,1,%d,%d)\r\n"
++                          % (port >> 8, port & 0xff))
++            elif cmd == 'EPSV':
++                self.send("229 Entering Extended Passive Mode (|||%d|)\r\n"
++                          % self.open_datasock())
++            elif cmd == 'REST':
++                self.send("350 ok\r\n")
++            elif cmd == 'RETR':
++                self.retr()
++            elif cmd == 'QUIT':
++                self.send("221 bye\r\n")
++                break
++            else:
++                self.send("500 unknown command\r\n")
++
++        self.sock.close()
++
++    def retr(self):
++        if not os.path.isfile(self.localpath()) or self.datasock is None:
++            self.send("550 no such file\r\n")
++            return
++
++        size = os.path.getsize(self.localpath())
++        self.send("150 Opening BINARY mode data connection (%d bytes)\r\n" % size)
++        conn, _ = self.datasock.accept()
++
++        if 'data-reset' in self.path:
++            self.log("!! resetting data connection")
++            reset(conn)
++            self.datasock.close()
++            self.datasock = None
++            self.send("426 Transfer aborted\r\n")
++            return
++
++        with open(self.localpath(), 'rb') as f:
++            conn.sendall(f.read())
++        conn.close()
++        self.datasock.close()
++        self.datasock = None
++        self.send("226 Transfer complete\r\n")
++
++
++def http_session(sock, ftp_port, verbose):
++    try:
++        req = b""
++        while b"\r\n\r\n" not in req:
++            data = sock.recv(4096)
++            if not data:
++                return
++            req += data
++        line = req.split(b"\r\n")[0].decode(errors='replace')
++        log(verbose, "httpd: < %s" % line)
++        path = line.split()[1]
++        name = os.path.basename(path)
++
++        if path.startswith("/to-ftp/"):
++            to = "ftp://127.0.0.1:%d/%s" % (ftp_port, name)
++        elif path.startswith("/rel-to-ftp/"):
++            to = "/to-ftp/%s" % name
++        elif path.startswith("/to-dead-https/"):
++            to = "https://127.0.0.1:1/%s" % name
++        else:
++            sock.sendall(b"HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n"
++                         b"Connection: close\r\n\r\n")
++            return
++
++        log(verbose, "httpd: > 302 %s" % to)
++        sock.sendall(("HTTP/1.1 302 Found\r\nLocation: %s\r\nContent-Length: 0\r\n"
++                      "Connection: close\r\n\r\n" % to).encode())
++    except OSError:
++        pass
++    finally:
++        try:
++            sock.close()
++        except OSError:
++            pass
++
++
++def main():
++    parser = argparse.ArgumentParser(description='vfile network test servers')
++    parser.add_argument('--ftp-port', type=int, default=0)
++    parser.add_argument('--http-port', type=int, default=0)
++    parser.add_argument('--data-dir', default='./data')
++    parser.add_argument('--write-ports',
++                        help='write "<ftp port> <http port>" to this file')
++    parser.add_argument('--verbose', '-v', action='store_true')
++    args = parser.parse_args()
++
++    verbose = args.verbose or bool(os.environ.get('VERBOSE'))
++
++    ftp_srv = listen(args.ftp_port)
++    http_srv = listen(args.http_port)
++    ftp_port = ftp_srv.getsockname()[1]
++    http_port = http_srv.getsockname()[1]
++
++    if args.write_ports:
++        with open(args.write_ports, 'w') as f:
++            f.write("%d %d" % (ftp_port, http_port))
++
++    print("test servers on ftp://127.0.0.1:%d and http://127.0.0.1:%d"
++          % (ftp_port, http_port), flush=True)
++
++    def accept_ftp():
++        while True:
++            conn, _ = ftp_srv.accept()
++            session = FTPSession(conn, args.data_dir, verbose)
++            threading.Thread(target=session.serve, daemon=True).start()
++
++    threading.Thread(target=accept_ftp, daemon=True).start()
++
++    while True:
++        conn, _ = http_srv.accept()
++        threading.Thread(target=http_session,
++                         args=(conn, ftp_port, verbose), daemon=True).start()
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/vfile/tests/test_vfnet.c b/vfile/tests/test_vfnet.c
+new file mode 100644
+--- /dev/null
++++ b/vfile/tests/test_vfnet.c
+@@ -0,0 +1,229 @@
++/*
++ * Network fault tests for vfile
++ * Regression coverage for crashes and connection reuse on broken links
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <time.h>
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <dirent.h>
++
++#include "../vfile.h"
++#include "test.h"
++#include <trurl/nstr.h>
++
++static char server_host[256] = "127.0.0.1";
++static int ftp_port = 0;
++static int http_port = 0;
++static char tmpdir[PATH_MAX];
++
++#define TEST_FILE_SMALL "small.txt"
++
++static int vfile_initialized = 0;
++
++static void net_setup(void)
++{
++    static int verbose = 0;
++
++    if (getenv("VERBOSE"))
++        verbose = 2;
++
++    if (!vfile_initialized) {
++        vfile_configure(VFILE_CONF_VERBOSE, &verbose);
++        vfile_configure(VFILE_CONF_CACHEDIR, "/tmp/vfile_test_cache");
++        vfile_configure(VFILE_CONF_STUBBORN_RETR, 0); /* disable retrying */
++        vfile_setup();
++        vfile_initialized = 1;
++    }
++
++    const char *host = getenv("TEST_SERVER_HOST");
++    const char *fport = getenv("TEST_FTP_PORT");
++    const char *hport = getenv("TEST_HTTP_PORT");
++
++    if (host) n_strncpy(server_host, host, sizeof(server_host));
++    if (fport) ftp_port = atoi(fport);
++    if (hport) http_port = atoi(hport);
++
++    snprintf(tmpdir, sizeof(tmpdir), "/tmp/vfile_nettest_%d_%ld", getpid(),
++             (long)time(NULL));
++    mkdir(tmpdir, 0755);
++}
++
++static void net_teardown(void)
++{
++    DIR *dir;
++    struct dirent *ent;
++    char path[PATH_MAX];
++
++    /* successful fetches leave the file and its lock behind */
++    if ((dir = opendir(tmpdir)) != NULL) {
++        while ((ent = readdir(dir)) != NULL) {
++            if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
++                continue;
++            if ((size_t)snprintf(path, sizeof(path), "%s/%s", tmpdir,
++                                 ent->d_name) < sizeof(path))
++                unlink(path);
++        }
++        closedir(dir);
++    }
++
++    rmdir(tmpdir);
++}
++
++static int fetch_ftp(const char *path)
++{
++    char url[512];
++
++    snprintf(url, sizeof(url), "ftp://%s:%d/%s", server_host, ftp_port, path);
++    return vf_fetch(url, tmpdir, 0, NULL, NULL);
++}
++
++static int have_file(const char *name)
++{
++    char dest[PATH_MAX];
++
++    if ((size_t)snprintf(dest, sizeof(dest), "%s/%s", tmpdir, name) >= sizeof(dest))
++        ck_abort_msg("path truncated");
++    return access(dest, F_OK) == 0;
++}
++
++static void drop_file(const char *name)
++{
++    char dest[PATH_MAX];
++
++    if ((size_t)snprintf(dest, sizeof(dest), "%s/%s", tmpdir, name) >= sizeof(dest))
++        ck_abort_msg("path truncated");
++    unlink(dest);
++}
++
++START_TEST(test_ftp_get_small)
++{
++    fail_if(ftp_port == 0);
++
++    fail_if(fetch_ftp(TEST_FILE_SMALL) == 0);
++    fail_if(!have_file(TEST_FILE_SMALL));
++}
++END_TEST
++
++/* server drops the control connection while poldek waits for the PASV reply;
++   used to segfault on vfff_set_err() with the unread response as format */
++START_TEST(test_ftp_pasv_control_drop)
++{
++    fail_if(ftp_port == 0);
++
++    fail_if(fetch_ftp("pasv-drop/" TEST_FILE_SMALL) != 0);
++}
++END_TEST
++
++/* 227 reply with no address in it; the scan for the first digit used to run
++   off the end of the response buffer */
++START_TEST(test_ftp_pasv_no_digits)
++{
++    fail_if(ftp_port == 0);
++
++    fail_if(fetch_ftp("pasv-nodigits/" TEST_FILE_SMALL) != 0);
++}
++END_TEST
++
++/* an aborted data transfer leaves the reply to RETR unread, so the control
++   connection must not be handed out again from the pool */
++START_TEST(test_ftp_reuse_after_aborted_transfer)
++{
++    fail_if(ftp_port == 0);
++
++    /* first transfer succeeds and stamps the connection as alive */
++    fail_if(fetch_ftp(TEST_FILE_SMALL) == 0);
++    drop_file(TEST_FILE_SMALL);
++
++    fail_if(fetch_ftp("data-reset/" TEST_FILE_SMALL) != 0);
++
++    /* within VCN_ALIVE_TTL, so the pool would skip its NOOP probe */
++    fail_if(fetch_ftp(TEST_FILE_SMALL) == 0);
++    fail_if(!have_file(TEST_FILE_SMALL));
++}
++END_TEST
++
++/* stat over a redirect that switches protocol and then fails; the failed
++   branch used to dereference the already freed request */
++START_TEST(test_stat_redirect_failed)
++{
++    char url[512];
++    struct vf_stat vfst;
++
++    fail_if(http_port == 0);
++
++    snprintf(url, sizeof(url), "http://%s:%d/to-dead-https/" TEST_FILE_SMALL,
++             server_host, http_port);
++
++    fail_if(vf_stat(url, tmpdir, &vfst, NULL) != 0);
++}
++END_TEST
++
++/* the retried request is built from req->url, which used to lose the port */
++START_TEST(test_redirect_keeps_port)
++{
++    char url[512];
++
++    fail_if(http_port == 0 || ftp_port == 0);
++
++    snprintf(url, sizeof(url), "http://%s:%d/to-ftp/" TEST_FILE_SMALL,
++             server_host, http_port);
++
++    fail_if(vf_fetch(url, tmpdir, 0, NULL, NULL) == 0);
++    fail_if(!have_file(TEST_FILE_SMALL));
++}
++END_TEST
++
++/* a relative Location is resolved against the request itself, which used to
++   drop the port and send the retry to the protocol default */
++START_TEST(test_relative_redirect_keeps_port)
++{
++    char url[512];
++
++    fail_if(http_port == 0 || ftp_port == 0);
++
++    snprintf(url, sizeof(url), "http://%s:%d/rel-to-ftp/" TEST_FILE_SMALL,
++             server_host, http_port);
++
++    fail_if(vf_fetch(url, tmpdir, 0, NULL, NULL) == 0);
++    fail_if(!have_file(TEST_FILE_SMALL));
++}
++END_TEST
++
++static Suite *vfnet_suite(void)
++{
++    Suite *s = suite_create("vfnet");
++
++    TCase *tc = tcase_create("net");
++    tcase_add_checked_fixture(tc, net_setup, net_teardown);
++    tcase_add_test(tc, test_ftp_get_small);
++    tcase_add_test(tc, test_ftp_pasv_control_drop);
++    tcase_add_test(tc, test_ftp_pasv_no_digits);
++    tcase_add_test(tc, test_ftp_reuse_after_aborted_transfer);
++    tcase_add_test(tc, test_stat_redirect_failed);
++    tcase_add_test(tc, test_redirect_keeps_port);
++    tcase_add_test(tc, test_relative_redirect_keeps_port);
++    suite_add_tcase(s, tc);
++
++    return s;
++}
++
++int main(int argc, char **argv)
++{
++    (void)argc;
++    (void)argv;
++    int nerr;
++    Suite *s = vfnet_suite();
++    SRunner *sr = srunner_create(s);
++
++    srunner_run_all(sr, CK_ENV);
++    nerr = srunner_ntests_failed(sr);
++    srunner_free(sr);
++
++    return (nerr == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
++}
+diff --git a/vfile/tests/run_net_tests.sh b/vfile/tests/run_net_tests.sh
+new file mode 100644
+--- /dev/null
++++ b/vfile/tests/run_net_tests.sh
+@@ -0,0 +1,74 @@
++#!/bin/sh
++# Network fault test runner
++# Starts the test servers, creates test data dynamically, runs tests, cleans up
++
++set -e
++
++VERBOSE="${VERBOSE:-}"
++
++SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
++PYTHON="${PYTHON:-python3}"
++
++vprint() {
++    if [ -n "$VERBOSE" ]; then
++        echo "$@"
++    fi
++}
++
++TEST_DATA_DIR="$(mktemp -d)"
++PORT_FILE="$(mktemp)"
++
++cleanup() {
++    if [ -n "$SRV_PID" ]; then
++        kill "$SRV_PID" 2>/dev/null || true
++        wait "$SRV_PID" 2>/dev/null || true
++    fi
++    rm -rf "$TEST_DATA_DIR" "$PORT_FILE"
++}
++trap cleanup EXIT
++
++printf 'Hello, World!\n' > "$TEST_DATA_DIR/small.txt"
++
++if ! "$PYTHON" --version >/dev/null 2>&1; then
++    echo "ERROR: Python 3 not found. Set PYTHON environment variable."
++    exit 1
++fi
++
++vprint "Starting test servers..."
++"$PYTHON" "$SCRIPT_DIR/net_servers.py" \
++    --data-dir "$TEST_DATA_DIR" \
++    --write-ports "$PORT_FILE" &
++SRV_PID="$!"
++
++sleep 1
++
++if [ ! -s "$PORT_FILE" ]; then
++    echo "ERROR: test servers did not start" >&2
++    exit 1
++fi
++FTP_PORT=$(cut -d' ' -f1 "$PORT_FILE")
++HTTP_PORT=$(cut -d' ' -f2 "$PORT_FILE")
++vprint "FTP: ftp://127.0.0.1:$FTP_PORT  HTTP: http://127.0.0.1:$HTTP_PORT"
++
++# vfile honours the proxy environment, which would bypass the test servers
++unset http_proxy https_proxy ftp_proxy
++unset HTTP_PROXY HTTPS_PROXY FTP_PROXY
++
++export TEST_SERVER_HOST="127.0.0.1"
++export TEST_FTP_PORT="$FTP_PORT"
++export TEST_HTTP_PORT="$HTTP_PORT"
++export TEST_DATA_DIR="$TEST_DATA_DIR"
++
++if [ $# -eq 0 ]; then
++    cd "$SCRIPT_DIR"
++    if [ -x ./test_vfnet ]; then
++        ./test_vfnet
++    elif [ -x ./.libs/test_vfnet ]; then
++        ./.libs/test_vfnet
++    else
++        echo "ERROR: test_vfnet not found. Run 'make test_vfnet' first."
++        exit 1
++    fi
++else
++    "$@"
++fi

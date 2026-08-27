@@ -1,0 +1,53 @@
+    fix: do not hand out unusable connections from the pool
+
+    Three ways a connection nobody can talk on gets used again:
+
+    - vcn_is_alive() short-circuits on a timestamp younger than
+      VCN_ALIVE_TTL without looking at cn->state, so a closed or dead
+      connection is reported alive.
+    - vcn_pool_vacuum() calls n_list_remove_ex() once, and on a
+      TN_LIST_UNIQ list that drops at most one match, so dead connections
+      accumulate in the pool.
+    - vftpcn_retr() leaves the control connection ALIVE after an aborted
+      data transfer even though the server's reply to the aborted RETR is
+      still unread; reusing it desynchronizes every following response, so
+      SIZE reads the reply to RETR, MDTM reads the reply to SIZE and so on.
+
+diff --git a/vfile/vfff/ftp.c b/vfile/vfff/ftp.c
+--- a/vfile/vfff/ftp.c
++++ b/vfile/vfff/ftp.c
+@@ -750,6 +750,7 @@
+ 
+     if (!vfff_transfer_file(cn, req, total_size)) {
+         cn->sockfd = tmp_sockfd;
++        cn->state = VCN_DEAD;   /* reply to the aborted RETR stays unread */
+         goto l_err;
+     }
+ 
+diff --git a/vfile/vfff/vfff.c b/vfile/vfff/vfff.c
+--- a/vfile/vfff/vfff.c
++++ b/vfile/vfff/vfff.c
+@@ -342,6 +342,9 @@
+ {
+     vfff_errno = 0;
+ 
++    if (cn->state != VCN_ALIVE)
++        return 0;
++
+     if (cn->ts_is_alive > 0) {
+         time_t ts = time(0);
+ 
+diff --git a/vfile/vfffmod.c b/vfile/vfffmod.c
+--- a/vfile/vfffmod.c
++++ b/vfile/vfffmod.c
+@@ -88,7 +88,9 @@
+ 
+ void vcn_pool_vacuum(void)
+ {
+-    n_list_remove_ex(vcn_pool, NULL, toremove_cn_fakecmp);
++    /* pool is TN_LIST_UNIQ, so one call drops at most one dead connection */
++    while (n_list_remove_ex(vcn_pool, NULL, toremove_cn_fakecmp) > 0)
++        ;
+ }
+ 
+ static struct vcn *vcn_pool_do_connect(struct vf_request *req)

@@ -1,0 +1,19 @@
+    fix: bound the PASV address scan
+
+    parse_pasv() skipped to the first digit with an unbounded loop, so a 227
+    reply whose text carries no digit at all reads past the end of the
+    response buffer.  Stopping at the terminator lets the sscanf() below
+    fail and report a parse error like any other malformed reply.
+
+diff --git a/vfile/vfff/ftp.c b/vfile/vfff/ftp.c
+--- a/vfile/vfff/ftp.c
++++ b/vfile/vfff/ftp.c
+@@ -499,7 +499,7 @@
+     is_err = 0;
+ 
+     p = resp;
+-    while (!isdigit(*p))
++    while (*p && !isdigit(*p))
+         p++;
+ 
+     if (sscanf(p, "%d,%d,%d,%d,%d,%d", &a[0], &a[1], &a[2], &a[3],
