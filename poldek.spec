@@ -22,18 +22,22 @@
 %define		ver_rpm		1:4.14
 %endif
 
-%define		rel	12
+%define		gitref	02e02fb938d1e4c8228012d4d1f1c90aa7d26832
+%define		snap	20261023
+%define		rel	0.1
+# poldek's autogen.sh and CI build against trurlib and tndb master
+%define		trurlib_gitref	c8c3443df37a175f68ac9f0c55978dbb6d238c33
+%define		tndb_gitref	80e426fe181798cc2780e6ca18f30ad8b69297b0
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
 Name:		poldek
-Version:	0.45.0
-Release:	%{rel}%{?with_snap:.%{SNAP}}
+Version:	0.46.0
+Release:	0.%{snap}.%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
-#Source0:	http://poldek.pld-linux.org/download/snapshots/%{name}-%{version}-cvs%{snap}.tar.bz2
-Source0:	https://github.com/poldek-pm/poldek/releases/download/v%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	445033ef4d1312718d27b4b7fc197643
+Source0:	https://github.com/poldek-pm/poldek/archive/%{gitref}/%{name}-%{snap}.tar.gz
+# Source0-md5:	d5b585755b7683948894f378a7345ea6
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -45,25 +49,16 @@ Source8:	%{name}-debuginfo.conf
 Source9:	%{name}-aidath.conf
 Source10:	%{name}-multilib-aidath.conf
 Source11:	%{name}-archive.conf
+Source12:	https://github.com/poldek-pm/trurlib/archive/%{trurlib_gitref}/trurlib-%{trurlib_gitref}.tar.gz
+# Source12-md5:	bc8baff5e9c04e59e468b1284e2ae341
+Source13:	https://github.com/poldek-pm/tndb/archive/%{tndb_gitref}/tndb-%{tndb_gitref}.tar.gz
+# Source13-md5:	250fc79aed3258dfa6c336a40d571978
 Source100:	%{name}-snap.conf
 Source101:	%{name}-multilib-snap.conf
 Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		%{name}-ext-down-enable.patch
-Patch3:		%{name}-search-i-opt.patch
-Patch4:		%{name}-nocolor-cmp.patch
-Patch5:		%{name}-multilib-bare-name-install.patch
-Patch6:		%{name}-dup-sources.patch
-Patch7:		%{name}-env-columns-lines.patch
-Patch8:		%{name}-scoring-evr.patch
-Patch9:		%{name}-global-ignore-merges.patch
-Patch10:	%{name}-ftp-pasv-crash.patch
-Patch11:	%{name}-ftp-pasv-parse.patch
-Patch12:	%{name}-vfstat-redirect-crash.patch
-Patch13:	%{name}-vcn-pool-reuse.patch
-Patch14:	%{name}-url-keep-port.patch
-Patch15:	%{name}-vfile-net-tests.patch
 URL:		http://poldek.pld-linux.org/
 %{?with_rpm5:BuildRequires:	%{db_pkg}-devel >= %{ver_db}}
 BuildRequires:	autoconf >= 2.63
@@ -72,10 +67,13 @@ BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	docbook2X
+BuildRequires:	gettext-autopoint
 BuildRequires:	gettext-tools >= 0.11.5
 BuildRequires:	libgomp-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel >= 2
+BuildRequires:	libxml2-progs
+BuildRequires:	libxslt-progs
 BuildRequires:	lua54-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel >= 0.9.7d
@@ -235,33 +233,31 @@ Python modulok poldek-hez.
 Moduły języka Python dla poldka.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{gitref} -a12 -a13
+rmdir trurlib tndb
+%{__mv} trurlib-%{trurlib_gitref} trurlib
+%{__mv} tndb-%{tndb_gitref} tndb
+
+# conf/*.conf are generated from doc/poldek.conf.xml and make regenerates them
+# when the xml is newer, so generate them after any patch to the xml and apply
+# the PLD defaults (Patch0-2) to the result
+cd conf
+for c in fetch source poldek; do
+	%{__sh} ../doc/conf-xml2.sh conf ../doc/poldek.conf.xml $c
+done
+cd ..
 %patch -P0 -p1
 %patch -P1 -p1
 %patch -P2 -p1
-%patch -P3 -p1
-%patch -P4 -p1
-%patch -P5 -p1
-%patch -P6 -p1
-%patch -P7 -p1
-%patch -P8 -p1
-%patch -P9 -p1
-%patch -P10 -p1
-%patch -P11 -p1
-%patch -P12 -p1
-%patch -P13 -p1
-%patch -P14 -p1
-%patch -P15 -p1
 
-%{__rm} doc/poldek.info
-%{__rm} m4/libtool.m4 m4/lt*.m4
+# what upstream autogen.sh does besides autotools
+%{__make} -f Makefile.extra POTFILES_in
 
 # cleanup backups after patching
 find . '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
-chmod u+x ./configure ./doc/conf-xml2.sh
 
 %build
-%{__gettextize}
+%{__autopoint}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoheader}
@@ -289,7 +285,7 @@ cd ..
 	%{?with_python:--with-python}
 %{__make}
 
-%{__make} -C doc poldek.info
+%{__make} -C doc manual.html poldek.info
 
 %if %{with python}
 %{__make} -C python
@@ -433,6 +429,7 @@ cp -p %{SOURCE7} $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 %{__rm} -rf configs
 cp -a conf configs
 %{__rm} -f configs/Makefile*
+%{__rm} configs/.gitignore
 
 %if %{with python}
 %py_postclean
@@ -545,26 +542,26 @@ fi
 %if %{without static}
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libpoclidek.so.*.*.*
-%attr(755,root,root) %{_libdir}/libpoldek.so.*.*.*
-%attr(755,root,root) %{_libdir}/libtndb.so.*.*.*
-%attr(755,root,root) %{_libdir}/libtrurl.so.*.*.*
-%attr(755,root,root) %{_libdir}/libvfile.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libpoclidek.so.2
-%attr(755,root,root) %ghost %{_libdir}/libpoldek.so.4
-%attr(755,root,root) %ghost %{_libdir}/libtndb.so.0
-%attr(755,root,root) %ghost %{_libdir}/libtrurl.so.10
-%attr(755,root,root) %ghost %{_libdir}/libvfile.so.0
+%{_libdir}/libpoclidek.so.*.*.*
+%{_libdir}/libpoldek.so.*.*.*
+%{_libdir}/libtndb.so.*.*.*
+%{_libdir}/libtrurl.so.*.*.*
+%{_libdir}/libvfile.so.*.*.*
+%ghost %{_libdir}/libpoclidek.so.2
+%ghost %{_libdir}/libpoldek.so.4
+%ghost %{_libdir}/libtndb.so.0
+%ghost %{_libdir}/libtrurl.so.10
+%ghost %{_libdir}/libvfile.so.0
 %endif
 
 %files devel
 %defattr(644,root,root,755)
 %if %{without static}
-%attr(755,root,root) %{_libdir}/libpoclidek.so
-%attr(755,root,root) %{_libdir}/libpoldek.so
-%attr(755,root,root) %{_libdir}/libtndb.so
-%attr(755,root,root) %{_libdir}/libtrurl.so
-%attr(755,root,root) %{_libdir}/libvfile.so
+%{_libdir}/libpoclidek.so
+%{_libdir}/libpoldek.so
+%{_libdir}/libtndb.so
+%{_libdir}/libtrurl.so
+%{_libdir}/libvfile.so
 %endif
 %{_libdir}/libpoclidek.la
 %{_libdir}/libpoldek.la
@@ -586,7 +583,7 @@ fi
 %if %{with python}
 %files -n python-poldek
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/_poldekmod.so
+%{py_sitedir}/_poldekmod.so
 %{py_sitescriptdir}/poldek.py[co]
 %{py_sitescriptdir}/poldekmod.py[co]
 %endif
