@@ -22,12 +22,12 @@
 %define		ver_rpm		1:4.14
 %endif
 
-%define		gitref	02e02fb938d1e4c8228012d4d1f1c90aa7d26832
-%define		snap	20261023
+%define		gitref	b9ebbbaf1ca8cd78dfc1dc10513b9ae51d468499
+%define		snap	20261025
 %define		rel	0.1
 # poldek's autogen.sh and CI build against trurlib and tndb master
-%define		trurlib_gitref	c8c3443df37a175f68ac9f0c55978dbb6d238c33
-%define		tndb_gitref	80e426fe181798cc2780e6ca18f30ad8b69297b0
+%define		trurlib_gitref	599f369f61bd974991158c02fe306cbebadc46d3
+%define		tndb_gitref	5184ad2892fc99f9dc084e879f55673c55fb3e96
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -37,7 +37,7 @@ Release:	0.%{snap}.%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 Source0:	https://github.com/poldek-pm/poldek/archive/%{gitref}/%{name}-%{snap}.tar.gz
-# Source0-md5:	d5b585755b7683948894f378a7345ea6
+# Source0-md5:	756bef94079fa0dd6bea820d60478b34
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -50,9 +50,9 @@ Source9:	%{name}-aidath.conf
 Source10:	%{name}-multilib-aidath.conf
 Source11:	%{name}-archive.conf
 Source12:	https://github.com/poldek-pm/trurlib/archive/%{trurlib_gitref}/trurlib-%{trurlib_gitref}.tar.gz
-# Source12-md5:	bc8baff5e9c04e59e468b1284e2ae341
+# Source12-md5:	7be1e84112288e9902272b5ea6c7dc4c
 Source13:	https://github.com/poldek-pm/tndb/archive/%{tndb_gitref}/tndb-%{tndb_gitref}.tar.gz
-# Source13-md5:	250fc79aed3258dfa6c336a40d571978
+# Source13-md5:	6b48cda593069862624a98312934d973
 Source100:	%{name}-snap.conf
 Source101:	%{name}-multilib-snap.conf
 Source102:	%{name}-debuginfo-snap.conf
@@ -114,7 +114,6 @@ Requires:	%{db_pkg} >= %{ver_db}
 Requires:	rpm-db-ver = %{ver_db}
 %endif
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	/bin/run-parts
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-lib >= %{ver_rpm}
 Requires:	sed
@@ -466,7 +465,7 @@ fi
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
-%triggerpostun -- poldek < 0.30.1-8
+%triggerpostun -- poldek < 0.46.0-0.20261025.0.1
 # poldek < 0.30-0.20080225.00.1
 if ! grep -q '^%%includedir repos.d' %{_sysconfdir}/%{name}/poldek.conf; then
 	%{__sed} -i -e '/^%%include source.conf/{
@@ -499,13 +498,11 @@ if [ -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave ]; then
 	%{__mv} -f %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{ftp_alt_arch}.conf{,.rpmnew}
 	%{__mv} -v %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-multilib.conf.rpmsave %{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-%{ftp_alt_arch}.conf
 fi
-# poldek < 0.30.1-8
-if [ $1 -le 1 ]; then
-	# revert change on  --downgrade
-	%{__sed} -i -re 's,^pm command = %{pkglibexecdir}/pm-command.sh,#&,' %{_sysconfdir}/%{name}/%{name}.conf
+# poldek < 0.46.0-0.20261025.0.1 ran the hooks through a "pm command" wrapper
+if grep -q '^hooks dir' %{_sysconfdir}/%{name}/%{name}.conf; then
+	%{__sed} -i -e 's,^pm command = %{pkglibexecdir}/pm-command.sh$,#&,' %{_sysconfdir}/%{name}/%{name}.conf
 else
-	# setup pm command
-	%{__sed} -i -re 's,#?(pm command =).*,\1 %{pkglibexecdir}/pm-command.sh,' %{_sysconfdir}/%{name}/%{name}.conf
+	%{__sed} -i -e 's,^pm command = %{pkglibexecdir}/pm-command.sh$,hooks dir = %{_sysconfdir}/%{name},' %{_sysconfdir}/%{name}/%{name}.conf
 fi
 
 %files -f %{name}.lang
@@ -524,7 +521,6 @@ fi
 %attr(755,root,root) %{_bindir}/poldek-config
 %attr(755,root,root) %{_bindir}/rpmvercmp
 %dir %{pkglibexecdir}
-%attr(755,root,root) %{pkglibexecdir}/pm-command.sh
 %attr(755,root,root) %{pkglibexecdir}/poldekuser-setup.sh
 %attr(755,root,root) %{pkglibexecdir}/vfcompr
 %attr(755,root,root) %{pkglibexecdir}/vfjuggle
