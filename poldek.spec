@@ -22,8 +22,8 @@
 %define		ver_rpm		1:4.14
 %endif
 
-%define		gitref	b9ebbbaf1ca8cd78dfc1dc10513b9ae51d468499
-%define		snap	20261025
+%define		gitref	90e9ec07f8f0919474bed0da1e775ce50fc9fd77
+%define		snap	20261029
 %define		rel	0.1
 # poldek's autogen.sh and CI build against trurlib and tndb master
 %define		trurlib_gitref	599f369f61bd974991158c02fe306cbebadc46d3
@@ -37,7 +37,7 @@ Release:	0.%{snap}.%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 Source0:	https://github.com/poldek-pm/poldek/archive/%{gitref}/%{name}-%{snap}.tar.gz
-# Source0-md5:	756bef94079fa0dd6bea820d60478b34
+# Source0-md5:	3ca627f8ea1ef081e20894878ade4fdc
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -547,7 +547,7 @@ fi
 %ghost %{_libdir}/libpoldek.so.4
 %ghost %{_libdir}/libtndb.so.0
 %ghost %{_libdir}/libtrurl.so.10
-%ghost %{_libdir}/libvfile.so.0
+%ghost %{_libdir}/libvfile.so.1
 %endif
 
 %files devel
