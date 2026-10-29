@@ -7,24 +7,17 @@
 %bcond_without	imode	# don't build interactive mode
 %bcond_with	python	# don't build python bindings
 %bcond_with	snap	# install configs for official Th snapshot
-%bcond_with	rpm5	# use rpm5 instead of rpm4
 %bcond_with	tests	# tests
 
 # current snapshot name
 %define		SNAP	2025
 
-# required versions (forced to avoid SEGV with mixed db used by rpm and poldek)
-%if %{with rpm5}
-%define		ver_db		%(rpm -q --provides rpm-lib | awk 'BEGIN { v="RPM_TOO_OLD" } /^rpm-db-ver = [.0-9]+$/ { v=$3 } END { print v }')
-%define		db_pkg		db%{ver_db}
-%define		ver_rpm		5.4.10
-%else
-%define		ver_rpm		1:4.14
-%endif
+# configure requires rpm.org 6.0 or later
+%define		ver_rpm		1:6.0
 
-%define		gitref	90e9ec07f8f0919474bed0da1e775ce50fc9fd77
+%define		gitref	90fcee5dc21507642612b83b7c74a179046de278
 %define		snap	20261029
-%define		rel	0.1
+%define		rel	0.2
 # poldek's autogen.sh and CI build against trurlib and tndb master
 %define		trurlib_gitref	599f369f61bd974991158c02fe306cbebadc46d3
 %define		tndb_gitref	5184ad2892fc99f9dc084e879f55673c55fb3e96
@@ -37,7 +30,7 @@ Release:	0.%{snap}.%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 Source0:	https://github.com/poldek-pm/poldek/archive/%{gitref}/%{name}-%{snap}.tar.gz
-# Source0-md5:	3ca627f8ea1ef081e20894878ade4fdc
+# Source0-md5:	b56da0f48b81095291278e40d00c6ac5
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -60,10 +53,8 @@ Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		%{name}-ext-down-enable.patch
 URL:		http://poldek.pld-linux.org/
-%{?with_rpm5:BuildRequires:	%{db_pkg}-devel >= %{ver_db}}
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	bzip2-devel
 BuildRequires:	check-devel
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	docbook2X
@@ -82,7 +73,6 @@ BuildRequires:	perl-XML-Simple
 BuildRequires:	perl-base
 BuildRequires:	perl-modules
 BuildRequires:	pkgconfig
-BuildRequires:	popt-devel
 %{?with_python:BuildRequires:	python-devel}
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
@@ -94,7 +84,6 @@ BuildRequires:	xz
 BuildRequires:	zlib-ng-devel
 BuildRequires:	zstd-devel
 %if %{with static}
-%{?with_rpm5:BuildRequires:	%{db_pkg}-static >= %{ver_db}}
 BuildRequires:	bzip2-static
 BuildRequires:	glibc-static
 BuildRequires:	libxml2-static
@@ -109,10 +98,6 @@ BuildRequires:	zstd-static
 %endif
 Requires(postun):	awk
 Requires(postun):	sed >= 4.0
-%if %{with rpm5}
-Requires:	%{db_pkg} >= %{ver_db}
-Requires:	rpm-db-ver = %{ver_db}
-%endif
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rpm >= %{ver_rpm}
 Requires:	rpm-lib >= %{ver_rpm}
