@@ -15,12 +15,12 @@
 # configure requires rpm.org 6.0 or later
 %define		ver_rpm		1:6.0
 
-%define		gitref	90fcee5dc21507642612b83b7c74a179046de278
-%define		snap	20261029
-%define		rel	0.2
+%define		gitref	a82dd5f8db02518dee2b88891f681cdcd2edaed0
+%define		snap	20261031
+%define		rel	0.1
 # poldek's autogen.sh and CI build against trurlib and tndb master
-%define		trurlib_gitref	599f369f61bd974991158c02fe306cbebadc46d3
-%define		tndb_gitref	5184ad2892fc99f9dc084e879f55673c55fb3e96
+%define		trurlib_gitref	c8e868cf50b8a67930bb6ff6945aa01b89734e15
+%define		tndb_gitref	27a90b4cca45533e84afc57e0a9654dfbf0120d1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
 Summary(pl.UTF-8):	Pomocnicze narzędzie do zarządzania pakietami RPM
@@ -30,7 +30,7 @@ Release:	0.%{snap}.%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 Source0:	https://github.com/poldek-pm/poldek/archive/%{gitref}/%{name}-%{snap}.tar.gz
-# Source0-md5:	b56da0f48b81095291278e40d00c6ac5
+# Source0-md5:	0ed63fb7e825277d851377ee8ee6da3a
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -43,9 +43,9 @@ Source9:	%{name}-aidath.conf
 Source10:	%{name}-multilib-aidath.conf
 Source11:	%{name}-archive.conf
 Source12:	https://github.com/poldek-pm/trurlib/archive/%{trurlib_gitref}/trurlib-%{trurlib_gitref}.tar.gz
-# Source12-md5:	7be1e84112288e9902272b5ea6c7dc4c
+# Source12-md5:	e88e78f115a257df37cd2a62aede52a6
 Source13:	https://github.com/poldek-pm/tndb/archive/%{tndb_gitref}/tndb-%{tndb_gitref}.tar.gz
-# Source13-md5:	6b48cda593069862624a98312934d973
+# Source13-md5:	187cf3be38d3f8b38a9b4340266f9a76
 Source100:	%{name}-snap.conf
 Source101:	%{name}-multilib-snap.conf
 Source102:	%{name}-debuginfo-snap.conf
@@ -68,7 +68,7 @@ BuildRequires:	libxslt-progs
 BuildRequires:	lua54-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel >= 0.9.7d
-BuildRequires:	pcre-devel
+BuildRequires:	pcre2-8-devel
 BuildRequires:	perl-XML-Simple
 BuildRequires:	perl-base
 BuildRequires:	perl-modules
@@ -89,7 +89,7 @@ BuildRequires:	glibc-static
 BuildRequires:	libxml2-static
 BuildRequires:	ncurses-static
 BuildRequires:	openssl-static
-BuildRequires:	pcre-static
+BuildRequires:	pcre2-8-static
 BuildRequires:	popt-static
 BuildRequires:	readline-static
 BuildRequires:	rpm-static
