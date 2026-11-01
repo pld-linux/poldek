@@ -17,7 +17,7 @@
 
 %define		gitref	a82dd5f8db02518dee2b88891f681cdcd2edaed0
 %define		snap	20261031
-%define		rel	0.1
+%define		rel	0.2
 # poldek's autogen.sh and CI build against trurlib and tndb master
 %define		trurlib_gitref	c8e868cf50b8a67930bb6ff6945aa01b89734e15
 %define		tndb_gitref	27a90b4cca45533e84afc57e0a9654dfbf0120d1
@@ -52,6 +52,7 @@ Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		%{name}-ext-down-enable.patch
+Patch3:		%{name}-uninstall-many-files.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
@@ -233,6 +234,7 @@ cd ..
 %patch -P0 -p1
 %patch -P1 -p1
 %patch -P2 -p1
+%patch -P3 -p1
 
 # what upstream autogen.sh does besides autotools
 %{__make} -f Makefile.extra POTFILES_in
