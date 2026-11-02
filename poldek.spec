@@ -15,9 +15,9 @@
 # configure requires rpm.org 6.0 or later
 %define		ver_rpm		1:6.0
 
-%define		gitref	a82dd5f8db02518dee2b88891f681cdcd2edaed0
-%define		snap	20261031
-%define		rel	0.2
+%define		gitref	2e6fbe7971db9cc495c8c05129b300148cc696fc
+%define		snap	20261102
+%define		rel	0.1
 # poldek's autogen.sh and CI build against trurlib and tndb master
 %define		trurlib_gitref	c8e868cf50b8a67930bb6ff6945aa01b89734e15
 %define		tndb_gitref	27a90b4cca45533e84afc57e0a9654dfbf0120d1
@@ -30,7 +30,7 @@ Release:	0.%{snap}.%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 Source0:	https://github.com/poldek-pm/poldek/archive/%{gitref}/%{name}-%{snap}.tar.gz
-# Source0-md5:	0ed63fb7e825277d851377ee8ee6da3a
+# Source0-md5:	fbd7ffe86ee1ca8eaa4b1cc2a912fcdb
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -52,7 +52,6 @@ Source102:	%{name}-debuginfo-snap.conf
 Patch0:		%{name}-config.patch
 Patch1:		pm-hooks.patch
 Patch2:		%{name}-ext-down-enable.patch
-Patch3:		%{name}-uninstall-many-files.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
@@ -234,7 +233,6 @@ cd ..
 %patch -P0 -p1
 %patch -P1 -p1
 %patch -P2 -p1
-%patch -P3 -p1
 
 # what upstream autogen.sh does besides autotools
 %{__make} -f Makefile.extra POTFILES_in
