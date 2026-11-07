@@ -17,7 +17,7 @@
 
 %define		gitref	2e6fbe7971db9cc495c8c05129b300148cc696fc
 %define		snap	20261102
-%define		rel	0.1
+%define		rel	0.2
 # poldek's autogen.sh and CI build against trurlib and tndb master
 %define		trurlib_gitref	c8e868cf50b8a67930bb6ff6945aa01b89734e15
 %define		tndb_gitref	27a90b4cca45533e84afc57e0a9654dfbf0120d1
@@ -46,6 +46,7 @@ Source12:	https://github.com/poldek-pm/trurlib/archive/%{trurlib_gitref}/trurlib
 # Source12-md5:	e88e78f115a257df37cd2a62aede52a6
 Source13:	https://github.com/poldek-pm/tndb/archive/%{tndb_gitref}/tndb-%{tndb_gitref}.tar.gz
 # Source13-md5:	187cf3be38d3f8b38a9b4340266f9a76
+Source14:	pm-command.sh
 Source100:	%{name}-snap.conf
 Source101:	%{name}-multilib-snap.conf
 Source102:	%{name}-debuginfo-snap.conf
@@ -287,6 +288,8 @@ install -d $RPM_BUILD_ROOT/var/cache/%{name}
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -p %{SOURCE3} $RPM_BUILD_ROOT%{_bindir}/poldek-config
+# poldek < 0.46.0-0.20261025.0.1 runs it until the end of the upgrade that replaces it
+install -p %{SOURCE14} $RPM_BUILD_ROOT%{pkglibexecdir}
 
 %if %{with python}
 %{__make} -C python install \
@@ -506,6 +509,7 @@ fi
 %attr(755,root,root) %{_bindir}/poldek-config
 %attr(755,root,root) %{_bindir}/rpmvercmp
 %dir %{pkglibexecdir}
+%attr(755,root,root) %{pkglibexecdir}/pm-command.sh
 %attr(755,root,root) %{pkglibexecdir}/poldekuser-setup.sh
 %attr(755,root,root) %{pkglibexecdir}/vfcompr
 %attr(755,root,root) %{pkglibexecdir}/vfjuggle
