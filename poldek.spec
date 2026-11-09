@@ -15,9 +15,9 @@
 # configure requires rpm.org 6.0 or later
 %define		ver_rpm		1:6.0
 
-%define		gitref	2e6fbe7971db9cc495c8c05129b300148cc696fc
-%define		snap	20261102
-%define		rel	0.2
+%define		gitref	8341d47c7aa83e085a577c9f9d6701080ec5bd70
+%define		snap	20261109
+%define		rel	0.1
 # poldek's autogen.sh and CI build against trurlib and tndb master
 %define		trurlib_gitref	c8e868cf50b8a67930bb6ff6945aa01b89734e15
 %define		tndb_gitref	27a90b4cca45533e84afc57e0a9654dfbf0120d1
@@ -30,7 +30,7 @@ Release:	0.%{snap}.%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 Source0:	https://github.com/poldek-pm/poldek/archive/%{gitref}/%{name}-%{snap}.tar.gz
-# Source0-md5:	fbd7ffe86ee1ca8eaa4b1cc2a912fcdb
+# Source0-md5:	4a5a6ce110cdad109e8f3be79dc18c7a
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -56,17 +56,15 @@ Patch2:		%{name}-ext-down-enable.patch
 URL:		http://poldek.pld-linux.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	check-devel
+%{?with_tests:BuildRequires:	check-devel}
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	docbook2X
 BuildRequires:	gettext-autopoint
 BuildRequires:	gettext-tools >= 0.11.5
-BuildRequires:	libgomp-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel >= 2
 BuildRequires:	libxml2-progs
 BuildRequires:	libxslt-progs
-BuildRequires:	lua54-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre2-8-devel
@@ -78,10 +76,8 @@ BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpm-devel >= %{ver_rpm}
 %{?with_python:BuildRequires:	rpm-pythonprov}
-BuildRequires:	tar >= 1:1.22
 BuildRequires:	texinfo
 BuildRequires:	xmlto
-BuildRequires:	xz
 BuildRequires:	zlib-ng-devel
 BuildRequires:	zstd-devel
 %if %{with static}
@@ -106,7 +102,7 @@ Requires:	sed
 Conflicts:	etckeeper < 1.18-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-# it could be %{_libexecdir}/%{name}, but beware of compatibility (path hardcoded in configurations)
+# it could be %%{_libexecdir}/%%{name}, but beware of compatibility (path hardcoded in configurations)
 %define		pkglibexecdir	%{_prefix}/lib/%{name}
 
 %description
