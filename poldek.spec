@@ -17,7 +17,7 @@
 
 %define		gitref	473ca93bb156f646e7e0f413370ebf6e3a6c400c
 %define		snap	20261113
-%define		rel	0.1
+%define		rel	0.2
 # poldek's autogen.sh and CI build against trurlib and tndb master
 %define		trurlib_gitref	f6c8d5afcb2c53fa97e02c8b3c9b77bdae5179c4
 %define		tndb_gitref	27a90b4cca45533e84afc57e0a9654dfbf0120d1
@@ -389,12 +389,20 @@ sources = th %{?ftp_alt_arch:th-%{ftp_alt_arch}} %{?ftp_alt2_arch:th-%{ftp_alt2_
 EOF
 %endif
 
-# th-2014 snap does not exist for x32 yet
-%if "%{ftp_arch}" == "x32"
-rm $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}.conf
-%endif
-%if "%{ftp_alt2_arch}" == "x32"
-rm $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-x32.conf
+# the same for the snapshot, in one file: poldek refuses a source name defined in two files
+%ifarch %{x8664} x32
+cat <<'EOF' >  $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/repos.d/pld-%{SNAP}-all.conf
+# group sources for referring th-%{SNAP}+th-%{SNAP}-multiarch sources together, i.e poldek --sn th-%{SNAP}-all
+[source]
+type    = group
+name    = th-%{SNAP}-all
+sources = th-%{SNAP} th-%{SNAP}-%{ftp_alt_arch} th-%{SNAP}-%{ftp_alt2_arch}
+
+[source]
+type    = group
+name    = th-%{SNAP}-all-updates
+sources = th-%{SNAP}-updates th-%{SNAP}-%{ftp_alt_arch}-updates th-%{SNAP}-%{ftp_alt2_arch}-updates
+EOF
 %endif
 
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/cli.conf
