@@ -15,11 +15,11 @@
 # configure requires rpm.org 6.0 or later
 %define		ver_rpm		1:6.0
 
-%define		gitref	8341d47c7aa83e085a577c9f9d6701080ec5bd70
-%define		snap	20261109
+%define		gitref	473ca93bb156f646e7e0f413370ebf6e3a6c400c
+%define		snap	20261113
 %define		rel	0.1
 # poldek's autogen.sh and CI build against trurlib and tndb master
-%define		trurlib_gitref	c8e868cf50b8a67930bb6ff6945aa01b89734e15
+%define		trurlib_gitref	f6c8d5afcb2c53fa97e02c8b3c9b77bdae5179c4
 %define		tndb_gitref	27a90b4cca45533e84afc57e0a9654dfbf0120d1
 Summary:	RPM packages management helper tool
 Summary(hu.UTF-8):	RPM csomagkezelést segítő eszköz
@@ -30,7 +30,7 @@ Release:	0.%{snap}.%{rel}%{?with_snap:.%{SNAP}}
 License:	GPL v2
 Group:		Applications/System
 Source0:	https://github.com/poldek-pm/poldek/archive/%{gitref}/%{name}-%{snap}.tar.gz
-# Source0-md5:	4a5a6ce110cdad109e8f3be79dc18c7a
+# Source0-md5:	e783e5949a5516aaacd101274e0c82df
 Source1:	%{name}.conf
 Source2:	%{name}-multilib.conf
 Source3:	%{name}-config.sh
@@ -43,7 +43,7 @@ Source9:	%{name}-aidath.conf
 Source10:	%{name}-multilib-aidath.conf
 Source11:	%{name}-archive.conf
 Source12:	https://github.com/poldek-pm/trurlib/archive/%{trurlib_gitref}/trurlib-%{trurlib_gitref}.tar.gz
-# Source12-md5:	e88e78f115a257df37cd2a62aede52a6
+# Source12-md5:	56dabe69855b036b7987bc13218d2ba5
 Source13:	https://github.com/poldek-pm/tndb/archive/%{tndb_gitref}/tndb-%{tndb_gitref}.tar.gz
 # Source13-md5:	187cf3be38d3f8b38a9b4340266f9a76
 Source14:	pm-command.sh
@@ -278,7 +278,7 @@ cd ..
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/var/cache/%{name}
+install -d $RPM_BUILD_ROOT/var/{cache/%{name},lib/%{name}/repos.d}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -519,6 +519,8 @@ fi
 %{_pixmapsdir}/%{name}.png
 %endif
 %dir /var/cache/%{name}
+%dir /var/lib/%{name}
+%dir /var/lib/%{name}/repos.d
 
 %if %{without static}
 %files libs
@@ -531,7 +533,7 @@ fi
 %ghost %{_libdir}/libpoclidek.so.2
 %ghost %{_libdir}/libpoldek.so.4
 %ghost %{_libdir}/libtndb.so.0
-%ghost %{_libdir}/libtrurl.so.10
+%ghost %{_libdir}/libtrurl.so.11
 %ghost %{_libdir}/libvfile.so.1
 %endif
 
